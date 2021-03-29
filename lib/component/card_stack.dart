@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'memo_card.dart';
+import 'flip_card.dart';
 
 List<Alignment> cardsAlign = [
   Alignment(1.0, 1.0),
@@ -22,7 +22,7 @@ class CardStack extends StatefulWidget {
 }
 
 class _CardStackState extends State<CardStack> with SingleTickerProviderStateMixin {
-  List<MemoCard> cards = <MemoCard>[];
+  List<FlipCard> cards = <FlipCard>[];
 
   final Alignment defaultFrontCardAlign = Alignment(0.0, 0.0);
   Alignment frontCardAlign;
@@ -44,6 +44,12 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   }
 
   @override
+  void dispose() {
+    _swipeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
         child: Stack(
@@ -59,7 +65,7 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
 
   void initSack(){
     for (int i = 0; i < 3; i++) {
-      cards.add(MemoCard(key: UniqueKey(), front: "Front", back: "Back", color: _randomColor()));
+      cards.add(FlipCard(key: UniqueKey(), front: "Front", back: "Back", color: _randomColor()));
     }
 
     frontCardAlign = cardsAlign[2];
@@ -140,7 +146,7 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
     setState(() {
       cards[2] = cards[1];
       cards[1] = cards[0];
-      cards[0] = MemoCard(key: UniqueKey(), front:"Front", back:"Back", color:_randomColor());
+      cards[0] = FlipCard(key: UniqueKey(), front:"Front", back:"Back", color:_randomColor());
 
       _resetFrontCardPosition();
     });

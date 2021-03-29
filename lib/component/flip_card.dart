@@ -2,19 +2,19 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class MemoCard extends StatefulWidget {
+class FlipCard extends StatefulWidget {
   final Key key;
   final String front;
   final String back;
   final Color color;
 
-  MemoCard({this.key, this.front, this.back, this.color});
+  FlipCard({this.key, this.front, this.back, this.color});
 
   @override
-  _MemoCardState createState() => _MemoCardState();
+  _FlipCardState createState() => _FlipCardState();
 }
 
-class _MemoCardState extends State<MemoCard> {
+class _FlipCardState extends State<FlipCard> {
   bool _displayFront;
 
   @override
@@ -26,7 +26,7 @@ class _MemoCardState extends State<MemoCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: _buildFlipAnimation(),
+      child: _flipAnimation(),
     );
   }
 
@@ -34,6 +34,9 @@ class _MemoCardState extends State<MemoCard> {
     return Card(
       key: key,
       color: backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       child: Center(
         child: Text(faceName, style: TextStyle(fontSize: 20.0)),
       ),
@@ -58,6 +61,7 @@ class _MemoCardState extends State<MemoCard> {
 
   Widget _transitionBuilder(Widget widget, Animation<double> animation) {
     final rotateAnim = Tween(begin: pi, end: 0.0).animate(animation);
+
     return AnimatedBuilder(
       animation: rotateAnim,
       child: widget,
@@ -65,7 +69,8 @@ class _MemoCardState extends State<MemoCard> {
         final isUnder = (ValueKey(_displayFront) != widget.key);
         var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
         tilt *= isUnder ? -1.0 : 1.0;
-        final value = isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
+        final value =
+            isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
         return Transform(
           transform: Matrix4.rotationY(value)..setEntry(3, 0, tilt),
           child: widget,
@@ -75,7 +80,7 @@ class _MemoCardState extends State<MemoCard> {
     );
   }
 
-  Widget _buildFlipAnimation() {
+  Widget _flipAnimation() {
     return GestureDetector(
       onTap: () => setState(() => _displayFront = !_displayFront),
       child: AnimatedSwitcher(
