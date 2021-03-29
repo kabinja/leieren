@@ -6,9 +6,8 @@ class FlipCard extends StatefulWidget {
   final Key key;
   final String front;
   final String back;
-  final Color color;
 
-  FlipCard({this.key, this.front, this.back, this.color});
+  FlipCard({this.key, this.front, this.back});
 
   @override
   _FlipCardState createState() => _FlipCardState();
@@ -30,15 +29,15 @@ class _FlipCardState extends State<FlipCard> {
     );
   }
 
-  Widget _buildLayout({Key key, String faceName, Color backgroundColor}) {
+  Widget _buildLayout({Key key, String faceName}) {
     return Card(
       key: key,
-      color: backgroundColor,
+      color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Center(
-        child: Text(faceName, style: TextStyle(fontSize: 20.0)),
+        child: Text(faceName, style: TextStyle(fontSize: 20.0, color: Colors.white)),
       ),
     );
   }
@@ -46,7 +45,6 @@ class _FlipCardState extends State<FlipCard> {
   Widget _buildFront() {
     return _buildLayout(
       key: ValueKey(true),
-      backgroundColor: widget.color,
       faceName: widget.front,
     );
   }
@@ -54,7 +52,6 @@ class _FlipCardState extends State<FlipCard> {
   Widget _buildRear() {
     return _buildLayout(
       key: ValueKey(false),
-      backgroundColor: widget.color,
       faceName: widget.back,
     );
   }

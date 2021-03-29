@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:leieren_flutter/command/next_words_command.dart';
+import 'package:leieren_flutter/model/word.dart';
 
 import 'flip_card.dart';
 
@@ -64,9 +66,11 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   }
 
   void initSack(){
-    for (int i = 0; i < 3; i++) {
-      cards.add(FlipCard(key: UniqueKey(), front: "Front", back: "Back", color: _randomColor()));
-    }
+     List<Word> words = NextWordsCommand().run(1, 3);
+
+     for(Word word in words){
+       cards.add(FlipCard(key: UniqueKey(), front:word.translation, back:word.value));
+     }
 
     frontCardAlign = cardsAlign[2];
   }
@@ -144,9 +148,11 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
 
   void _updateCardStack() {
     setState(() {
+      List<Word> words = NextWordsCommand().run(1, 1);
+
       cards[2] = cards[1];
       cards[1] = cards[0];
-      cards[0] = FlipCard(key: UniqueKey(), front:"Front", back:"Back", color:_randomColor());
+      cards[0] = FlipCard(key: UniqueKey(), front:words[0].translation, back:words[0].value);
 
       _resetFrontCardPosition();
     });
@@ -155,10 +161,6 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   void _resetFrontCardPosition(){
     frontCardAlign = defaultFrontCardAlign;
     frontCardRot = 0.0;
-  }
-
-  Color _randomColor() {
-    return Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
   }
 }
 

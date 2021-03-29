@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../component/card_stack.dart';
+import 'package:leieren_flutter/view/widget/card_stack.dart';
 
 class CardStackPage extends StatefulWidget {
   @override
