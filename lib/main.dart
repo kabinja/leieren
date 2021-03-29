@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:leieren_flutter/card_stack_page.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override

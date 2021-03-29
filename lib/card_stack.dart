@@ -19,7 +19,6 @@ class CardStack extends StatefulWidget {
 
   @override
   _CardStackState createState() => _CardStackState();
-
 }
 
 class _CardStackState extends State<CardStack> with SingleTickerProviderStateMixin {
@@ -35,12 +34,7 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
 
-    // Init cards
-    for (int i = 0; i < 3; i++) {
-      cards.add(MemoCard(front: "Front", back: "Back", color: _randomColor()));
-    }
-
-    frontCardAlign = cardsAlign[2];
+    initSack();
 
     _swipeController = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     _swipeController.addListener(() => setState(() {}));
@@ -61,6 +55,14 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
           ],
         )
     );
+  }
+
+  void initSack(){
+    for (int i = 0; i < 3; i++) {
+      cards.add(MemoCard(key: UniqueKey(), front: "Front", back: "Back", color: _randomColor()));
+    }
+
+    frontCardAlign = cardsAlign[2];
   }
 
   Widget _backCard() {
@@ -138,7 +140,7 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
     setState(() {
       cards[2] = cards[1];
       cards[1] = cards[0];
-      cards[0] = MemoCard(front:"Front", back:"Back", color:_randomColor());
+      cards[0] = MemoCard(key: UniqueKey(), front:"Front", back:"Back", color:_randomColor());
 
       _resetFrontCardPosition();
     });

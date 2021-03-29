@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 
 class MemoCard extends StatefulWidget {
+  final Key key;
   final String front;
   final String back;
   final Color color;
 
-  MemoCard({this.front, this.back, this.color});
+  MemoCard({this.key, this.front, this.back, this.color});
 
   @override
   _MemoCardState createState() => _MemoCardState();
@@ -21,7 +21,6 @@ class _MemoCardState extends State<MemoCard> {
   void initState() {
     super.initState();
     _displayFront = true;
-    debugPrint('data: $_displayFront');
   }
 
   @override
@@ -32,7 +31,6 @@ class _MemoCardState extends State<MemoCard> {
   }
 
   Widget _buildLayout({Key key, String faceName, Color backgroundColor}) {
-    debugPrint('data: $_displayFront');
     return Card(
       key: key,
       color: backgroundColor,
