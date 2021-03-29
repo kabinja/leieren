@@ -28,7 +28,7 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   final Alignment defaultFrontCardAlign = Alignment(0.0, 0.0);
   Alignment frontCardAlign;
 
-  AnimationController _controller;
+  AnimationController _swipeController;
   double frontCardRot = 0.0;
 
   @override
@@ -37,14 +37,14 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
 
     // Init cards
     for (int i = 0; i < 3; i++) {
-      cards.add(MemoCard(_randomColor()));
+      cards.add(MemoCard(front: "Front", back: "Back", color: _randomColor()));
     }
 
     frontCardAlign = cardsAlign[2];
 
-    _controller = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
-    _controller.addListener(() => setState(() {}));
-    _controller.addStatusListener((AnimationStatus status) {
+    _swipeController = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+    _swipeController.addListener(() => setState(() {}));
+    _swipeController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) _updateCardStack();
     });
   }
@@ -64,36 +64,45 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   }
 
   Widget _backCard() {
-    return Align(
-      alignment: _controller.status == AnimationStatus.forward
-          ? CardsAnimation.backCardAlignmentAnim(_controller).value
-          : cardsAlign[0],
-      child: SizedBox.fromSize(size: cardSize, child: cards[0],),
+    return IgnorePointer(
+        ignoring: true,
+        child: Align(
+          alignment: _swipeController.status == AnimationStatus.forward
+              ? CardsAnimation.backCardAlignmentAnim(_swipeController).value
+              : cardsAlign[0],
+          child: SizedBox.fromSize(size: cardSize, child: cards[0],),
+        )
     );
   }
 
   Widget _middleCard() {
-    return Align(
-      alignment: _controller.status == AnimationStatus.forward
-          ? CardsAnimation.middleCardAlignmentAnim(_controller).value
-          : cardsAlign[1],
-      child: SizedBox.fromSize(size: cardSize, child: cards[1],),
+    return IgnorePointer(
+        ignoring: true,
+        child: Align(
+          alignment: _swipeController.status == AnimationStatus.forward
+              ? CardsAnimation.middleCardAlignmentAnim(_swipeController).value
+              : cardsAlign[1],
+          child: SizedBox.fromSize(size: cardSize, child: cards[1],),
+        )
     );
   }
 
   Widget _frontCard() {
-    return Align(
-        alignment: _controller.status == AnimationStatus.forward
-            ? CardsAnimation.frontCardDisappearAlignmentAnim(_controller, frontCardAlign).value
+    return IgnorePointer(
+        ignoring: false,
+        child: Align(
+        alignment: _swipeController.status == AnimationStatus.forward
+            ? CardsAnimation.frontCardDisappearAlignmentAnim(_swipeController, frontCardAlign).value
             : frontCardAlign,
         child: Transform.rotate(
           angle: (pi / 180.0) * frontCardRot,
           child: SizedBox.fromSize(size: cardSize, child: cards[2]),
-        ));
+        ))
+    );
   }
 
   Widget _controllerZone() {
-    return _controller.status != AnimationStatus.forward
+    return _swipeController.status != AnimationStatus.forward
         ? SizedBox.expand(
         child: GestureDetector(
           onPanUpdate: (DragUpdateDetails details) {
@@ -120,16 +129,16 @@ class _CardStackState extends State<CardStack> with SingleTickerProviderStateMix
   }
 
   void _animateCards(){
-    _controller.stop();
-    _controller.value = 0.0;
-    _controller.forward();
+    _swipeController.stop();
+    _swipeController.value = 0.0;
+    _swipeController.forward();
   }
 
   void _updateCardStack() {
     setState(() {
       cards[2] = cards[1];
       cards[1] = cards[0];
-      cards[0] = MemoCard(_randomColor());
+      cards[0] = MemoCard(front:"Front", back:"Back", color:_randomColor());
 
       _resetFrontCardPosition();
     });
