@@ -29,10 +29,10 @@ class _FlipCardState extends State<FlipCard> {
     );
   }
 
-  Widget _buildLayout({Key key, String faceName}) {
+  Widget _buildLayout({Key key, String faceName, Color color}) {
     return Card(
       key: key,
-      color: Colors.blue,
+      color: color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -46,6 +46,7 @@ class _FlipCardState extends State<FlipCard> {
     return _buildLayout(
       key: ValueKey(true),
       faceName: widget.front,
+      color: Colors.blue
     );
   }
 
@@ -53,6 +54,7 @@ class _FlipCardState extends State<FlipCard> {
     return _buildLayout(
       key: ValueKey(false),
       faceName: widget.back,
+      color: Color(0xFF0366A7)
     );
   }
 

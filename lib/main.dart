@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'command/base_command.dart' as Commands;
-import 'view/page/card_stack_page.dart';
-import 'service/word_service.dart';
+import 'package:leieren/command/base_command.dart' as Commands;
+import 'package:leieren/view/page/card_stack_page.dart';
+import 'package:leieren/service/word_service.dart';
 
 void main() => runApp(MyApp());
 

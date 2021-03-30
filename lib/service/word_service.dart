@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:leieren_flutter/model/word.dart';
+import 'package:leieren/model/word.dart';
 
 List<Word> words = <Word>[
   Noun(1, "Fro", "Question", Gender.feminine, "Froen"),

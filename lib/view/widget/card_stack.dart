@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:leieren_flutter/command/next_words_command.dart';
-import 'package:leieren_flutter/model/word.dart';
+import 'package:leieren/command/next_words_command.dart';
+import 'package:leieren/model/word.dart';
 
 import 'flip_card.dart';
 
