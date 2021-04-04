@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leieren/command/words_command.dart';
 import 'package:leieren/view/widget/card_stack.dart';
 
 class CardStackPage extends StatefulWidget {
@@ -17,7 +18,7 @@ class _CardStackPageState extends State<CardStackPage> {
         backgroundColor: Colors.white,
         body: Column(
           children: <Widget>[
-            CardStack(context),
+            _cardStackWidget(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -33,7 +34,28 @@ class _CardStackPageState extends State<CardStackPage> {
             ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ],
-        )
+        ));
+  }
+
+  Widget _cardStackWidget() {
+    return FutureBuilder(
+      builder: (context, projectSnap) {
+        if (projectSnap.connectionState != ConnectionState.done) {
+          return Column(
+            children: <Widget>[
+              SizedBox(
+                height: 100,
+              ),
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
+          );
+        }
+
+        return CardStack(context);
+      },
+      future: LoadWordsCommand().run(1, 5),
     );
   }
 }

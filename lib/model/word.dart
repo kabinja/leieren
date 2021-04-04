@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 enum Gender {
   masculine, feminine, neutral
 }
@@ -28,4 +30,15 @@ class Noun extends Word {
 
   Noun(int level, String value, String translation,this.gender, this.plural)
       : super(level, value, translation);
+}
+
+class WordListModel extends ChangeNotifier {
+  List<Word> _words;
+
+  List<Word> get words => _words;
+
+  set words(List<Word> words){
+    _words = words;
+    notifyListeners();
+  }
 }

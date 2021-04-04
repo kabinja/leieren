@@ -66,7 +66,8 @@ List<Word> words = <Word>[
 class WordService {
   final random = new Random();
 
-  List<Word> getWords(int level, int limit) {
+  Future<List<Word>> getWords(int level, int limit) async {
+    await Future.delayed(Duration(seconds: 1));
     return  List.generate(limit, (_) => words.where((w) => w.level <= level).toList()[random.nextInt(words.length)]);
   }
 }

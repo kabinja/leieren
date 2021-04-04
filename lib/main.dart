@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leieren/model/word.dart';
 import 'package:provider/provider.dart';
 
 import 'package:leieren/command/base_command.dart' as Commands;
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context){
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (c) => WordListModel()),
         Provider(create: (c) => WordService()),
       ],
       child: Builder(builder: (context) {

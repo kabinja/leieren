@@ -1,3 +1,4 @@
+import 'package:leieren/model/word.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -7,5 +8,6 @@ BuildContext _mainContext;
 void init(BuildContext c) => _mainContext = c;
 
 class BaseCommand {
+  WordListModel wordListModel = _mainContext.read();
   WordService wordService = _mainContext.read();
 }
