@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:leieren/command/words_command.dart';
 import 'package:leieren/model/word.dart';
-import 'package:provider/provider.dart';
 
 import 'flip_card.dart';
 
@@ -16,7 +15,9 @@ List<Alignment> cardsAlign = [
 Size cardSize;
 
 class CardStack extends StatefulWidget {
-  CardStack(BuildContext context) {
+  final WordListModel model;
+
+  CardStack(BuildContext context, this.model) {
     cardSize = Size(MediaQuery.of(context).size.width * 0.95,
         MediaQuery.of(context).size.height * 0.95);
   }
@@ -59,14 +60,13 @@ class _CardStackState extends State<CardStack>
 
   @override
   Widget build(BuildContext context) {
-    var words = context.select<WordListModel, List<Word>>((model) => model.words);
     return Expanded(
         child: Stack(
       children: <Widget>[
-        words.length > 2 ?_backCard(words) : Container(),
-        words.length > 1 ?_middleCard(words)  : Container(),
-        words.isNotEmpty ? _frontCard(words)  : Container(),
-        words.isNotEmpty ? _controllerZone()  : Container(),
+        widget.model.words.length > 2 ?_backCard() : Container(),
+        widget.model.words.length > 1 ?_middleCard()  : Container(),
+        widget.model.words.isNotEmpty ? _frontCard()  : Container(),
+        widget.model.words.isNotEmpty ? _controllerZone()  : Container(),
       ],
     ));
   }
@@ -80,7 +80,7 @@ class _CardStackState extends State<CardStack>
     frontCardAlign = cardsAlign[2];
   }
 
-  Widget _backCard(List<Word> words) {
+  Widget _backCard() {
     return IgnorePointer(
         ignoring: true,
         child: Align(
@@ -92,13 +92,13 @@ class _CardStackState extends State<CardStack>
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
-                front: words[2].translation,
-                back: words[2].value),
+                front: widget.model.words[2].translation,
+                back: widget.model.words[2].value),
           ),
         ));
   }
 
-  Widget _middleCard(List<Word> words) {
+  Widget _middleCard() {
     return IgnorePointer(
         ignoring: true,
         child: Align(
@@ -110,13 +110,13 @@ class _CardStackState extends State<CardStack>
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
-                front: words[1].translation,
-                back: words[1].value),
+                front: widget.model.words[1].translation,
+                back: widget.model.words[1].value),
           ),
         ));
   }
 
-  Widget _frontCard(List<Word> words) {
+  Widget _frontCard() {
     return IgnorePointer(
         ignoring: false,
         child: Align(
@@ -132,8 +132,8 @@ class _CardStackState extends State<CardStack>
                 child: FlipCard(
                     key: UniqueKey(),
                     side: frontCardSide,
-                    front: words[0].translation,
-                    back: words[0].value,
+                    front: widget.model.words[0].translation,
+                    back: widget.model.words[0].value,
                     onFlipCard: (Key key, Side side) {
                       frontCardSide = side;
                     }),

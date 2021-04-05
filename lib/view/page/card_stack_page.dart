@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:leieren/command/words_command.dart';
+import 'package:leieren/model/word.dart';
 import 'package:leieren/view/widget/card_stack.dart';
+import 'package:provider/provider.dart';
 
 class CardStackPage extends StatefulWidget {
   @override
@@ -53,7 +55,9 @@ class _CardStackPageState extends State<CardStackPage> {
           );
         }
 
-        return CardStack(context);
+        return Consumer<WordListModel>(
+            builder: (context, model, _) => CardStack(context, model),
+        );
       },
       future: LoadWordsCommand().run(1, 5),
     );
