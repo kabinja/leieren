@@ -2,8 +2,8 @@ import 'package:leieren/command/base_command.dart';
 import 'package:leieren/model/word.dart';
 
 class LoadWordsCommand extends BaseCommand {
-  Future<List<Word>> run(int level, int limit) async {
-     List<Word> words = await wordService.getWords(level, limit);
+  Future<List<Word>> run(int limit) async {
+     List<Word> words = await wordService.getWords(appModel.level, limit);
      wordListModel.words = words;
 
      return words;

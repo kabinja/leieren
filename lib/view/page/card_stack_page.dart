@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:leieren/command/words_command.dart';
 import 'package:leieren/model/word.dart';
+import 'package:leieren/view/page/navigation.dart';
 import 'package:leieren/view/widget/card_stack.dart';
 import 'package:provider/provider.dart';
 
@@ -12,54 +13,28 @@ class CardStackPage extends StatefulWidget {
 class _CardStackPageState extends State<CardStackPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-        ),
-        backgroundColor: Colors.white,
-        body: Column(
-          children: <Widget>[
-            _cardStackWidget(),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: new Icon(Icons.score),
-              label: 'Score',
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          ],
-        ));
-  }
+    return Navigation(
+      child: FutureBuilder(
+        builder: (context, projectSnap) {
+          if (projectSnap.connectionState != ConnectionState.done) {
+            return Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 100,
+                ),
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ],
+            );
+          }
 
-  Widget _cardStackWidget() {
-    return FutureBuilder(
-      builder: (context, projectSnap) {
-        if (projectSnap.connectionState != ConnectionState.done) {
-          return Column(
-            children: <Widget>[
-              SizedBox(
-                height: 100,
-              ),
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-            ],
-          );
-        }
-
-        return Consumer<WordListModel>(
+          return Consumer<WordListModel>(
             builder: (context, model, _) => CardStack(context, model),
-        );
-      },
-      future: LoadWordsCommand().run(1, 5),
+          );
+        },
+        future: LoadWordsCommand().run(5),
+      ),
     );
   }
 }
