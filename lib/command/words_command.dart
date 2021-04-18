@@ -1,5 +1,5 @@
 import 'package:leieren/command/base_command.dart';
-import 'package:leieren/model/word.dart';
+import 'package:leieren/model/word_model.dart';
 
 class LoadWordsCommand extends BaseCommand {
   Future<List<Word>> run(int limit) async {
@@ -10,13 +10,25 @@ class LoadWordsCommand extends BaseCommand {
   }
 }
 
+class FetchWordCommand extends BaseCommand {
+  Future<List<Word?>> run(number) async {
+    List<Word> words = wordListModel.words;
+
+    if(words.length <= number){
+      words.fillRange(words.length, number, null);
+    }
+
+    return words.getRange(0, number).toList();
+  }
+}
+
 class ValidateWordCommand extends BaseCommand {
   Future<List<Word>> run() async {
     List<Word> words = wordListModel.words;
     words.removeAt(0);
 
     if(words.length < 5) {
-      List<Word> newWords = await wordService.getWords(1, 5);
+      List<Word> newWords = await wordService.getWords(appModel.level, 5);
       words.addAll(newWords);
     }
 

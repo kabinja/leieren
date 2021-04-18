@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leieren/model/app_model.dart';
-import 'package:leieren/model/word.dart';
+import 'package:leieren/model/word_model.dart';
 import 'package:leieren/view/page/home_page.dart';
 import 'package:leieren/view/page/navigation.dart';
 import 'package:provider/provider.dart';

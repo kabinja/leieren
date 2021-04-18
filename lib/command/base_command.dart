@@ -1,5 +1,5 @@
 import 'package:leieren/model/app_model.dart';
-import 'package:leieren/model/word.dart';
+import 'package:leieren/model/word_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 

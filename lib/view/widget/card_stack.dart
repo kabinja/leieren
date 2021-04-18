@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:leieren/command/question_command.dart';
 import 'package:leieren/command/words_command.dart';
-import 'package:leieren/model/word.dart';
+import 'package:leieren/model/word_model.dart';
 
 import 'flip_card.dart';
 
@@ -16,8 +17,10 @@ List<Alignment> cardsAlign = [
 class CardStack extends StatefulWidget {
   final WordListModel model;
   final Size cardSize;
+  final Field front;
+  final Field back;
 
-  CardStack({required this.cardSize, required this.model});
+  CardStack({required this.cardSize, required this.model, required this.front, required this.back});
 
   @override
   _CardStackState createState() => _CardStackState();
@@ -55,22 +58,35 @@ class _CardStackState extends State<CardStack>
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: Stack(
-      children: <Widget>[
-        widget.model.words.length > 2 ?_backCard() : Container(),
-        widget.model.words.length > 1 ?_middleCard()  : Container(),
-        widget.model.words.isNotEmpty ? _frontCard()  : Container(),
-        widget.model.words.isNotEmpty ? _controllerZone()  : Container(),
-      ],
-    ));
+        child: FutureBuilder(
+          builder: (context, AsyncSnapshot<List<WordQuestion?>> snapshot) {
+            return Stack(
+              children: <Widget>[
+                _backCard(snapshot.data![2]),
+                _middleCard(snapshot.data![1]),
+                _frontCard(snapshot.data![0]),
+                snapshot.data?[0] != null ? _controllerZone()  : Container(),
+              ],
+            );
+          },
+          future: Future.wait([
+            FetchWordQuestionCommand().run(0, widget.front, widget.back),
+            FetchWordQuestionCommand().run(1, widget.front, widget.back),
+            FetchWordQuestionCommand().run(2, widget.front, widget.back),
+          ]),
+        )
+    );
   }
 
   void onAnimationFinished(){
-    ValidateWordCommand().run();
-    _resetFrontCardPosition();
+    ValidateWordCommand().run().then((value) => _resetFrontCardPosition());
   }
 
-  Widget _backCard() {
+  Widget _backCard(WordQuestion? wordQuestion) {
+    if(wordQuestion == null){
+      return Container();
+    }
+
     return IgnorePointer(
         ignoring: true,
         child: Align(
@@ -82,13 +98,18 @@ class _CardStackState extends State<CardStack>
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
-                front: widget.model.words[2].translation,
-                back: widget.model.words[2].value),
+                front: wordQuestion.question,
+                back: wordQuestion.answer
+            ),
           ),
         ));
   }
 
-  Widget _middleCard() {
+  Widget _middleCard(WordQuestion? wordQuestion) {
+    if(wordQuestion == null){
+      return Container();
+    }
+
     return IgnorePointer(
         ignoring: true,
         child: Align(
@@ -100,13 +121,18 @@ class _CardStackState extends State<CardStack>
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
-                front: widget.model.words[1].translation,
-                back: widget.model.words[1].value),
+                front: wordQuestion.question,
+                back: wordQuestion.answer
+            ),
           ),
         ));
   }
 
-  Widget _frontCard() {
+  Widget _frontCard(WordQuestion? wordQuestion) {
+    if(wordQuestion == null){
+      return Container();
+    }
+
     return IgnorePointer(
         ignoring: false,
         child: Align(
@@ -122,8 +148,8 @@ class _CardStackState extends State<CardStack>
                 child: FlipCard(
                     key: UniqueKey(),
                     side: frontCardSide,
-                    front: widget.model.words[0].translation,
-                    back: widget.model.words[0].value,
+                    front: wordQuestion.question,
+                    back: wordQuestion.answer,
                     onFlipCard: (Key key, Side side) {
                       frontCardSide = side;
                     }),

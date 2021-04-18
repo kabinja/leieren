@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:leieren/view/page/card_stack_page.dart';
+import 'package:leieren/view/page/translation_page.dart';
 import 'package:leieren/view/page/navigation.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CardStackPage()),
+                MaterialPageRoute(builder: (context) => TranslationPage()),
               );
             },
             child: Card(

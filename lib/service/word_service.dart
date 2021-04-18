@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:leieren/model/word.dart';
+import 'package:leieren/model/word_model.dart';
 
 List<Word> words = <Word>[
   Noun(1, "Fro", "Question", Gender.feminine, "Froen"),
@@ -67,7 +67,6 @@ class WordService {
   final random = new Random();
 
   Future<List<Word>> getWords(int level, int limit) async {
-    await Future.delayed(Duration(seconds: 5));
     return  List.generate(limit, (_) => words.where((w) => w.level <= level).toList()[random.nextInt(words.length)]);
   }
 }
