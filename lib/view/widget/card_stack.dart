@@ -62,9 +62,9 @@ class _CardStackState extends State<CardStack>
           builder: (context, AsyncSnapshot<List<WordQuestion?>> snapshot) {
             return Stack(
               children: <Widget>[
-                _backCard(snapshot.data![2]),
-                _middleCard(snapshot.data![1]),
-                _frontCard(snapshot.data![0]),
+                _backCard(snapshot.data?[2]),
+                _middleCard(snapshot.data?[1]),
+                _frontCard(snapshot.data?[0]),
                 snapshot.data?[0] != null ? _controllerZone()  : Container(),
               ],
             );
