@@ -30,7 +30,11 @@ class _CardStackPageState extends State<CardStackPage> {
           }
 
           return Consumer<WordListModel>(
-            builder: (context, model, _) => CardStack(context, model),
+            builder: (context, model, _) => CardStack(
+              cardSize: Size(MediaQuery.of(context).size.width * 0.95,
+                  MediaQuery.of(context).size.height * 0.95),
+              model: model,
+            ),
           );
         },
         future: LoadWordsCommand().run(5),

@@ -7,7 +7,7 @@ import 'home_page.dart';
 class Navigation extends StatelessWidget {
   final Widget child;
 
-  const Navigation({this.child});
+  const Navigation({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class Navigation extends StatelessWidget {
   }
 
   void onTabTapped(BuildContext context, int index) {
-    Widget next;
+    late Widget next;
 
     if(index == 0) next = HomePage();
     if(index == 1) next = ScorePage();

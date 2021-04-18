@@ -35,9 +35,9 @@ class HomePage extends StatelessWidget {
 
 class ExerciseTile extends StatelessWidget {
   const ExerciseTile({
-    this.thumbnail,
-    this.title,
-    this.subtitle,
+    required this.thumbnail,
+    required this.title,
+    required this.subtitle,
   });
 
   final Widget thumbnail;
@@ -78,8 +78,8 @@ class ExerciseDescription extends StatelessWidget {
   final String subtitle;
 
   const ExerciseDescription({
-    this.title,
-    this.subtitle,
+    required this.title,
+    required this.subtitle,
   });
 
   @override

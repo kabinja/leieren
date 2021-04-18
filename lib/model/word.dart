@@ -33,7 +33,7 @@ class Noun extends Word {
 }
 
 class WordListModel extends ChangeNotifier {
-  List<Word> _words;
+  late List<Word> _words;
 
   List<Word> get words => _words;
 

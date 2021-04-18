@@ -12,16 +12,16 @@ class FlipCard extends StatefulWidget {
   final Side side;
   final String front;
   final String back;
-  final Function(Key, Side) onFlipCard;
+  final Function(Key, Side)? onFlipCard;
 
-  FlipCard({this.key, this.side, this.front, this.back, this.onFlipCard});
+  FlipCard({required this.key, required this.side, required this.front, required this.back, this.onFlipCard});
 
   @override
   _FlipCardState createState() => _FlipCardState();
 }
 
 class _FlipCardState extends State<FlipCard> {
-  Side currentSide;
+  Side currentSide = Side.FRONT;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _FlipCardState extends State<FlipCard> {
     );
   }
 
-  Widget _buildLayout({Key key, String faceName, Color color}) {
+  Widget _buildLayout({required Key key, required String faceName, required Color color}) {
     return Card(
       key: key,
       color: color,
@@ -72,7 +72,7 @@ class _FlipCardState extends State<FlipCard> {
       animation: rotateAnim,
       child: widget,
       builder: (context, widget) {
-        final isUnder = (ValueKey(currentSide == Side.FRONT) != widget.key);
+        final isUnder = (ValueKey(currentSide == Side.FRONT) != widget?.key);
         var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
         tilt *= isUnder ? -1.0 : 1.0;
         final value =
@@ -89,13 +89,13 @@ class _FlipCardState extends State<FlipCard> {
   Widget _flipAnimation() {
     return GestureDetector(
       onTap: () => {
-          widget.onFlipCard(widget.key, currentSide == Side.FRONT ? Side.BACK: Side.FRONT),
+          widget.onFlipCard?.call(widget.key, currentSide == Side.FRONT ? Side.BACK: Side.FRONT),
           setState(() => currentSide = currentSide == Side.FRONT ? Side.BACK: Side.FRONT)
       },
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 600),
         transitionBuilder: _transitionBuilder,
-        layoutBuilder: (widget, list) => Stack(children: [widget, ...list]),
+        layoutBuilder: (widget, list) => Stack(children: widget != null ? [widget, ...list] : list),
         child: currentSide == Side.FRONT ? _buildFront() : _buildRear(),
         switchInCurve: Curves.easeInBack,
         switchOutCurve: Curves.easeInBack.flipped,

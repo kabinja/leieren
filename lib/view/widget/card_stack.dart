@@ -12,15 +12,12 @@ List<Alignment> cardsAlign = [
   Alignment(0.0, 0.0)
 ];
 
-Size cardSize;
 
 class CardStack extends StatefulWidget {
   final WordListModel model;
+  final Size cardSize;
 
-  CardStack(BuildContext context, this.model) {
-    cardSize = Size(MediaQuery.of(context).size.width * 0.95,
-        MediaQuery.of(context).size.height * 0.95);
-  }
+  CardStack({required this.cardSize, required this.model});
 
   @override
   _CardStackState createState() => _CardStackState();
@@ -30,20 +27,17 @@ class _CardStackState extends State<CardStack>
     with SingleTickerProviderStateMixin {
 
   final Alignment defaultFrontCardAlign = Alignment(0.0, 0.0);
-  Alignment frontCardAlign;
-  Side frontCardSide = Side.FRONT;
+  late AnimationController _swipeController;
 
-  AnimationController _swipeController;
+  Alignment frontCardAlign = cardsAlign[2];
+  Side frontCardSide = Side.FRONT;
   double frontCardRot = 0.0;
 
   @override
   void initState() {
     super.initState();
 
-    initSack();
-
-    _swipeController =
-        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+    _swipeController = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     _swipeController.addListener(() => setState(() {}));
     _swipeController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
@@ -76,10 +70,6 @@ class _CardStackState extends State<CardStack>
     _resetFrontCardPosition();
   }
 
-  void initSack() {
-    frontCardAlign = cardsAlign[2];
-  }
-
   Widget _backCard() {
     return IgnorePointer(
         ignoring: true,
@@ -88,7 +78,7 @@ class _CardStackState extends State<CardStack>
               ? CardsAnimation.backCardAlignmentAnim(_swipeController).value
               : cardsAlign[0],
           child: SizedBox.fromSize(
-            size: cardSize,
+            size: widget.cardSize,
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
@@ -106,7 +96,7 @@ class _CardStackState extends State<CardStack>
               ? CardsAnimation.middleCardAlignmentAnim(_swipeController).value
               : cardsAlign[1],
           child: SizedBox.fromSize(
-            size: cardSize,
+            size: widget.cardSize,
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
@@ -128,7 +118,7 @@ class _CardStackState extends State<CardStack>
             child: Transform.rotate(
               angle: (pi / 180.0) * frontCardRot,
               child: SizedBox.fromSize(
-                size: cardSize,
+                size: widget.cardSize,
                 child: FlipCard(
                     key: UniqueKey(),
                     side: frontCardSide,
