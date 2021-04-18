@@ -6,7 +6,7 @@ List<Word> words = <Word>[
   Noun(1, "Fro", "Question", Gender.feminine, "Froen"),
   Noun(1, "Land", "Country", Gender.masculine, "Länner"),
   Verb(1, "heeschen", "to be called", "heeschen", "heeschs", "heescht", "heeschen", "heescht", "heeschen"),
-  Noun(1, "Faarf", "Faarwen", Gender.feminine, "Color"),
+  Noun(1, "Faarf", "Color", Gender.feminine, "Faarwen"),
   Noun(1, "Fändel", "Flag", Gender.masculine, "Fändelen"),
   Noun(1, "Nationalitéit", "Nationality", Gender.feminine, "Nationalitéiten"),
   Noun(1, "Sprooch", "Language", Gender.feminine, "Sproochen"),

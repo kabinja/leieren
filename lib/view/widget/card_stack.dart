@@ -44,7 +44,7 @@ class _CardStackState extends State<CardStack>
     _swipeController.addListener(() => setState(() {}));
     _swipeController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        onAnimationFinished();
+        onAnimationCompleted();
       }
     });
   }
@@ -78,8 +78,9 @@ class _CardStackState extends State<CardStack>
     );
   }
 
-  void onAnimationFinished(){
-    ValidateWordCommand().run().then((value) => _resetFrontCardPosition());
+  void onAnimationCompleted(){
+    _resetFrontCardPosition();
+    ValidateWordCommand().run();
   }
 
   Widget _backCard(WordQuestion? wordQuestion) {
