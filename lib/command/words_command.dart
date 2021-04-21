@@ -4,7 +4,10 @@ import 'package:leieren/model/word_model.dart';
 class LoadWordsCommand extends BaseCommand {
   Future<List<Word>> run(int limit) async {
      List<Word> words = await wordService.getWords(appModel.level, limit);
-     wordListModel.words = words;
+
+     await wordListModel.lock.protect(() async {
+       wordListModel.words = words;
+    });
 
      return words;
   }
@@ -12,28 +15,32 @@ class LoadWordsCommand extends BaseCommand {
 
 class FetchWordCommand extends BaseCommand {
   Future<List<Word?>> run(number) async {
-    List<Word> words = wordListModel.words;
+    return await wordListModel.lock.protect(() async {
+      List<Word> words = wordListModel.words;
 
-    if(words.length <= number){
-      words.fillRange(words.length, number, null);
-    }
+      if(words.length <= number){
+        words.fillRange(words.length, number, null);
+      }
 
-    return words.getRange(0, number).toList();
+      return words.getRange(0, number).toList();
+    });
   }
 }
 
 class ValidateWordCommand extends BaseCommand {
   Future<List<Word>> run() async {
-    List<Word> words = wordListModel.words;
-    words.removeAt(0);
+    return await wordListModel.lock.protect(() async {
+      List<Word> words = wordListModel.words;
+      words.removeAt(0);
 
-    if(words.length < 5) {
-      List<Word> newWords = await wordService.getWords(appModel.level, 5);
-      words.addAll(newWords);
-    }
+      if(words.length < 5) {
+        List<Word> newWords = await wordService.getWords(appModel.level, 5);
+        words.addAll(newWords);
+      }
 
-    wordListModel.words = words;
+      wordListModel.words = words;
 
-    return wordListModel.words;
+      return wordListModel.words;
+    });
   }
 }

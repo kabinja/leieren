@@ -14,7 +14,10 @@ class FetchWordQuestionCommand extends BaseCommand {
       return null;
     }
 
-    final Word word = wordListModel.words[position];
+    final Word word = await wordListModel.lock.protect(() async {
+      return wordListModel.words[position];
+    });
+
     final String? question = word.getFieldValue(questionField);
     final String? answer = word.getFieldValue(answerField);
 

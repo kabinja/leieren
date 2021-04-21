@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mutex/mutex.dart';
 
 enum Field { value, translation, plural, gender, grammar }
 
@@ -68,7 +69,9 @@ class Noun extends Word {
 
 class WordListModel extends ChangeNotifier {
   late List<Word> _words;
+  final Mutex _lock = Mutex();
 
+  Mutex get lock => _lock;
   List<Word> get words => _words;
 
   set words(List<Word> words) {

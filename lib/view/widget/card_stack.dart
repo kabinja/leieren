@@ -13,14 +13,17 @@ List<Alignment> cardsAlign = [
   Alignment(0.0, 0.0)
 ];
 
-
 class CardStack extends StatefulWidget {
   final WordListModel model;
   final Size cardSize;
   final Field front;
   final Field back;
 
-  CardStack({required this.cardSize, required this.model, required this.front, required this.back});
+  CardStack(
+      {required this.cardSize,
+      required this.model,
+      required this.front,
+      required this.back});
 
   @override
   _CardStackState createState() => _CardStackState();
@@ -28,25 +31,18 @@ class CardStack extends StatefulWidget {
 
 class _CardStackState extends State<CardStack>
     with SingleTickerProviderStateMixin {
-
   final Alignment defaultFrontCardAlign = Alignment(0.0, 0.0);
   late AnimationController _swipeController;
 
   Alignment frontCardAlign = cardsAlign[2];
   Side frontCardSide = Side.FRONT;
   double frontCardRot = 0.0;
+  bool dirty = false;
 
   @override
   void initState() {
     super.initState();
-
-    _swipeController = AnimationController(duration: Duration(milliseconds: 300), vsync: this);
-    _swipeController.addListener(() => setState(() {}));
-    _swipeController.addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.completed) {
-        onAnimationCompleted();
-      }
-    });
+    _swipeController = AnimationController(duration: Duration(milliseconds:500), vsync: this);
   }
 
   @override
@@ -57,41 +53,43 @@ class _CardStackState extends State<CardStack>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: FutureBuilder(
-          builder: (context, AsyncSnapshot<List<WordQuestion?>> snapshot) {
-            return Stack(
-              children: <Widget>[
-                _backCard(snapshot.data?[2]),
-                _middleCard(snapshot.data?[1]),
-                _frontCard(snapshot.data?[0]),
-                snapshot.data?[0] != null ? _controllerZone()  : Container(),
-              ],
-            );
-          },
-          future: Future.wait([
-            FetchWordQuestionCommand().run(0, widget.front, widget.back),
-            FetchWordQuestionCommand().run(1, widget.front, widget.back),
-            FetchWordQuestionCommand().run(2, widget.front, widget.back),
-          ]),
-        )
-    );
+    return AnimatedBuilder(
+        animation: _swipeController,
+        builder: (_, child) {
+          return Expanded(
+              child: FutureBuilder(
+            builder: (context, AsyncSnapshot<List<WordQuestion?>> snapshot) {
+              return Stack(
+                children: <Widget>[
+                  _backCard(snapshot.data?[2]),
+                  _middleCard(snapshot.data?[1]),
+                  _frontCard(snapshot.data?[0]),
+                  snapshot.data?[0] != null ? _controllerZone() : Container(),
+                ],
+              );
+            },
+            future: Future.wait([
+              FetchWordQuestionCommand().run(0, widget.front, widget.back),
+              FetchWordQuestionCommand().run(1, widget.front, widget.back),
+              FetchWordQuestionCommand().run(2, widget.front, widget.back),
+            ])),
+          );
+        });
   }
 
   void onAnimationCompleted(){
-    _resetFrontCardPosition();
-    ValidateWordCommand().run();
+    ValidateWordCommand().run().then((value) => _resetFrontCardPosition());
   }
 
   Widget _backCard(WordQuestion? wordQuestion) {
-    if(wordQuestion == null){
+    if (wordQuestion == null) {
       return Container();
     }
 
     return IgnorePointer(
         ignoring: true,
         child: Align(
-          alignment: _swipeController.status == AnimationStatus.forward
+          alignment: dirty
               ? CardsAnimation.backCardAlignmentAnim(_swipeController).value
               : cardsAlign[0],
           child: SizedBox.fromSize(
@@ -100,21 +98,22 @@ class _CardStackState extends State<CardStack>
                 key: UniqueKey(),
                 side: Side.FRONT,
                 front: wordQuestion.question,
-                back: wordQuestion.answer
-            ),
+                back: wordQuestion.answer),
           ),
         ));
   }
 
   Widget _middleCard(WordQuestion? wordQuestion) {
-    if(wordQuestion == null){
+    if (wordQuestion == null) {
       return Container();
     }
+
+    print(wordQuestion.question);
 
     return IgnorePointer(
         ignoring: true,
         child: Align(
-          alignment: _swipeController.status == AnimationStatus.forward
+          alignment: dirty
               ? CardsAnimation.middleCardAlignmentAnim(_swipeController).value
               : cardsAlign[1],
           child: SizedBox.fromSize(
@@ -123,21 +122,20 @@ class _CardStackState extends State<CardStack>
                 key: UniqueKey(),
                 side: Side.FRONT,
                 front: wordQuestion.question,
-                back: wordQuestion.answer
-            ),
+                back: wordQuestion.answer),
           ),
         ));
   }
 
   Widget _frontCard(WordQuestion? wordQuestion) {
-    if(wordQuestion == null){
+    if (wordQuestion == null) {
       return Container();
     }
 
     return IgnorePointer(
         ignoring: false,
         child: Align(
-            alignment: _swipeController.status == AnimationStatus.forward
+            alignment: dirty
                 ? CardsAnimation.frontCardDisappearAlignmentAnim(
                         _swipeController, frontCardAlign)
                     .value
@@ -159,7 +157,7 @@ class _CardStackState extends State<CardStack>
   }
 
   Widget _controllerZone() {
-    return _swipeController.status != AnimationStatus.forward
+    return !dirty
         ? SizedBox.expand(
             child: GestureDetector(
             onPanUpdate: (DragUpdateDetails details) {
@@ -181,9 +179,7 @@ class _CardStackState extends State<CardStack>
               if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
                 _animateCards();
               } else {
-                setState(() {
                   _resetFrontCardPosition();
-                });
               }
             },
           ))
@@ -191,15 +187,19 @@ class _CardStackState extends State<CardStack>
   }
 
   void _animateCards() {
+    dirty = true;
     _swipeController.stop();
     _swipeController.value = 0.0;
-    _swipeController.forward();
+    _swipeController.forward().whenComplete(() => onAnimationCompleted());
   }
 
   void _resetFrontCardPosition() {
-    frontCardAlign = defaultFrontCardAlign;
-    frontCardRot = 0.0;
-    frontCardSide = Side.FRONT;
+    setState(() {
+      frontCardAlign = defaultFrontCardAlign;
+      frontCardRot = 0.0;
+      frontCardSide = Side.FRONT;
+      dirty = false;
+    });
   }
 }
 
