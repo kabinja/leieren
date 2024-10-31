@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:leieren/view/page/translation_page.dart';
 import 'package:leieren/view/page/navigation.dart';
