@@ -34,4 +34,11 @@ class Configuration {
   final NounConfiguration nouns;
 
   Configuration(this.verbs, this.nouns);
+
+  factory Configuration.fromJson(Map<String, dynamic> data) {
+    final verbs = data["verbs"];
+    final nouns = data["nouns"];
+
+    return Configuration(verbs, nouns);
+  }
 }
