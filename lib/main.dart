@@ -36,7 +36,7 @@ class _RouteSplashState extends State<RouteSplash> {
   bool shouldProceed = false;
 
   _fetchConfiguration() async {
-    await AppCommand().setup()
+    AppCommand().setup();
     setState(() {
       shouldProceed = true; //got the prefs; set to some value if needed
     });
