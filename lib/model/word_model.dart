@@ -8,62 +8,53 @@ enum Gender { masculine, feminine, neutral }
 class Word {
   final String value;
   final String translation;
-  final int level;
 
-  Word(this.level, this.value, this.translation);
+  Word(this.value, this.translation);
 
-  String? getFieldValue(Field field) {
-    if (field == Field.value) {
-      return value;
-    }
+  List<String> question() {
+    return [this.translation];
+  }
 
-    if (field == Field.translation) {
-      return translation;
-    }
-
-    return null;
+  List<String> answer() {
+    return [this.value];
   }
 }
 
-class Verb extends Word {
-  final String firstSingular;
-  final String secondSingular;
-  final String thirdSingular;
-  final String firstPlural;
-  final String secondPlural;
-  final String thirdPlural;
+class Expression extends Word {
+  Expression(super.value, super.translation);
+}
 
-  Verb(
-      int level,
-      String value,
-      String translation,
-      this.firstSingular,
-      this.secondSingular,
-      this.thirdSingular,
-      this.firstPlural,
-      this.secondPlural,
-      this.thirdPlural)
-      : super(level, value, translation);
+class Verb extends Word {
+  final List<String> conjugaison;
+  final String tense;
+
+  Verb(String value, String translation, this.conjugaison, this.tense)
+      : super(value, translation);
+
+  @override
+  List<String> question() {
+    return [this.translation, this.tense];
+  }
+
+  @override
+  List<String> answer() {
+    return [this.value, ...this.conjugaison];
+  }
 }
 
 class Noun extends Word {
   final Gender gender;
-  final String plural;
+  final String? plural;
 
-  Noun(int level, String value, String translation, this.gender, this.plural)
-      : super(level, value, translation);
+  Noun(String value, String translation, this.gender, this.plural)
+      : super(value, translation);
 
   @override
-  String? getFieldValue(Field field) {
-    if (field == Field.gender) {
-      return gender.toString();
+  List<String> answer() {
+    if (plural == null) {
+      return [this.value];
     }
-
-    if (field == Field.plural) {
-      return plural;
-    }
-
-    return super.getFieldValue(field);
+    return [this.value, this.plural as String];
   }
 }
 

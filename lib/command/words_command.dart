@@ -3,13 +3,13 @@ import 'package:leieren/model/word_model.dart';
 
 class LoadWordsCommand extends BaseCommand {
   Future<List<Word>> run(int limit) async {
-     List<Word> words = await wordService.getWords(appModel.level, limit);
+    List<Word> words = await wordService.getWords(limit);
 
-     await wordListModel.lock.protect(() async {
-       wordListModel.words = words;
+    await wordListModel.lock.protect(() async {
+      wordListModel.words = words;
     });
 
-     return words;
+    return words;
   }
 }
 
@@ -18,7 +18,7 @@ class FetchWordCommand extends BaseCommand {
     return await wordListModel.lock.protect(() async {
       List<Word> words = wordListModel.words;
 
-      if(words.length <= number){
+      if (words.length <= number) {
         words.fillRange(words.length, number, null);
       }
 
@@ -33,8 +33,8 @@ class ValidateWordCommand extends BaseCommand {
       List<Word> words = wordListModel.words;
       words.removeAt(0);
 
-      if(words.length < 5) {
-        List<Word> newWords = await wordService.getWords(appModel.level, 5);
+      if (words.length < 5) {
+        List<Word> newWords = await wordService.getWords(5);
         words.addAll(newWords);
       }
 

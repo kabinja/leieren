@@ -1,12 +1,37 @@
 import 'package:flutter/cupertino.dart';
 
-class AppModel extends ChangeNotifier{
-  int _level = 1;
+class AppModel extends ChangeNotifier {
+  late String _title;
+  late Configuration _configuration;
 
-  int get level => _level;
+  String get title => _title;
+  Configuration get configuration => _configuration;
 
-  set level(int level){
-    _level = level;
-    notifyListeners();
+  void setTitle(String title) {
+    this._title = title;
   }
+
+  void setConfiguration(Configuration configuration) {
+    this._configuration = configuration;
+  }
+}
+
+class VerbConfiguration {
+  final List<String> pronouns;
+
+  VerbConfiguration(this.pronouns);
+}
+
+class NounConfiguration {
+  final List<String> genders;
+  final String plural;
+
+  NounConfiguration(this.genders, this.plural);
+}
+
+class Configuration {
+  final VerbConfiguration verbs;
+  final NounConfiguration nouns;
+
+  Configuration(this.verbs, this.nouns);
 }

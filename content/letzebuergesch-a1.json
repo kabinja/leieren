@@ -1,0 +1,49 @@
+{
+    "title": "Lëtzebuergesch A1",
+    "configuration": {
+        "verbs": {
+            "pronouns": [
+                "ech",
+                "du",
+                "hien/hatt/et/si",
+                "mir",
+                "dir/Dir"
+            ]
+        },
+        "nouns": {
+            "genders": [
+                "M",
+                "F",
+                "N"
+            ],
+            "plural": "PL"
+        }
+    },
+    "data": [
+        {
+            "section": "Kaptel 1",
+            "verbs": [
+                {
+                    "translation": "to come",
+                    "value": "kommen",
+                    "grammar": {
+                        "present": ["kommen", "kënns", "kënnt", "kommen", "kommt", "kommen"]
+                    }
+                }
+            ],
+            "nouns": [
+                {
+                    "translation": "question",
+                    "value": "Fro",
+                    "gender": "M",
+                    "plural": "Froen"
+                },
+                {
+                    "translation": "country",
+                    "value": "Land",
+                    "gender": "Länner"
+                }
+            ]
+        }
+    ]
+}

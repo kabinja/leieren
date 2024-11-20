@@ -42,7 +42,8 @@ class _CardStackState extends State<CardStack>
   @override
   void initState() {
     super.initState();
-    _swipeController = AnimationController(duration: Duration(milliseconds:500), vsync: this);
+    _swipeController =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
   }
 
   @override
@@ -57,32 +58,34 @@ class _CardStackState extends State<CardStack>
         animation: _swipeController,
         builder: (_, child) {
           return Expanded(
-              child: FutureBuilder(
-            builder: (context, AsyncSnapshot<List<WordQuestion?>> snapshot) {
-              return Stack(
-                children: <Widget>[
-                  _backCard(snapshot.data?[2]),
-                  _middleCard(snapshot.data?[1]),
-                  _frontCard(snapshot.data?[0]),
-                  snapshot.data?[0] != null ? _controllerZone() : Container(),
-                ],
-              );
-            },
-            future: Future.wait([
-              FetchWordQuestionCommand().run(0, widget.front, widget.back),
-              FetchWordQuestionCommand().run(1, widget.front, widget.back),
-              FetchWordQuestionCommand().run(2, widget.front, widget.back),
-            ])),
+            child: FutureBuilder(
+                builder: (context, AsyncSnapshot<List<Question?>> snapshot) {
+                  return Stack(
+                    children: <Widget>[
+                      _backCard(snapshot.data?[2]),
+                      _middleCard(snapshot.data?[1]),
+                      _frontCard(snapshot.data?[0]),
+                      snapshot.data?[0] != null
+                          ? _controllerZone()
+                          : Container(),
+                    ],
+                  );
+                },
+                future: Future.wait([
+                  FetchWordQuestionCommand().run(0),
+                  FetchWordQuestionCommand().run(1),
+                  FetchWordQuestionCommand().run(2),
+                ])),
           );
         });
   }
 
-  void onAnimationCompleted(){
+  void onAnimationCompleted() {
     ValidateWordCommand().run().then((value) => _resetFrontCardPosition());
   }
 
-  Widget _backCard(WordQuestion? wordQuestion) {
-    if (wordQuestion == null) {
+  Widget _backCard(Question? question) {
+    if (question == null) {
       return Container();
     }
 
@@ -97,13 +100,13 @@ class _CardStackState extends State<CardStack>
             child: FlipCard(
                 key: UniqueKey(),
                 side: Side.FRONT,
-                front: wordQuestion.question,
-                back: wordQuestion.answer),
+                front: question.question,
+                back: question.answer),
           ),
         ));
   }
 
-  Widget _middleCard(WordQuestion? wordQuestion) {
+  Widget _middleCard(Question? wordQuestion) {
     if (wordQuestion == null) {
       return Container();
     }
@@ -127,7 +130,7 @@ class _CardStackState extends State<CardStack>
         ));
   }
 
-  Widget _frontCard(WordQuestion? wordQuestion) {
+  Widget _frontCard(Question? wordQuestion) {
     if (wordQuestion == null) {
       return Container();
     }
@@ -179,7 +182,7 @@ class _CardStackState extends State<CardStack>
               if (frontCardAlign.x > 3.0 || frontCardAlign.x < -3.0) {
                 _animateCards();
               } else {
-                  _resetFrontCardPosition();
+                _resetFrontCardPosition();
               }
             },
           ))
