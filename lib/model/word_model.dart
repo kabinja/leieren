@@ -1,29 +1,32 @@
 import 'package:flutter/cupertino.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mutex/mutex.dart';
 
-enum Field { value, translation, plural, gender, grammar }
+part 'word_model.g.dart';
 
-enum Gender { masculine, feminine, neutral }
-
+@JsonSerializable()
 class Word {
   final String value;
   final String translation;
 
   Word(this.value, this.translation);
 
-  List<String> question() {
-    return [this.translation];
-  }
+  factory Word.fromJson(Map<String, dynamic> json) => _$WordFromJson(json);
 
-  List<String> answer() {
-    return [this.value];
-  }
+  Map<String, dynamic> toJson() => _$WordToJson(this);
 }
 
+@JsonSerializable()
 class Expression extends Word {
   Expression(super.value, super.translation);
+
+  factory Expression.fromJson(Map<String, dynamic> json) =>
+      _$ExpressionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpressionToJson(this);
 }
 
+@JsonSerializable()
 class Verb extends Word {
   final List<String> conjugaison;
   final String tense;
@@ -31,31 +34,42 @@ class Verb extends Word {
   Verb(String value, String translation, this.conjugaison, this.tense)
       : super(value, translation);
 
-  @override
-  List<String> question() {
-    return [this.translation, this.tense];
-  }
+  factory Verb.fromJson(Map<String, dynamic> json) => _$VerbFromJson(json);
 
-  @override
-  List<String> answer() {
-    return [this.value, ...this.conjugaison];
-  }
+  Map<String, dynamic> toJson() => _$VerbToJson(this);
 }
 
+@JsonSerializable()
 class Noun extends Word {
-  final Gender gender;
+  final String gender;
   final String? plural;
 
   Noun(String value, String translation, this.gender, this.plural)
       : super(value, translation);
 
-  @override
-  List<String> answer() {
-    if (plural == null) {
-      return [this.value];
-    }
-    return [this.value, this.plural as String];
-  }
+  factory Noun.fromJson(Map<String, dynamic> json) => _$NounFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NounToJson(this);
+}
+
+@JsonSerializable()
+class Section {
+  final String section;
+  @JsonKey(defaultValue: [])
+  final List<Expression> expressions;
+  @JsonKey(defaultValue: [])
+  final List<Noun> nouns;
+  @JsonKey(defaultValue: [])
+  final List<Verb> verbs;
+  @JsonKey(defaultValue: [])
+  final List<Word> words;
+
+  Section(this.section, this.expressions, this.nouns, this.verbs, this.words);
+
+  factory Section.fromJson(Map<String, dynamic> json) =>
+      _$SectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SectionToJson(this);
 }
 
 class WordListModel extends ChangeNotifier {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:leieren/command/app_command.dart';
+import 'package:leieren/command/setup_command.dart';
 import 'package:leieren/model/app_model.dart';
 import 'package:leieren/model/word_model.dart';
 import 'package:leieren/service/json_service.dart';
+import 'package:leieren/service/word_service.dart';
 import 'package:leieren/view/page/home_page.dart';
 import 'package:provider/provider.dart';
 
@@ -18,10 +19,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (c) => WordListModel()),
         ChangeNotifierProvider(create: (c) => AppModel()),
         Provider(create: (c) => JsonService()),
+        Provider(create: (c) => WordService()),
       ],
       child: Builder(builder: (context) {
         Commands.init(context);
-        return MaterialApp(home: AppScaffold());
+        return MaterialApp(home: RouteSplash());
       }),
     );
   }
@@ -38,7 +40,7 @@ class _RouteSplashState extends State<RouteSplash> {
   _fetchConfiguration() async {
     AppCommand().setup();
     setState(() {
-      shouldProceed = true; //got the prefs; set to some value if needed
+      shouldProceed = true;
     });
   }
 
