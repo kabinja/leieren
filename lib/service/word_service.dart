@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:leieren/model/app_model.dart';
 import 'package:leieren/model/word_model.dart';
 
 // List<Word> words = <Word>[
@@ -50,10 +50,40 @@ import 'package:leieren/model/word_model.dart';
 // ];
 
 class WordService {
-  final random = new Random();
+  List<String> answer(Word word, Configuration configuration) {
+    if (word is Verb) {
+      return _verbAnswer(word, configuration);
+    } else if (word is Noun) {
+      return _nounAnswer(word, configuration);
+    }
+    return [word.translation];
+  }
 
-  Future<List<Word>> getWords(int limit) async {
-    return List.generate(limit, (_) => words)
-        .toList()[random.nextInt(words.length)];
+  String question(Word word) {
+    return word.translation;
+  }
+
+  List<String> _verbAnswer(Verb verb, Configuration configuration) {
+    final List<String> pronouns = configuration.verbs.pronouns;
+    final List<String> answer = [];
+
+    for (int position = 0; position < pronouns.length; position++) {
+      final String pronoun = pronouns[position];
+      final String form = verb.conjugaison[position];
+      answer.add("$pronoun $form");
+    }
+
+    return answer;
+  }
+
+  List<String> _nounAnswer(Noun noun, Configuration configuration) {
+    final List<String> answer = [];
+    answer.add("${noun.value} (${noun.gender})");
+
+    if (noun.plural != Null) {
+      answer.add("${noun.plural} (${configuration.nouns.plural})");
+    }
+
+    return answer;
   }
 }

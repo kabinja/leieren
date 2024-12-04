@@ -1,10 +1,58 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'word_model.dart';
+part of 'content_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
+
+Content _$ContentFromJson(Map<String, dynamic> json) => Content(
+      json['title'] as String,
+      Configuration.fromJson(json['configuration'] as Map<String, dynamic>),
+      (json['sections'] as List<dynamic>)
+          .map((e) => Section.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$ContentToJson(Content instance) => <String, dynamic>{
+      'title': instance.title,
+      'configuration': instance.configuration,
+      'sections': instance.sections,
+    };
+
+VerbConfiguration _$VerbConfigurationFromJson(Map<String, dynamic> json) =>
+    VerbConfiguration(
+      (json['pronouns'] as List<dynamic>).map((e) => e as String).toList(),
+    );
+
+Map<String, dynamic> _$VerbConfigurationToJson(VerbConfiguration instance) =>
+    <String, dynamic>{
+      'pronouns': instance.pronouns,
+    };
+
+NounConfiguration _$NounConfigurationFromJson(Map<String, dynamic> json) =>
+    NounConfiguration(
+      (json['genders'] as List<dynamic>).map((e) => e as String).toList(),
+      json['plural'] as String,
+    );
+
+Map<String, dynamic> _$NounConfigurationToJson(NounConfiguration instance) =>
+    <String, dynamic>{
+      'genders': instance.genders,
+      'plural': instance.plural,
+    };
+
+Configuration _$ConfigurationFromJson(Map<String, dynamic> json) =>
+    Configuration(
+      VerbConfiguration.fromJson(json['verbs'] as Map<String, dynamic>),
+      NounConfiguration.fromJson(json['nouns'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$ConfigurationToJson(Configuration instance) =>
+    <String, dynamic>{
+      'verbs': instance.verbs,
+      'nouns': instance.nouns,
+    };
 
 Word _$WordFromJson(Map<String, dynamic> json) => Word(
       json['value'] as String,

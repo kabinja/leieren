@@ -1,8 +1,8 @@
 import 'package:leieren/command/base_command.dart';
-import 'package:leieren/model/word_model.dart';
+import 'package:leieren/model/content_model.dart';
 
 class Question {
-  final List<String> question;
+  final String question;
   final List<String> answer;
 
   Question(this.question, this.answer);
@@ -18,8 +18,9 @@ class FetchWordQuestionCommand extends BaseCommand {
       return wordListModel.words[position];
     });
 
-    final List<String> question = word.question();
-    final List<String> answer = word.answer();
+    final Configuration configuration = appModel.configuration;
+    final String question = wordService.question(word);
+    final List<String> answer = wordService.answer(word, configuration);
 
     return Question(question, answer);
   }

@@ -1,8 +1,58 @@
-import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mutex/mutex.dart';
 
-part 'word_model.g.dart';
+part 'content_model.g.dart';
+
+@JsonSerializable()
+class Content {
+  final String title;
+  final Configuration configuration;
+  final List<Section> sections;
+
+  Content(this.title, this.configuration, this.sections);
+
+  factory Content.fromJson(Map<String, dynamic> json) =>
+      _$ContentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ContentToJson(this);
+}
+
+@JsonSerializable()
+class VerbConfiguration {
+  final List<String> pronouns;
+
+  VerbConfiguration(this.pronouns);
+
+  factory VerbConfiguration.fromJson(Map<String, dynamic> json) =>
+      _$VerbConfigurationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VerbConfigurationToJson(this);
+}
+
+@JsonSerializable()
+class NounConfiguration {
+  final List<String> genders;
+  final String plural;
+
+  NounConfiguration(this.genders, this.plural);
+
+  factory NounConfiguration.fromJson(Map<String, dynamic> json) =>
+      _$NounConfigurationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NounConfigurationToJson(this);
+}
+
+@JsonSerializable()
+class Configuration {
+  final VerbConfiguration verbs;
+  final NounConfiguration nouns;
+
+  Configuration(this.verbs, this.nouns);
+
+  factory Configuration.fromJson(Map<String, dynamic> json) =>
+      _$ConfigurationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ConfigurationToJson(this);
+}
 
 @JsonSerializable()
 class Word {
@@ -70,17 +120,4 @@ class Section {
       _$SectionFromJson(json);
 
   Map<String, dynamic> toJson() => _$SectionToJson(this);
-}
-
-class WordListModel extends ChangeNotifier {
-  late List<Word> _words;
-  final Mutex _lock = Mutex();
-
-  Mutex get lock => _lock;
-  List<Word> get words => _words;
-
-  set words(List<Word> words) {
-    _words = words;
-    notifyListeners();
-  }
 }

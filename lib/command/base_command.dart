@@ -1,5 +1,4 @@
-import 'package:leieren/model/app_model.dart';
-import 'package:leieren/model/word_model.dart';
+import 'package:leieren/model/content_model.dart';
 import 'package:leieren/service/json_service.dart';
 import 'package:leieren/service/word_service.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +10,7 @@ void init(BuildContext c) {
 }
 
 class BaseCommand {
-  AppModel appModel = _mainContext.read();
-  WordListModel wordListModel = _mainContext.read();
+  Content contentModel = _mainContext.read();
 
   JsonService jsonService = _mainContext.read();
   WordService wordService = _mainContext.read();
