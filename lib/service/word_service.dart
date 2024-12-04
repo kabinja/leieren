@@ -1,4 +1,4 @@
-import 'package:leieren/model/app_model.dart';
+import 'package:leieren/model/content_model.dart';
 import 'package:leieren/model/word_model.dart';
 
 // List<Word> words = <Word>[
