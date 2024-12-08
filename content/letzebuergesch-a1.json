@@ -1,5 +1,7 @@
 {
-    "title": "Lëtzebuergesch A1",
+    "title": "INL",
+    "language": "Lëtzebuergesch",
+    "level": "A1",
     "configuration": {
         "verbs": {
             "pronouns": [

@@ -8,6 +8,8 @@ part of 'content_model.dart';
 
 Content _$ContentFromJson(Map<String, dynamic> json) => Content(
       json['title'] as String,
+      json['language'] as String,
+      json['level'] as String,
       Configuration.fromJson(json['configuration'] as Map<String, dynamic>),
       (json['sections'] as List<dynamic>)
           .map((e) => Section.fromJson(e as Map<String, dynamic>))
@@ -16,6 +18,8 @@ Content _$ContentFromJson(Map<String, dynamic> json) => Content(
 
 Map<String, dynamic> _$ContentToJson(Content instance) => <String, dynamic>{
       'title': instance.title,
+      'language': instance.language,
+      'level': instance.level,
       'configuration': instance.configuration,
       'sections': instance.sections,
     };

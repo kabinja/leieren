@@ -5,10 +5,13 @@ part 'content_model.g.dart';
 @JsonSerializable()
 class Content {
   final String title;
+  final String language;
+  final String level;
   final Configuration configuration;
   final List<Section> sections;
 
-  Content(this.title, this.configuration, this.sections);
+  Content(
+      this.title, this.language, this.level, this.configuration, this.sections);
 
   factory Content.fromJson(Map<String, dynamic> json) =>
       _$ContentFromJson(json);
