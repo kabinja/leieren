@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:leieren/command/base_command.dart';
-import 'package:leieren/model/content_model.dart';
+import 'package:leieren/model/json/content_model.dart';
+import 'package:leieren/service/json_service.dart';
 
-class SetupCommand extends BaseCommand {
-  void setup() async {
+class SetupCommand {
+  void loadData(JsonService jsonService) async {
     var authority = "raw.githubusercontent.com";
     var path =
         "/kabinja/leieren/refs/heads/master/content/letzebuergesch-a1.json";

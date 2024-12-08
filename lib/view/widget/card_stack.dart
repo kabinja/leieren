@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:leieren/command/question_command.dart';
-import 'package:leieren/command/words_command.dart';
-import 'package:leieren/model/word_model.dart';
 
 import 'flip_card.dart';
 
@@ -14,16 +12,9 @@ List<Alignment> cardsAlign = [
 ];
 
 class CardStack extends StatefulWidget {
-  final WordListModel model;
   final Size cardSize;
-  final Field front;
-  final Field back;
 
-  CardStack(
-      {required this.cardSize,
-      required this.model,
-      required this.front,
-      required this.back});
+  CardStack({required this.cardSize});
 
   @override
   _CardStackState createState() => _CardStackState();
@@ -32,6 +23,7 @@ class CardStack extends StatefulWidget {
 class _CardStackState extends State<CardStack>
     with SingleTickerProviderStateMixin {
   final Alignment defaultFrontCardAlign = Alignment(0.0, 0.0);
+  final QuestionCommand questionCommand = QuestionCommand();
   late AnimationController _swipeController;
 
   Alignment frontCardAlign = cardsAlign[2];
@@ -71,17 +63,15 @@ class _CardStackState extends State<CardStack>
                     ],
                   );
                 },
-                future: Future.wait([
-                  FetchWordQuestionCommand().run(0),
-                  FetchWordQuestionCommand().run(1),
-                  FetchWordQuestionCommand().run(2),
-                ])),
+                future: Future.value(
+                  questionCommand.fetch(3),
+                )),
           );
         });
   }
 
   void onAnimationCompleted() {
-    ValidateWordCommand().run().then((value) => _resetFrontCardPosition());
+    _resetFrontCardPosition();
   }
 
   Widget _backCard(Question? question) {

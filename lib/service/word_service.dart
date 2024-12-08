@@ -1,5 +1,4 @@
-import 'package:leieren/model/content_model.dart';
-import 'package:leieren/model/word_model.dart';
+import 'package:leieren/model/json/content_model.dart';
 
 // List<Word> words = <Word>[
 //   Noun("Faarf", "Color", Gender.feminine, "Faarwen"),
