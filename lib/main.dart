@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:leieren/command/setup_command.dart';
-import 'package:leieren/service/json_service.dart';
+import 'package:leieren/model/drift/database.dart';
 import 'package:leieren/view/page/home_page.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -21,8 +22,7 @@ class _RouteSplashState extends State<RouteSplash> {
   bool shouldProceed = false;
 
   _fetchConfiguration() async {
-    final JsonService jsonService = JsonService();
-    SetupCommand().loadData(jsonService);
+    SetupCommand(AppDatabase.drift(), http.Client()).loadData();
     setState(() {
       shouldProceed = true;
     });

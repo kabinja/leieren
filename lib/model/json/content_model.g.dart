@@ -82,15 +82,16 @@ Map<String, dynamic> _$ExpressionToJson(Expression instance) =>
 Verb _$VerbFromJson(Map<String, dynamic> json) => Verb(
       json['value'] as String,
       json['translation'] as String,
-      (json['conjugaison'] as List<dynamic>).map((e) => e as String).toList(),
-      json['tense'] as String,
+      (json['conjugaison'] as Map<String, dynamic>).map(
+        (k, e) =>
+            MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
+      ),
     );
 
 Map<String, dynamic> _$VerbToJson(Verb instance) => <String, dynamic>{
       'value': instance.value,
       'translation': instance.translation,
       'conjugaison': instance.conjugaison,
-      'tense': instance.tense,
     };
 
 Noun _$NounFromJson(Map<String, dynamic> json) => Noun(

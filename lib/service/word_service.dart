@@ -50,9 +50,7 @@ import 'package:leieren/model/json/content_model.dart';
 
 class WordService {
   List<String> answer(Word word, Configuration configuration) {
-    if (word is Verb) {
-      return _verbAnswer(word, configuration);
-    } else if (word is Noun) {
+    if (word is Noun) {
       return _nounAnswer(word, configuration);
     }
     return [word.translation];
@@ -60,19 +58,6 @@ class WordService {
 
   String question(Word word) {
     return word.translation;
-  }
-
-  List<String> _verbAnswer(Verb verb, Configuration configuration) {
-    final List<String> pronouns = configuration.verbs.pronouns;
-    final List<String> answer = [];
-
-    for (int position = 0; position < pronouns.length; position++) {
-      final String pronoun = pronouns[position];
-      final String form = verb.conjugaison[position];
-      answer.add("$pronoun $form");
-    }
-
-    return answer;
   }
 
   List<String> _nounAnswer(Noun noun, Configuration configuration) {

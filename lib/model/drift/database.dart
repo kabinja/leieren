@@ -21,10 +21,11 @@ class WordTypes extends Table {
   TextColumn get name => text()();
 }
 
-class Translations extends Table {
+class Words extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get section => integer().references(Sections, #id)();
   IntColumn get type => integer().references(WordTypes, #id)();
+  TextColumn get translation => text()();
   TextColumn get value => text()();
   TextColumn get specifier => text()();
   DateTimeColumn get createdAt => dateTime()();
@@ -34,12 +35,6 @@ class Translations extends Table {
   IntColumn get wrongCount => integer().withDefault(const Constant(0))();
 }
 
-class Words extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get translation => integer().references(Translations, #id)();
-  TextColumn get value => text()();
-}
-
 class Pronouns extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get value => text()();
@@ -47,7 +42,7 @@ class Pronouns extends Table {
 
 class Verbs extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get translation => integer().references(Translations, #id)();
+  IntColumn get word => integer().references(Words, #id)();
   TextColumn get value => text()();
   IntColumn get position => integer()();
   IntColumn get pronoun => integer().references(Pronouns, #id)();
@@ -60,9 +55,9 @@ class Gender extends Table {
 
 class Nouns extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get translation => integer().references(Translations, #id)();
+  IntColumn get word => integer().references(Words, #id)();
   TextColumn get value => text()();
-  IntColumn get gender => integer().references(Translations, #id)();
+  IntColumn get gender => integer().references(Gender, #id)();
   TextColumn get plural => text().nullable()();
 }
 
@@ -70,7 +65,6 @@ class Nouns extends Table {
   Courses,
   Sections,
   WordTypes,
-  Translations,
   Words,
   Pronouns,
   Verbs,
@@ -78,17 +72,44 @@ class Nouns extends Table {
   Nouns
 ])
 class AppDatabase extends _$AppDatabase {
-  // After generating code, this class needs to define a `schemaVersion` getter
-  // and a constructor telling drift where the database should be stored.
-  // These are described in the getting started guide: https://drift.simonbinder.eu/setup/
-  AppDatabase() : super(_openConnection());
+  AppDatabase(QueryExecutor e) : super(e);
+
+  factory AppDatabase.drift() {
+    return AppDatabase(driftDatabase(name: 'transaltions'));
+  }
 
   @override
   int get schemaVersion => 1;
 
-  static QueryExecutor _openConnection() {
-    // `driftDatabase` from `package:drift_flutter` stores the database in
-    // `getApplicationDocumentsDirectory()`.
-    return driftDatabase(name: 'transaltions');
+  Future<Course?> getCourseByName(String name) async {
+    return (select(courses)..where((t) => t.name.equals(name)))
+        .getSingleOrNull();
+  }
+
+  Future<Course> createOrUpdateCourse({
+    required String name,
+    required String level,
+    required String language,
+  }) async {
+    var course = await this.getCourseByName(name);
+    if (course == null) {
+      final id = await into(courses).insert(CoursesCompanion(
+        name: Value(name),
+        level: Value(level),
+        language: Value(language),
+      ));
+      return await (select(courses)
+            ..where(
+              (tbl) => tbl.id.equals(id),
+            ))
+          .getSingle();
+    }
+    await update(courses)
+      ..where((t) => t.id.equals(course.id));
+    return await (select(courses)
+          ..where(
+            (tbl) => tbl.id.equals(course.id),
+          ))
+        .getSingle();
   }
 }

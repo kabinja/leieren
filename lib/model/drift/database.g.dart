@@ -646,12 +646,11 @@ class WordTypesCompanion extends UpdateCompanion<WordType> {
   }
 }
 
-class $TranslationsTable extends Translations
-    with TableInfo<$TranslationsTable, Translation> {
+class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TranslationsTable(this.attachedDatabase, [this._alias]);
+  $WordsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -678,6 +677,12 @@ class $TranslationsTable extends Translations
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES word_types (id)'));
+  static const VerificationMeta _translationMeta =
+      const VerificationMeta('translation');
+  @override
+  late final GeneratedColumn<String> translation = GeneratedColumn<String>(
+      'translation', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<String> value = GeneratedColumn<String>(
@@ -728,6 +733,7 @@ class $TranslationsTable extends Translations
         id,
         section,
         type,
+        translation,
         value,
         specifier,
         createdAt,
@@ -740,9 +746,9 @@ class $TranslationsTable extends Translations
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'translations';
+  static const String $name = 'words';
   @override
-  VerificationContext validateIntegrity(Insertable<Translation> instance,
+  VerificationContext validateIntegrity(Insertable<Word> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -760,6 +766,14 @@ class $TranslationsTable extends Translations
           _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
     } else if (isInserting) {
       context.missing(_typeMeta);
+    }
+    if (data.containsKey('translation')) {
+      context.handle(
+          _translationMeta,
+          translation.isAcceptableOrUnknown(
+              data['translation']!, _translationMeta));
+    } else if (isInserting) {
+      context.missing(_translationMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
@@ -807,15 +821,17 @@ class $TranslationsTable extends Translations
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Translation map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Word map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Translation(
+    return Word(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       section: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}section'])!,
       type: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}type'])!,
+      translation: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}translation'])!,
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
       specifier: attachedDatabase.typeMapping
@@ -834,15 +850,16 @@ class $TranslationsTable extends Translations
   }
 
   @override
-  $TranslationsTable createAlias(String alias) {
-    return $TranslationsTable(attachedDatabase, alias);
+  $WordsTable createAlias(String alias) {
+    return $WordsTable(attachedDatabase, alias);
   }
 }
 
-class Translation extends DataClass implements Insertable<Translation> {
+class Word extends DataClass implements Insertable<Word> {
   final int id;
   final int section;
   final int type;
+  final String translation;
   final String value;
   final String specifier;
   final DateTime createdAt;
@@ -850,10 +867,11 @@ class Translation extends DataClass implements Insertable<Translation> {
   final DateTime? lastWrong;
   final int correctCount;
   final int wrongCount;
-  const Translation(
+  const Word(
       {required this.id,
       required this.section,
       required this.type,
+      required this.translation,
       required this.value,
       required this.specifier,
       required this.createdAt,
@@ -867,6 +885,7 @@ class Translation extends DataClass implements Insertable<Translation> {
     map['id'] = Variable<int>(id);
     map['section'] = Variable<int>(section);
     map['type'] = Variable<int>(type);
+    map['translation'] = Variable<String>(translation);
     map['value'] = Variable<String>(value);
     map['specifier'] = Variable<String>(specifier);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -881,11 +900,12 @@ class Translation extends DataClass implements Insertable<Translation> {
     return map;
   }
 
-  TranslationsCompanion toCompanion(bool nullToAbsent) {
-    return TranslationsCompanion(
+  WordsCompanion toCompanion(bool nullToAbsent) {
+    return WordsCompanion(
       id: Value(id),
       section: Value(section),
       type: Value(type),
+      translation: Value(translation),
       value: Value(value),
       specifier: Value(specifier),
       createdAt: Value(createdAt),
@@ -900,13 +920,14 @@ class Translation extends DataClass implements Insertable<Translation> {
     );
   }
 
-  factory Translation.fromJson(Map<String, dynamic> json,
+  factory Word.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Translation(
+    return Word(
       id: serializer.fromJson<int>(json['id']),
       section: serializer.fromJson<int>(json['section']),
       type: serializer.fromJson<int>(json['type']),
+      translation: serializer.fromJson<String>(json['translation']),
       value: serializer.fromJson<String>(json['value']),
       specifier: serializer.fromJson<String>(json['specifier']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -923,6 +944,7 @@ class Translation extends DataClass implements Insertable<Translation> {
       'id': serializer.toJson<int>(id),
       'section': serializer.toJson<int>(section),
       'type': serializer.toJson<int>(type),
+      'translation': serializer.toJson<String>(translation),
       'value': serializer.toJson<String>(value),
       'specifier': serializer.toJson<String>(specifier),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -933,10 +955,11 @@ class Translation extends DataClass implements Insertable<Translation> {
     };
   }
 
-  Translation copyWith(
+  Word copyWith(
           {int? id,
           int? section,
           int? type,
+          String? translation,
           String? value,
           String? specifier,
           DateTime? createdAt,
@@ -944,10 +967,11 @@ class Translation extends DataClass implements Insertable<Translation> {
           Value<DateTime?> lastWrong = const Value.absent(),
           int? correctCount,
           int? wrongCount}) =>
-      Translation(
+      Word(
         id: id ?? this.id,
         section: section ?? this.section,
         type: type ?? this.type,
+        translation: translation ?? this.translation,
         value: value ?? this.value,
         specifier: specifier ?? this.specifier,
         createdAt: createdAt ?? this.createdAt,
@@ -956,11 +980,13 @@ class Translation extends DataClass implements Insertable<Translation> {
         correctCount: correctCount ?? this.correctCount,
         wrongCount: wrongCount ?? this.wrongCount,
       );
-  Translation copyWithCompanion(TranslationsCompanion data) {
-    return Translation(
+  Word copyWithCompanion(WordsCompanion data) {
+    return Word(
       id: data.id.present ? data.id.value : this.id,
       section: data.section.present ? data.section.value : this.section,
       type: data.type.present ? data.type.value : this.type,
+      translation:
+          data.translation.present ? data.translation.value : this.translation,
       value: data.value.present ? data.value.value : this.value,
       specifier: data.specifier.present ? data.specifier.value : this.specifier,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -977,10 +1003,11 @@ class Translation extends DataClass implements Insertable<Translation> {
 
   @override
   String toString() {
-    return (StringBuffer('Translation(')
+    return (StringBuffer('Word(')
           ..write('id: $id, ')
           ..write('section: $section, ')
           ..write('type: $type, ')
+          ..write('translation: $translation, ')
           ..write('value: $value, ')
           ..write('specifier: $specifier, ')
           ..write('createdAt: $createdAt, ')
@@ -993,15 +1020,16 @@ class Translation extends DataClass implements Insertable<Translation> {
   }
 
   @override
-  int get hashCode => Object.hash(id, section, type, value, specifier,
-      createdAt, lastCorrect, lastWrong, correctCount, wrongCount);
+  int get hashCode => Object.hash(id, section, type, translation, value,
+      specifier, createdAt, lastCorrect, lastWrong, correctCount, wrongCount);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Translation &&
+      (other is Word &&
           other.id == this.id &&
           other.section == this.section &&
           other.type == this.type &&
+          other.translation == this.translation &&
           other.value == this.value &&
           other.specifier == this.specifier &&
           other.createdAt == this.createdAt &&
@@ -1011,10 +1039,11 @@ class Translation extends DataClass implements Insertable<Translation> {
           other.wrongCount == this.wrongCount);
 }
 
-class TranslationsCompanion extends UpdateCompanion<Translation> {
+class WordsCompanion extends UpdateCompanion<Word> {
   final Value<int> id;
   final Value<int> section;
   final Value<int> type;
+  final Value<String> translation;
   final Value<String> value;
   final Value<String> specifier;
   final Value<DateTime> createdAt;
@@ -1022,10 +1051,11 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
   final Value<DateTime?> lastWrong;
   final Value<int> correctCount;
   final Value<int> wrongCount;
-  const TranslationsCompanion({
+  const WordsCompanion({
     this.id = const Value.absent(),
     this.section = const Value.absent(),
     this.type = const Value.absent(),
+    this.translation = const Value.absent(),
     this.value = const Value.absent(),
     this.specifier = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -1034,10 +1064,11 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
     this.correctCount = const Value.absent(),
     this.wrongCount = const Value.absent(),
   });
-  TranslationsCompanion.insert({
+  WordsCompanion.insert({
     this.id = const Value.absent(),
     required int section,
     required int type,
+    required String translation,
     required String value,
     required String specifier,
     required DateTime createdAt,
@@ -1047,13 +1078,15 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
     this.wrongCount = const Value.absent(),
   })  : section = Value(section),
         type = Value(type),
+        translation = Value(translation),
         value = Value(value),
         specifier = Value(specifier),
         createdAt = Value(createdAt);
-  static Insertable<Translation> custom({
+  static Insertable<Word> custom({
     Expression<int>? id,
     Expression<int>? section,
     Expression<int>? type,
+    Expression<String>? translation,
     Expression<String>? value,
     Expression<String>? specifier,
     Expression<DateTime>? createdAt,
@@ -1066,6 +1099,7 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
       if (id != null) 'id': id,
       if (section != null) 'section': section,
       if (type != null) 'type': type,
+      if (translation != null) 'translation': translation,
       if (value != null) 'value': value,
       if (specifier != null) 'specifier': specifier,
       if (createdAt != null) 'created_at': createdAt,
@@ -1076,10 +1110,11 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
     });
   }
 
-  TranslationsCompanion copyWith(
+  WordsCompanion copyWith(
       {Value<int>? id,
       Value<int>? section,
       Value<int>? type,
+      Value<String>? translation,
       Value<String>? value,
       Value<String>? specifier,
       Value<DateTime>? createdAt,
@@ -1087,10 +1122,11 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
       Value<DateTime?>? lastWrong,
       Value<int>? correctCount,
       Value<int>? wrongCount}) {
-    return TranslationsCompanion(
+    return WordsCompanion(
       id: id ?? this.id,
       section: section ?? this.section,
       type: type ?? this.type,
+      translation: translation ?? this.translation,
       value: value ?? this.value,
       specifier: specifier ?? this.specifier,
       createdAt: createdAt ?? this.createdAt,
@@ -1112,6 +1148,9 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
     }
     if (type.present) {
       map['type'] = Variable<int>(type.value);
+    }
+    if (translation.present) {
+      map['translation'] = Variable<String>(translation.value);
     }
     if (value.present) {
       map['value'] = Variable<String>(value.value);
@@ -1139,10 +1178,11 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
 
   @override
   String toString() {
-    return (StringBuffer('TranslationsCompanion(')
+    return (StringBuffer('WordsCompanion(')
           ..write('id: $id, ')
           ..write('section: $section, ')
           ..write('type: $type, ')
+          ..write('translation: $translation, ')
           ..write('value: $value, ')
           ..write('specifier: $specifier, ')
           ..write('createdAt: $createdAt, ')
@@ -1150,226 +1190,6 @@ class TranslationsCompanion extends UpdateCompanion<Translation> {
           ..write('lastWrong: $lastWrong, ')
           ..write('correctCount: $correctCount, ')
           ..write('wrongCount: $wrongCount')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $WordsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _translationMeta =
-      const VerificationMeta('translation');
-  @override
-  late final GeneratedColumn<int> translation = GeneratedColumn<int>(
-      'translation', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES translations (id)'));
-  static const VerificationMeta _valueMeta = const VerificationMeta('value');
-  @override
-  late final GeneratedColumn<String> value = GeneratedColumn<String>(
-      'value', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, translation, value];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'words';
-  @override
-  VerificationContext validateIntegrity(Insertable<Word> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('translation')) {
-      context.handle(
-          _translationMeta,
-          translation.isAcceptableOrUnknown(
-              data['translation']!, _translationMeta));
-    } else if (isInserting) {
-      context.missing(_translationMeta);
-    }
-    if (data.containsKey('value')) {
-      context.handle(
-          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
-    } else if (isInserting) {
-      context.missing(_valueMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Word map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Word(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      translation: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}translation'])!,
-      value: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
-    );
-  }
-
-  @override
-  $WordsTable createAlias(String alias) {
-    return $WordsTable(attachedDatabase, alias);
-  }
-}
-
-class Word extends DataClass implements Insertable<Word> {
-  final int id;
-  final int translation;
-  final String value;
-  const Word(
-      {required this.id, required this.translation, required this.value});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['translation'] = Variable<int>(translation);
-    map['value'] = Variable<String>(value);
-    return map;
-  }
-
-  WordsCompanion toCompanion(bool nullToAbsent) {
-    return WordsCompanion(
-      id: Value(id),
-      translation: Value(translation),
-      value: Value(value),
-    );
-  }
-
-  factory Word.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Word(
-      id: serializer.fromJson<int>(json['id']),
-      translation: serializer.fromJson<int>(json['translation']),
-      value: serializer.fromJson<String>(json['value']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'translation': serializer.toJson<int>(translation),
-      'value': serializer.toJson<String>(value),
-    };
-  }
-
-  Word copyWith({int? id, int? translation, String? value}) => Word(
-        id: id ?? this.id,
-        translation: translation ?? this.translation,
-        value: value ?? this.value,
-      );
-  Word copyWithCompanion(WordsCompanion data) {
-    return Word(
-      id: data.id.present ? data.id.value : this.id,
-      translation:
-          data.translation.present ? data.translation.value : this.translation,
-      value: data.value.present ? data.value.value : this.value,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Word(')
-          ..write('id: $id, ')
-          ..write('translation: $translation, ')
-          ..write('value: $value')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, translation, value);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Word &&
-          other.id == this.id &&
-          other.translation == this.translation &&
-          other.value == this.value);
-}
-
-class WordsCompanion extends UpdateCompanion<Word> {
-  final Value<int> id;
-  final Value<int> translation;
-  final Value<String> value;
-  const WordsCompanion({
-    this.id = const Value.absent(),
-    this.translation = const Value.absent(),
-    this.value = const Value.absent(),
-  });
-  WordsCompanion.insert({
-    this.id = const Value.absent(),
-    required int translation,
-    required String value,
-  })  : translation = Value(translation),
-        value = Value(value);
-  static Insertable<Word> custom({
-    Expression<int>? id,
-    Expression<int>? translation,
-    Expression<String>? value,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (translation != null) 'translation': translation,
-      if (value != null) 'value': value,
-    });
-  }
-
-  WordsCompanion copyWith(
-      {Value<int>? id, Value<int>? translation, Value<String>? value}) {
-    return WordsCompanion(
-      id: id ?? this.id,
-      translation: translation ?? this.translation,
-      value: value ?? this.value,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (translation.present) {
-      map['translation'] = Variable<int>(translation.value);
-    }
-    if (value.present) {
-      map['value'] = Variable<String>(value.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('WordsCompanion(')
-          ..write('id: $id, ')
-          ..write('translation: $translation, ')
-          ..write('value: $value')
           ..write(')'))
         .toString();
   }
@@ -1565,15 +1385,14 @@ class $VerbsTable extends Verbs with TableInfo<$VerbsTable, Verb> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _translationMeta =
-      const VerificationMeta('translation');
+  static const VerificationMeta _wordMeta = const VerificationMeta('word');
   @override
-  late final GeneratedColumn<int> translation = GeneratedColumn<int>(
-      'translation', aliasedName, false,
+  late final GeneratedColumn<int> word = GeneratedColumn<int>(
+      'word', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES translations (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES words (id)'));
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<String> value = GeneratedColumn<String>(
@@ -1595,8 +1414,7 @@ class $VerbsTable extends Verbs with TableInfo<$VerbsTable, Verb> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES pronouns (id)'));
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, translation, value, position, pronoun];
+  List<GeneratedColumn> get $columns => [id, word, value, position, pronoun];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1610,13 +1428,11 @@ class $VerbsTable extends Verbs with TableInfo<$VerbsTable, Verb> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('translation')) {
+    if (data.containsKey('word')) {
       context.handle(
-          _translationMeta,
-          translation.isAcceptableOrUnknown(
-              data['translation']!, _translationMeta));
+          _wordMeta, word.isAcceptableOrUnknown(data['word']!, _wordMeta));
     } else if (isInserting) {
-      context.missing(_translationMeta);
+      context.missing(_wordMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
@@ -1647,8 +1463,8 @@ class $VerbsTable extends Verbs with TableInfo<$VerbsTable, Verb> {
     return Verb(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      translation: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}translation'])!,
+      word: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}word'])!,
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
       position: attachedDatabase.typeMapping
@@ -1666,13 +1482,13 @@ class $VerbsTable extends Verbs with TableInfo<$VerbsTable, Verb> {
 
 class Verb extends DataClass implements Insertable<Verb> {
   final int id;
-  final int translation;
+  final int word;
   final String value;
   final int position;
   final int pronoun;
   const Verb(
       {required this.id,
-      required this.translation,
+      required this.word,
       required this.value,
       required this.position,
       required this.pronoun});
@@ -1680,7 +1496,7 @@ class Verb extends DataClass implements Insertable<Verb> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['translation'] = Variable<int>(translation);
+    map['word'] = Variable<int>(word);
     map['value'] = Variable<String>(value);
     map['position'] = Variable<int>(position);
     map['pronoun'] = Variable<int>(pronoun);
@@ -1690,7 +1506,7 @@ class Verb extends DataClass implements Insertable<Verb> {
   VerbsCompanion toCompanion(bool nullToAbsent) {
     return VerbsCompanion(
       id: Value(id),
-      translation: Value(translation),
+      word: Value(word),
       value: Value(value),
       position: Value(position),
       pronoun: Value(pronoun),
@@ -1702,7 +1518,7 @@ class Verb extends DataClass implements Insertable<Verb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Verb(
       id: serializer.fromJson<int>(json['id']),
-      translation: serializer.fromJson<int>(json['translation']),
+      word: serializer.fromJson<int>(json['word']),
       value: serializer.fromJson<String>(json['value']),
       position: serializer.fromJson<int>(json['position']),
       pronoun: serializer.fromJson<int>(json['pronoun']),
@@ -1713,7 +1529,7 @@ class Verb extends DataClass implements Insertable<Verb> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'translation': serializer.toJson<int>(translation),
+      'word': serializer.toJson<int>(word),
       'value': serializer.toJson<String>(value),
       'position': serializer.toJson<int>(position),
       'pronoun': serializer.toJson<int>(pronoun),
@@ -1721,14 +1537,10 @@ class Verb extends DataClass implements Insertable<Verb> {
   }
 
   Verb copyWith(
-          {int? id,
-          int? translation,
-          String? value,
-          int? position,
-          int? pronoun}) =>
+          {int? id, int? word, String? value, int? position, int? pronoun}) =>
       Verb(
         id: id ?? this.id,
-        translation: translation ?? this.translation,
+        word: word ?? this.word,
         value: value ?? this.value,
         position: position ?? this.position,
         pronoun: pronoun ?? this.pronoun,
@@ -1736,8 +1548,7 @@ class Verb extends DataClass implements Insertable<Verb> {
   Verb copyWithCompanion(VerbsCompanion data) {
     return Verb(
       id: data.id.present ? data.id.value : this.id,
-      translation:
-          data.translation.present ? data.translation.value : this.translation,
+      word: data.word.present ? data.word.value : this.word,
       value: data.value.present ? data.value.value : this.value,
       position: data.position.present ? data.position.value : this.position,
       pronoun: data.pronoun.present ? data.pronoun.value : this.pronoun,
@@ -1748,7 +1559,7 @@ class Verb extends DataClass implements Insertable<Verb> {
   String toString() {
     return (StringBuffer('Verb(')
           ..write('id: $id, ')
-          ..write('translation: $translation, ')
+          ..write('word: $word, ')
           ..write('value: $value, ')
           ..write('position: $position, ')
           ..write('pronoun: $pronoun')
@@ -1757,13 +1568,13 @@ class Verb extends DataClass implements Insertable<Verb> {
   }
 
   @override
-  int get hashCode => Object.hash(id, translation, value, position, pronoun);
+  int get hashCode => Object.hash(id, word, value, position, pronoun);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Verb &&
           other.id == this.id &&
-          other.translation == this.translation &&
+          other.word == this.word &&
           other.value == this.value &&
           other.position == this.position &&
           other.pronoun == this.pronoun);
@@ -1771,37 +1582,37 @@ class Verb extends DataClass implements Insertable<Verb> {
 
 class VerbsCompanion extends UpdateCompanion<Verb> {
   final Value<int> id;
-  final Value<int> translation;
+  final Value<int> word;
   final Value<String> value;
   final Value<int> position;
   final Value<int> pronoun;
   const VerbsCompanion({
     this.id = const Value.absent(),
-    this.translation = const Value.absent(),
+    this.word = const Value.absent(),
     this.value = const Value.absent(),
     this.position = const Value.absent(),
     this.pronoun = const Value.absent(),
   });
   VerbsCompanion.insert({
     this.id = const Value.absent(),
-    required int translation,
+    required int word,
     required String value,
     required int position,
     required int pronoun,
-  })  : translation = Value(translation),
+  })  : word = Value(word),
         value = Value(value),
         position = Value(position),
         pronoun = Value(pronoun);
   static Insertable<Verb> custom({
     Expression<int>? id,
-    Expression<int>? translation,
+    Expression<int>? word,
     Expression<String>? value,
     Expression<int>? position,
     Expression<int>? pronoun,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (translation != null) 'translation': translation,
+      if (word != null) 'word': word,
       if (value != null) 'value': value,
       if (position != null) 'position': position,
       if (pronoun != null) 'pronoun': pronoun,
@@ -1810,13 +1621,13 @@ class VerbsCompanion extends UpdateCompanion<Verb> {
 
   VerbsCompanion copyWith(
       {Value<int>? id,
-      Value<int>? translation,
+      Value<int>? word,
       Value<String>? value,
       Value<int>? position,
       Value<int>? pronoun}) {
     return VerbsCompanion(
       id: id ?? this.id,
-      translation: translation ?? this.translation,
+      word: word ?? this.word,
       value: value ?? this.value,
       position: position ?? this.position,
       pronoun: pronoun ?? this.pronoun,
@@ -1829,8 +1640,8 @@ class VerbsCompanion extends UpdateCompanion<Verb> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (translation.present) {
-      map['translation'] = Variable<int>(translation.value);
+    if (word.present) {
+      map['word'] = Variable<int>(word.value);
     }
     if (value.present) {
       map['value'] = Variable<String>(value.value);
@@ -1848,7 +1659,7 @@ class VerbsCompanion extends UpdateCompanion<Verb> {
   String toString() {
     return (StringBuffer('VerbsCompanion(')
           ..write('id: $id, ')
-          ..write('translation: $translation, ')
+          ..write('word: $word, ')
           ..write('value: $value, ')
           ..write('position: $position, ')
           ..write('pronoun: $pronoun')
@@ -2047,15 +1858,14 @@ class $NounsTable extends Nouns with TableInfo<$NounsTable, Noun> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _translationMeta =
-      const VerificationMeta('translation');
+  static const VerificationMeta _wordMeta = const VerificationMeta('word');
   @override
-  late final GeneratedColumn<int> translation = GeneratedColumn<int>(
-      'translation', aliasedName, false,
+  late final GeneratedColumn<int> word = GeneratedColumn<int>(
+      'word', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES translations (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES words (id)'));
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<String> value = GeneratedColumn<String>(
@@ -2068,15 +1878,14 @@ class $NounsTable extends Nouns with TableInfo<$NounsTable, Noun> {
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES translations (id)'));
+          GeneratedColumn.constraintIsAlways('REFERENCES gender (id)'));
   static const VerificationMeta _pluralMeta = const VerificationMeta('plural');
   @override
   late final GeneratedColumn<String> plural = GeneratedColumn<String>(
       'plural', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, translation, value, gender, plural];
+  List<GeneratedColumn> get $columns => [id, word, value, gender, plural];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2090,13 +1899,11 @@ class $NounsTable extends Nouns with TableInfo<$NounsTable, Noun> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('translation')) {
+    if (data.containsKey('word')) {
       context.handle(
-          _translationMeta,
-          translation.isAcceptableOrUnknown(
-              data['translation']!, _translationMeta));
+          _wordMeta, word.isAcceptableOrUnknown(data['word']!, _wordMeta));
     } else if (isInserting) {
-      context.missing(_translationMeta);
+      context.missing(_wordMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
@@ -2125,8 +1932,8 @@ class $NounsTable extends Nouns with TableInfo<$NounsTable, Noun> {
     return Noun(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      translation: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}translation'])!,
+      word: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}word'])!,
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
       gender: attachedDatabase.typeMapping
@@ -2144,13 +1951,13 @@ class $NounsTable extends Nouns with TableInfo<$NounsTable, Noun> {
 
 class Noun extends DataClass implements Insertable<Noun> {
   final int id;
-  final int translation;
+  final int word;
   final String value;
   final int gender;
   final String? plural;
   const Noun(
       {required this.id,
-      required this.translation,
+      required this.word,
       required this.value,
       required this.gender,
       this.plural});
@@ -2158,7 +1965,7 @@ class Noun extends DataClass implements Insertable<Noun> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['translation'] = Variable<int>(translation);
+    map['word'] = Variable<int>(word);
     map['value'] = Variable<String>(value);
     map['gender'] = Variable<int>(gender);
     if (!nullToAbsent || plural != null) {
@@ -2170,7 +1977,7 @@ class Noun extends DataClass implements Insertable<Noun> {
   NounsCompanion toCompanion(bool nullToAbsent) {
     return NounsCompanion(
       id: Value(id),
-      translation: Value(translation),
+      word: Value(word),
       value: Value(value),
       gender: Value(gender),
       plural:
@@ -2183,7 +1990,7 @@ class Noun extends DataClass implements Insertable<Noun> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Noun(
       id: serializer.fromJson<int>(json['id']),
-      translation: serializer.fromJson<int>(json['translation']),
+      word: serializer.fromJson<int>(json['word']),
       value: serializer.fromJson<String>(json['value']),
       gender: serializer.fromJson<int>(json['gender']),
       plural: serializer.fromJson<String?>(json['plural']),
@@ -2194,7 +2001,7 @@ class Noun extends DataClass implements Insertable<Noun> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'translation': serializer.toJson<int>(translation),
+      'word': serializer.toJson<int>(word),
       'value': serializer.toJson<String>(value),
       'gender': serializer.toJson<int>(gender),
       'plural': serializer.toJson<String?>(plural),
@@ -2203,13 +2010,13 @@ class Noun extends DataClass implements Insertable<Noun> {
 
   Noun copyWith(
           {int? id,
-          int? translation,
+          int? word,
           String? value,
           int? gender,
           Value<String?> plural = const Value.absent()}) =>
       Noun(
         id: id ?? this.id,
-        translation: translation ?? this.translation,
+        word: word ?? this.word,
         value: value ?? this.value,
         gender: gender ?? this.gender,
         plural: plural.present ? plural.value : this.plural,
@@ -2217,8 +2024,7 @@ class Noun extends DataClass implements Insertable<Noun> {
   Noun copyWithCompanion(NounsCompanion data) {
     return Noun(
       id: data.id.present ? data.id.value : this.id,
-      translation:
-          data.translation.present ? data.translation.value : this.translation,
+      word: data.word.present ? data.word.value : this.word,
       value: data.value.present ? data.value.value : this.value,
       gender: data.gender.present ? data.gender.value : this.gender,
       plural: data.plural.present ? data.plural.value : this.plural,
@@ -2229,7 +2035,7 @@ class Noun extends DataClass implements Insertable<Noun> {
   String toString() {
     return (StringBuffer('Noun(')
           ..write('id: $id, ')
-          ..write('translation: $translation, ')
+          ..write('word: $word, ')
           ..write('value: $value, ')
           ..write('gender: $gender, ')
           ..write('plural: $plural')
@@ -2238,13 +2044,13 @@ class Noun extends DataClass implements Insertable<Noun> {
   }
 
   @override
-  int get hashCode => Object.hash(id, translation, value, gender, plural);
+  int get hashCode => Object.hash(id, word, value, gender, plural);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Noun &&
           other.id == this.id &&
-          other.translation == this.translation &&
+          other.word == this.word &&
           other.value == this.value &&
           other.gender == this.gender &&
           other.plural == this.plural);
@@ -2252,36 +2058,36 @@ class Noun extends DataClass implements Insertable<Noun> {
 
 class NounsCompanion extends UpdateCompanion<Noun> {
   final Value<int> id;
-  final Value<int> translation;
+  final Value<int> word;
   final Value<String> value;
   final Value<int> gender;
   final Value<String?> plural;
   const NounsCompanion({
     this.id = const Value.absent(),
-    this.translation = const Value.absent(),
+    this.word = const Value.absent(),
     this.value = const Value.absent(),
     this.gender = const Value.absent(),
     this.plural = const Value.absent(),
   });
   NounsCompanion.insert({
     this.id = const Value.absent(),
-    required int translation,
+    required int word,
     required String value,
     required int gender,
     this.plural = const Value.absent(),
-  })  : translation = Value(translation),
+  })  : word = Value(word),
         value = Value(value),
         gender = Value(gender);
   static Insertable<Noun> custom({
     Expression<int>? id,
-    Expression<int>? translation,
+    Expression<int>? word,
     Expression<String>? value,
     Expression<int>? gender,
     Expression<String>? plural,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (translation != null) 'translation': translation,
+      if (word != null) 'word': word,
       if (value != null) 'value': value,
       if (gender != null) 'gender': gender,
       if (plural != null) 'plural': plural,
@@ -2290,13 +2096,13 @@ class NounsCompanion extends UpdateCompanion<Noun> {
 
   NounsCompanion copyWith(
       {Value<int>? id,
-      Value<int>? translation,
+      Value<int>? word,
       Value<String>? value,
       Value<int>? gender,
       Value<String?>? plural}) {
     return NounsCompanion(
       id: id ?? this.id,
-      translation: translation ?? this.translation,
+      word: word ?? this.word,
       value: value ?? this.value,
       gender: gender ?? this.gender,
       plural: plural ?? this.plural,
@@ -2309,8 +2115,8 @@ class NounsCompanion extends UpdateCompanion<Noun> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (translation.present) {
-      map['translation'] = Variable<int>(translation.value);
+    if (word.present) {
+      map['word'] = Variable<int>(word.value);
     }
     if (value.present) {
       map['value'] = Variable<String>(value.value);
@@ -2328,7 +2134,7 @@ class NounsCompanion extends UpdateCompanion<Noun> {
   String toString() {
     return (StringBuffer('NounsCompanion(')
           ..write('id: $id, ')
-          ..write('translation: $translation, ')
+          ..write('word: $word, ')
           ..write('value: $value, ')
           ..write('gender: $gender, ')
           ..write('plural: $plural')
@@ -2343,7 +2149,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CoursesTable courses = $CoursesTable(this);
   late final $SectionsTable sections = $SectionsTable(this);
   late final $WordTypesTable wordTypes = $WordTypesTable(this);
-  late final $TranslationsTable translations = $TranslationsTable(this);
   late final $WordsTable words = $WordsTable(this);
   late final $PronounsTable pronouns = $PronounsTable(this);
   late final $VerbsTable verbs = $VerbsTable(this);
@@ -2353,17 +2158,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [
-        courses,
-        sections,
-        wordTypes,
-        translations,
-        words,
-        pronouns,
-        verbs,
-        gender,
-        nouns
-      ];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [courses, sections, wordTypes, words, pronouns, verbs, gender, nouns];
 }
 
 typedef $$CoursesTableCreateCompanionBuilder = CoursesCompanion Function({
@@ -2525,17 +2321,16 @@ final class $$SectionsTableReferences
     extends BaseReferences<_$AppDatabase, $SectionsTable, Section> {
   $$SectionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$TranslationsTable, List<Translation>>
-      _translationsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.translations,
-          aliasName:
-              $_aliasNameGenerator(db.sections.id, db.translations.section));
+  static MultiTypedResultKey<$WordsTable, List<Word>> _wordsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.words,
+          aliasName: $_aliasNameGenerator(db.sections.id, db.words.section));
 
-  $$TranslationsTableProcessedTableManager get translationsRefs {
-    final manager = $$TranslationsTableTableManager($_db, $_db.translations)
+  $$WordsTableProcessedTableManager get wordsRefs {
+    final manager = $$WordsTableTableManager($_db, $_db.words)
         .filter((f) => f.section.id($_item.id));
 
-    final cache = $_typedResult.readTableOrNull(_translationsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -2559,19 +2354,19 @@ class $$SectionsTableFilterComposer
   ColumnFilters<int> get number => $composableBuilder(
       column: $table.number, builder: (column) => ColumnFilters(column));
 
-  Expression<bool> translationsRefs(
-      Expression<bool> Function($$TranslationsTableFilterComposer f) f) {
-    final $$TranslationsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> wordsRefs(
+      Expression<bool> Function($$WordsTableFilterComposer f) f) {
+    final $$WordsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.translations,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.section,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableFilterComposer(
+            $$WordsTableFilterComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2618,19 +2413,19 @@ class $$SectionsTableAnnotationComposer
   GeneratedColumn<int> get number =>
       $composableBuilder(column: $table.number, builder: (column) => column);
 
-  Expression<T> translationsRefs<T extends Object>(
-      Expression<T> Function($$TranslationsTableAnnotationComposer a) f) {
-    final $$TranslationsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> wordsRefs<T extends Object>(
+      Expression<T> Function($$WordsTableAnnotationComposer a) f) {
+    final $$WordsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.translations,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.section,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableAnnotationComposer(
+            $$WordsTableAnnotationComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2651,7 +2446,7 @@ class $$SectionsTableTableManager extends RootTableManager<
     $$SectionsTableUpdateCompanionBuilder,
     (Section, $$SectionsTableReferences),
     Section,
-    PrefetchHooks Function({bool translationsRefs})> {
+    PrefetchHooks Function({bool wordsRefs})> {
   $$SectionsTableTableManager(_$AppDatabase db, $SectionsTable table)
       : super(TableManagerState(
           db: db,
@@ -2686,21 +2481,20 @@ class $$SectionsTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$SectionsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({translationsRefs = false}) {
+          prefetchHooksCallback: ({wordsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (translationsRefs) db.translations],
+              explicitlyWatchedTables: [if (wordsRefs) db.words],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (translationsRefs)
+                  if (wordsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
-                        referencedTable: $$SectionsTableReferences
-                            ._translationsRefsTable(db),
+                        referencedTable:
+                            $$SectionsTableReferences._wordsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$SectionsTableReferences(db, table, p0)
-                                .translationsRefs,
+                            $$SectionsTableReferences(db, table, p0).wordsRefs,
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.section == item.id),
@@ -2723,7 +2517,7 @@ typedef $$SectionsTableProcessedTableManager = ProcessedTableManager<
     $$SectionsTableUpdateCompanionBuilder,
     (Section, $$SectionsTableReferences),
     Section,
-    PrefetchHooks Function({bool translationsRefs})>;
+    PrefetchHooks Function({bool wordsRefs})>;
 typedef $$WordTypesTableCreateCompanionBuilder = WordTypesCompanion Function({
   Value<int> id,
   required String name,
@@ -2737,17 +2531,16 @@ final class $$WordTypesTableReferences
     extends BaseReferences<_$AppDatabase, $WordTypesTable, WordType> {
   $$WordTypesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$TranslationsTable, List<Translation>>
-      _translationsRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.translations,
-              aliasName:
-                  $_aliasNameGenerator(db.wordTypes.id, db.translations.type));
+  static MultiTypedResultKey<$WordsTable, List<Word>> _wordsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.words,
+          aliasName: $_aliasNameGenerator(db.wordTypes.id, db.words.type));
 
-  $$TranslationsTableProcessedTableManager get translationsRefs {
-    final manager = $$TranslationsTableTableManager($_db, $_db.translations)
+  $$WordsTableProcessedTableManager get wordsRefs {
+    final manager = $$WordsTableTableManager($_db, $_db.words)
         .filter((f) => f.type.id($_item.id));
 
-    final cache = $_typedResult.readTableOrNull(_translationsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -2768,19 +2561,19 @@ class $$WordTypesTableFilterComposer
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
-  Expression<bool> translationsRefs(
-      Expression<bool> Function($$TranslationsTableFilterComposer f) f) {
-    final $$TranslationsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> wordsRefs(
+      Expression<bool> Function($$WordsTableFilterComposer f) f) {
+    final $$WordsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.translations,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.type,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableFilterComposer(
+            $$WordsTableFilterComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2821,19 +2614,19 @@ class $$WordTypesTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  Expression<T> translationsRefs<T extends Object>(
-      Expression<T> Function($$TranslationsTableAnnotationComposer a) f) {
-    final $$TranslationsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> wordsRefs<T extends Object>(
+      Expression<T> Function($$WordsTableAnnotationComposer a) f) {
+    final $$WordsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
-        referencedTable: $db.translations,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.type,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableAnnotationComposer(
+            $$WordsTableAnnotationComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2854,7 +2647,7 @@ class $$WordTypesTableTableManager extends RootTableManager<
     $$WordTypesTableUpdateCompanionBuilder,
     (WordType, $$WordTypesTableReferences),
     WordType,
-    PrefetchHooks Function({bool translationsRefs})> {
+    PrefetchHooks Function({bool wordsRefs})> {
   $$WordTypesTableTableManager(_$AppDatabase db, $WordTypesTable table)
       : super(TableManagerState(
           db: db,
@@ -2887,21 +2680,20 @@ class $$WordTypesTableTableManager extends RootTableManager<
                     $$WordTypesTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({translationsRefs = false}) {
+          prefetchHooksCallback: ({wordsRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (translationsRefs) db.translations],
+              explicitlyWatchedTables: [if (wordsRefs) db.words],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (translationsRefs)
+                  if (wordsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
-                        referencedTable: $$WordTypesTableReferences
-                            ._translationsRefsTable(db),
+                        referencedTable:
+                            $$WordTypesTableReferences._wordsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$WordTypesTableReferences(db, table, p0)
-                                .translationsRefs,
+                            $$WordTypesTableReferences(db, table, p0).wordsRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) =>
                                 referencedItems.where((e) => e.type == item.id),
@@ -2924,12 +2716,12 @@ typedef $$WordTypesTableProcessedTableManager = ProcessedTableManager<
     $$WordTypesTableUpdateCompanionBuilder,
     (WordType, $$WordTypesTableReferences),
     WordType,
-    PrefetchHooks Function({bool translationsRefs})>;
-typedef $$TranslationsTableCreateCompanionBuilder = TranslationsCompanion
-    Function({
+    PrefetchHooks Function({bool wordsRefs})>;
+typedef $$WordsTableCreateCompanionBuilder = WordsCompanion Function({
   Value<int> id,
   required int section,
   required int type,
+  required String translation,
   required String value,
   required String specifier,
   required DateTime createdAt,
@@ -2938,11 +2730,11 @@ typedef $$TranslationsTableCreateCompanionBuilder = TranslationsCompanion
   Value<int> correctCount,
   Value<int> wrongCount,
 });
-typedef $$TranslationsTableUpdateCompanionBuilder = TranslationsCompanion
-    Function({
+typedef $$WordsTableUpdateCompanionBuilder = WordsCompanion Function({
   Value<int> id,
   Value<int> section,
   Value<int> type,
+  Value<String> translation,
   Value<String> value,
   Value<String> specifier,
   Value<DateTime> createdAt,
@@ -2952,13 +2744,12 @@ typedef $$TranslationsTableUpdateCompanionBuilder = TranslationsCompanion
   Value<int> wrongCount,
 });
 
-final class $$TranslationsTableReferences
-    extends BaseReferences<_$AppDatabase, $TranslationsTable, Translation> {
-  $$TranslationsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$WordsTableReferences
+    extends BaseReferences<_$AppDatabase, $WordsTable, Word> {
+  $$WordsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $SectionsTable _sectionTable(_$AppDatabase db) =>
-      db.sections.createAlias(
-          $_aliasNameGenerator(db.translations.section, db.sections.id));
+  static $SectionsTable _sectionTable(_$AppDatabase db) => db.sections
+      .createAlias($_aliasNameGenerator(db.words.section, db.sections.id));
 
   $$SectionsTableProcessedTableManager get section {
     final manager = $$SectionsTableTableManager($_db, $_db.sections)
@@ -2970,7 +2761,7 @@ final class $$TranslationsTableReferences
   }
 
   static $WordTypesTable _typeTable(_$AppDatabase db) => db.wordTypes
-      .createAlias($_aliasNameGenerator(db.translations.type, db.wordTypes.id));
+      .createAlias($_aliasNameGenerator(db.words.type, db.wordTypes.id));
 
   $$WordTypesTableProcessedTableManager get type {
     final manager = $$WordTypesTableTableManager($_db, $_db.wordTypes)
@@ -2981,40 +2772,37 @@ final class $$TranslationsTableReferences
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static MultiTypedResultKey<$WordsTable, List<Word>> _wordsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.words,
-          aliasName:
-              $_aliasNameGenerator(db.translations.id, db.words.translation));
-
-  $$WordsTableProcessedTableManager get wordsRefs {
-    final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.translation.id($_item.id));
-
-    final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
-
   static MultiTypedResultKey<$VerbsTable, List<Verb>> _verbsRefsTable(
           _$AppDatabase db) =>
       MultiTypedResultKey.fromTable(db.verbs,
-          aliasName:
-              $_aliasNameGenerator(db.translations.id, db.verbs.translation));
+          aliasName: $_aliasNameGenerator(db.words.id, db.verbs.word));
 
   $$VerbsTableProcessedTableManager get verbsRefs {
     final manager = $$VerbsTableTableManager($_db, $_db.verbs)
-        .filter((f) => f.translation.id($_item.id));
+        .filter((f) => f.word.id($_item.id));
 
     final cache = $_typedResult.readTableOrNull(_verbsRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$NounsTable, List<Noun>> _nounsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.nouns,
+          aliasName: $_aliasNameGenerator(db.words.id, db.nouns.word));
+
+  $$NounsTableProcessedTableManager get nounsRefs {
+    final manager = $$NounsTableTableManager($_db, $_db.nouns)
+        .filter((f) => f.word.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_nounsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
-class $$TranslationsTableFilterComposer
-    extends Composer<_$AppDatabase, $TranslationsTable> {
-  $$TranslationsTableFilterComposer({
+class $$WordsTableFilterComposer extends Composer<_$AppDatabase, $WordsTable> {
+  $$WordsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -3023,6 +2811,9 @@ class $$TranslationsTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get translation => $composableBuilder(
+      column: $table.translation, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get value => $composableBuilder(
       column: $table.value, builder: (column) => ColumnFilters(column));
@@ -3085,34 +2876,13 @@ class $$TranslationsTableFilterComposer
     return composer;
   }
 
-  Expression<bool> wordsRefs(
-      Expression<bool> Function($$WordsTableFilterComposer f) f) {
-    final $$WordsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.translation,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableFilterComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
   Expression<bool> verbsRefs(
       Expression<bool> Function($$VerbsTableFilterComposer f) f) {
     final $$VerbsTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.verbs,
-        getReferencedColumn: (t) => t.translation,
+        getReferencedColumn: (t) => t.word,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -3126,11 +2896,32 @@ class $$TranslationsTableFilterComposer
             ));
     return f(composer);
   }
+
+  Expression<bool> nounsRefs(
+      Expression<bool> Function($$NounsTableFilterComposer f) f) {
+    final $$NounsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.nouns,
+        getReferencedColumn: (t) => t.word,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NounsTableFilterComposer(
+              $db: $db,
+              $table: $db.nouns,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
-class $$TranslationsTableOrderingComposer
-    extends Composer<_$AppDatabase, $TranslationsTable> {
-  $$TranslationsTableOrderingComposer({
+class $$WordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WordsTable> {
+  $$WordsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -3139,6 +2930,9 @@ class $$TranslationsTableOrderingComposer
   });
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get translation => $composableBuilder(
+      column: $table.translation, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get value => $composableBuilder(
       column: $table.value, builder: (column) => ColumnOrderings(column));
@@ -3203,9 +2997,9 @@ class $$TranslationsTableOrderingComposer
   }
 }
 
-class $$TranslationsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TranslationsTable> {
-  $$TranslationsTableAnnotationComposer({
+class $$WordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WordsTable> {
+  $$WordsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -3214,6 +3008,9 @@ class $$TranslationsTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get translation => $composableBuilder(
+      column: $table.translation, builder: (column) => column);
 
   GeneratedColumn<String> get value =>
       $composableBuilder(column: $table.value, builder: (column) => column);
@@ -3276,34 +3073,13 @@ class $$TranslationsTableAnnotationComposer
     return composer;
   }
 
-  Expression<T> wordsRefs<T extends Object>(
-      Expression<T> Function($$WordsTableAnnotationComposer a) f) {
-    final $$WordsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.translation,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return f(composer);
-  }
-
   Expression<T> verbsRefs<T extends Object>(
       Expression<T> Function($$VerbsTableAnnotationComposer a) f) {
     final $$VerbsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $db.verbs,
-        getReferencedColumn: (t) => t.translation,
+        getReferencedColumn: (t) => t.word,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
@@ -3317,35 +3093,57 @@ class $$TranslationsTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> nounsRefs<T extends Object>(
+      Expression<T> Function($$NounsTableAnnotationComposer a) f) {
+    final $$NounsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.nouns,
+        getReferencedColumn: (t) => t.word,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NounsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.nouns,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
-class $$TranslationsTableTableManager extends RootTableManager<
+class $$WordsTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $TranslationsTable,
-    Translation,
-    $$TranslationsTableFilterComposer,
-    $$TranslationsTableOrderingComposer,
-    $$TranslationsTableAnnotationComposer,
-    $$TranslationsTableCreateCompanionBuilder,
-    $$TranslationsTableUpdateCompanionBuilder,
-    (Translation, $$TranslationsTableReferences),
-    Translation,
+    $WordsTable,
+    Word,
+    $$WordsTableFilterComposer,
+    $$WordsTableOrderingComposer,
+    $$WordsTableAnnotationComposer,
+    $$WordsTableCreateCompanionBuilder,
+    $$WordsTableUpdateCompanionBuilder,
+    (Word, $$WordsTableReferences),
+    Word,
     PrefetchHooks Function(
-        {bool section, bool type, bool wordsRefs, bool verbsRefs})> {
-  $$TranslationsTableTableManager(_$AppDatabase db, $TranslationsTable table)
+        {bool section, bool type, bool verbsRefs, bool nounsRefs})> {
+  $$WordsTableTableManager(_$AppDatabase db, $WordsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$TranslationsTableFilterComposer($db: db, $table: table),
+              $$WordsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$TranslationsTableOrderingComposer($db: db, $table: table),
+              $$WordsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$TranslationsTableAnnotationComposer($db: db, $table: table),
+              $$WordsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> section = const Value.absent(),
             Value<int> type = const Value.absent(),
+            Value<String> translation = const Value.absent(),
             Value<String> value = const Value.absent(),
             Value<String> specifier = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -3354,10 +3152,11 @@ class $$TranslationsTableTableManager extends RootTableManager<
             Value<int> correctCount = const Value.absent(),
             Value<int> wrongCount = const Value.absent(),
           }) =>
-              TranslationsCompanion(
+              WordsCompanion(
             id: id,
             section: section,
             type: type,
+            translation: translation,
             value: value,
             specifier: specifier,
             createdAt: createdAt,
@@ -3370,6 +3169,7 @@ class $$TranslationsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             required int section,
             required int type,
+            required String translation,
             required String value,
             required String specifier,
             required DateTime createdAt,
@@ -3378,10 +3178,11 @@ class $$TranslationsTableTableManager extends RootTableManager<
             Value<int> correctCount = const Value.absent(),
             Value<int> wrongCount = const Value.absent(),
           }) =>
-              TranslationsCompanion.insert(
+              WordsCompanion.insert(
             id: id,
             section: section,
             type: type,
+            translation: translation,
             value: value,
             specifier: specifier,
             createdAt: createdAt,
@@ -3391,21 +3192,19 @@ class $$TranslationsTableTableManager extends RootTableManager<
             wrongCount: wrongCount,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$TranslationsTableReferences(db, table, e)
-                  ))
+              .map((e) =>
+                  (e.readTable(table), $$WordsTableReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: (
               {section = false,
               type = false,
-              wordsRefs = false,
-              verbsRefs = false}) {
+              verbsRefs = false,
+              nounsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (wordsRefs) db.words,
-                if (verbsRefs) db.verbs
+                if (verbsRefs) db.verbs,
+                if (nounsRefs) db.nouns
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -3424,20 +3223,17 @@ class $$TranslationsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.section,
-                    referencedTable:
-                        $$TranslationsTableReferences._sectionTable(db),
+                    referencedTable: $$WordsTableReferences._sectionTable(db),
                     referencedColumn:
-                        $$TranslationsTableReferences._sectionTable(db).id,
+                        $$WordsTableReferences._sectionTable(db).id,
                   ) as T;
                 }
                 if (type) {
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.type,
-                    referencedTable:
-                        $$TranslationsTableReferences._typeTable(db),
-                    referencedColumn:
-                        $$TranslationsTableReferences._typeTable(db).id,
+                    referencedTable: $$WordsTableReferences._typeTable(db),
+                    referencedColumn: $$WordsTableReferences._typeTable(db).id,
                   ) as T;
                 }
 
@@ -3445,264 +3241,29 @@ class $$TranslationsTableTableManager extends RootTableManager<
               },
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (wordsRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$TranslationsTableReferences._wordsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$TranslationsTableReferences(db, table, p0)
-                                .wordsRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.translation == item.id),
-                        typedResults: items),
                   if (verbsRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable:
-                            $$TranslationsTableReferences._verbsRefsTable(db),
+                            $$WordsTableReferences._verbsRefsTable(db),
                         managerFromTypedResult: (p0) =>
-                            $$TranslationsTableReferences(db, table, p0)
-                                .verbsRefs,
+                            $$WordsTableReferences(db, table, p0).verbsRefs,
                         referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.translation == item.id),
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.word == item.id),
+                        typedResults: items),
+                  if (nounsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$WordsTableReferences._nounsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$WordsTableReferences(db, table, p0).nounsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) =>
+                                referencedItems.where((e) => e.word == item.id),
                         typedResults: items)
                 ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$TranslationsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TranslationsTable,
-    Translation,
-    $$TranslationsTableFilterComposer,
-    $$TranslationsTableOrderingComposer,
-    $$TranslationsTableAnnotationComposer,
-    $$TranslationsTableCreateCompanionBuilder,
-    $$TranslationsTableUpdateCompanionBuilder,
-    (Translation, $$TranslationsTableReferences),
-    Translation,
-    PrefetchHooks Function(
-        {bool section, bool type, bool wordsRefs, bool verbsRefs})>;
-typedef $$WordsTableCreateCompanionBuilder = WordsCompanion Function({
-  Value<int> id,
-  required int translation,
-  required String value,
-});
-typedef $$WordsTableUpdateCompanionBuilder = WordsCompanion Function({
-  Value<int> id,
-  Value<int> translation,
-  Value<String> value,
-});
-
-final class $$WordsTableReferences
-    extends BaseReferences<_$AppDatabase, $WordsTable, Word> {
-  $$WordsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $TranslationsTable _translationTable(_$AppDatabase db) =>
-      db.translations.createAlias(
-          $_aliasNameGenerator(db.words.translation, db.translations.id));
-
-  $$TranslationsTableProcessedTableManager get translation {
-    final manager = $$TranslationsTableTableManager($_db, $_db.translations)
-        .filter((f) => f.id($_item.translation!));
-    final item = $_typedResult.readTableOrNull(_translationTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-}
-
-class $$WordsTableFilterComposer extends Composer<_$AppDatabase, $WordsTable> {
-  $$WordsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnFilters(column));
-
-  $$TranslationsTableFilterComposer get translation {
-    final $$TranslationsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableFilterComposer(
-              $db: $db,
-              $table: $db.translations,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$WordsTableOrderingComposer
-    extends Composer<_$AppDatabase, $WordsTable> {
-  $$WordsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnOrderings(column));
-
-  $$TranslationsTableOrderingComposer get translation {
-    final $$TranslationsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableOrderingComposer(
-              $db: $db,
-              $table: $db.translations,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$WordsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $WordsTable> {
-  $$WordsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get value =>
-      $composableBuilder(column: $table.value, builder: (column) => column);
-
-  $$TranslationsTableAnnotationComposer get translation {
-    final $$TranslationsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.translations,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
-    return composer;
-  }
-}
-
-class $$WordsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $WordsTable,
-    Word,
-    $$WordsTableFilterComposer,
-    $$WordsTableOrderingComposer,
-    $$WordsTableAnnotationComposer,
-    $$WordsTableCreateCompanionBuilder,
-    $$WordsTableUpdateCompanionBuilder,
-    (Word, $$WordsTableReferences),
-    Word,
-    PrefetchHooks Function({bool translation})> {
-  $$WordsTableTableManager(_$AppDatabase db, $WordsTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$WordsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$WordsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$WordsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> translation = const Value.absent(),
-            Value<String> value = const Value.absent(),
-          }) =>
-              WordsCompanion(
-            id: id,
-            translation: translation,
-            value: value,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int translation,
-            required String value,
-          }) =>
-              WordsCompanion.insert(
-            id: id,
-            translation: translation,
-            value: value,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$WordsTableReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: ({translation = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (translation) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.translation,
-                    referencedTable:
-                        $$WordsTableReferences._translationTable(db),
-                    referencedColumn:
-                        $$WordsTableReferences._translationTable(db).id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
               },
             );
           },
@@ -3720,7 +3281,8 @@ typedef $$WordsTableProcessedTableManager = ProcessedTableManager<
     $$WordsTableUpdateCompanionBuilder,
     (Word, $$WordsTableReferences),
     Word,
-    PrefetchHooks Function({bool translation})>;
+    PrefetchHooks Function(
+        {bool section, bool type, bool verbsRefs, bool nounsRefs})>;
 typedef $$PronounsTableCreateCompanionBuilder = PronounsCompanion Function({
   Value<int> id,
   required String value,
@@ -3920,14 +3482,14 @@ typedef $$PronounsTableProcessedTableManager = ProcessedTableManager<
     PrefetchHooks Function({bool verbsRefs})>;
 typedef $$VerbsTableCreateCompanionBuilder = VerbsCompanion Function({
   Value<int> id,
-  required int translation,
+  required int word,
   required String value,
   required int position,
   required int pronoun,
 });
 typedef $$VerbsTableUpdateCompanionBuilder = VerbsCompanion Function({
   Value<int> id,
-  Value<int> translation,
+  Value<int> word,
   Value<String> value,
   Value<int> position,
   Value<int> pronoun,
@@ -3937,14 +3499,13 @@ final class $$VerbsTableReferences
     extends BaseReferences<_$AppDatabase, $VerbsTable, Verb> {
   $$VerbsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $TranslationsTable _translationTable(_$AppDatabase db) =>
-      db.translations.createAlias(
-          $_aliasNameGenerator(db.verbs.translation, db.translations.id));
+  static $WordsTable _wordTable(_$AppDatabase db) =>
+      db.words.createAlias($_aliasNameGenerator(db.verbs.word, db.words.id));
 
-  $$TranslationsTableProcessedTableManager get translation {
-    final manager = $$TranslationsTableTableManager($_db, $_db.translations)
-        .filter((f) => f.id($_item.translation!));
-    final item = $_typedResult.readTableOrNull(_translationTable($_db));
+  $$WordsTableProcessedTableManager get word {
+    final manager = $$WordsTableTableManager($_db, $_db.words)
+        .filter((f) => f.id($_item.word!));
+    final item = $_typedResult.readTableOrNull(_wordTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -3980,18 +3541,18 @@ class $$VerbsTableFilterComposer extends Composer<_$AppDatabase, $VerbsTable> {
   ColumnFilters<int> get position => $composableBuilder(
       column: $table.position, builder: (column) => ColumnFilters(column));
 
-  $$TranslationsTableFilterComposer get translation {
-    final $$TranslationsTableFilterComposer composer = $composerBuilder(
+  $$WordsTableFilterComposer get word {
+    final $$WordsTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
+        getCurrentColumn: (t) => t.word,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableFilterComposer(
+            $$WordsTableFilterComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4039,18 +3600,18 @@ class $$VerbsTableOrderingComposer
   ColumnOrderings<int> get position => $composableBuilder(
       column: $table.position, builder: (column) => ColumnOrderings(column));
 
-  $$TranslationsTableOrderingComposer get translation {
-    final $$TranslationsTableOrderingComposer composer = $composerBuilder(
+  $$WordsTableOrderingComposer get word {
+    final $$WordsTableOrderingComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
+        getCurrentColumn: (t) => t.word,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableOrderingComposer(
+            $$WordsTableOrderingComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4098,18 +3659,18 @@ class $$VerbsTableAnnotationComposer
   GeneratedColumn<int> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
 
-  $$TranslationsTableAnnotationComposer get translation {
-    final $$TranslationsTableAnnotationComposer composer = $composerBuilder(
+  $$WordsTableAnnotationComposer get word {
+    final $$WordsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
+        getCurrentColumn: (t) => t.word,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableAnnotationComposer(
+            $$WordsTableAnnotationComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4150,7 +3711,7 @@ class $$VerbsTableTableManager extends RootTableManager<
     $$VerbsTableUpdateCompanionBuilder,
     (Verb, $$VerbsTableReferences),
     Verb,
-    PrefetchHooks Function({bool translation, bool pronoun})> {
+    PrefetchHooks Function({bool word, bool pronoun})> {
   $$VerbsTableTableManager(_$AppDatabase db, $VerbsTable table)
       : super(TableManagerState(
           db: db,
@@ -4163,28 +3724,28 @@ class $$VerbsTableTableManager extends RootTableManager<
               $$VerbsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            Value<int> translation = const Value.absent(),
+            Value<int> word = const Value.absent(),
             Value<String> value = const Value.absent(),
             Value<int> position = const Value.absent(),
             Value<int> pronoun = const Value.absent(),
           }) =>
               VerbsCompanion(
             id: id,
-            translation: translation,
+            word: word,
             value: value,
             position: position,
             pronoun: pronoun,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            required int translation,
+            required int word,
             required String value,
             required int position,
             required int pronoun,
           }) =>
               VerbsCompanion.insert(
             id: id,
-            translation: translation,
+            word: word,
             value: value,
             position: position,
             pronoun: pronoun,
@@ -4193,7 +3754,7 @@ class $$VerbsTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$VerbsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({translation = false, pronoun = false}) {
+          prefetchHooksCallback: ({word = false, pronoun = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -4210,14 +3771,12 @@ class $$VerbsTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
-                if (translation) {
+                if (word) {
                   state = state.withJoin(
                     currentTable: table,
-                    currentColumn: table.translation,
-                    referencedTable:
-                        $$VerbsTableReferences._translationTable(db),
-                    referencedColumn:
-                        $$VerbsTableReferences._translationTable(db).id,
+                    currentColumn: table.word,
+                    referencedTable: $$VerbsTableReferences._wordTable(db),
+                    referencedColumn: $$VerbsTableReferences._wordTable(db).id,
                   ) as T;
                 }
                 if (pronoun) {
@@ -4251,7 +3810,7 @@ typedef $$VerbsTableProcessedTableManager = ProcessedTableManager<
     $$VerbsTableUpdateCompanionBuilder,
     (Verb, $$VerbsTableReferences),
     Verb,
-    PrefetchHooks Function({bool translation, bool pronoun})>;
+    PrefetchHooks Function({bool word, bool pronoun})>;
 typedef $$GenderTableCreateCompanionBuilder = GenderCompanion Function({
   Value<int> id,
   required String value,
@@ -4260,6 +3819,25 @@ typedef $$GenderTableUpdateCompanionBuilder = GenderCompanion Function({
   Value<int> id,
   Value<String> value,
 });
+
+final class $$GenderTableReferences
+    extends BaseReferences<_$AppDatabase, $GenderTable, GenderData> {
+  $$GenderTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$NounsTable, List<Noun>> _nounsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.nouns,
+          aliasName: $_aliasNameGenerator(db.gender.id, db.nouns.gender));
+
+  $$NounsTableProcessedTableManager get nounsRefs {
+    final manager = $$NounsTableTableManager($_db, $_db.nouns)
+        .filter((f) => f.gender.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_nounsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
 
 class $$GenderTableFilterComposer
     extends Composer<_$AppDatabase, $GenderTable> {
@@ -4275,6 +3853,27 @@ class $$GenderTableFilterComposer
 
   ColumnFilters<String> get value => $composableBuilder(
       column: $table.value, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> nounsRefs(
+      Expression<bool> Function($$NounsTableFilterComposer f) f) {
+    final $$NounsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.nouns,
+        getReferencedColumn: (t) => t.gender,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NounsTableFilterComposer(
+              $db: $db,
+              $table: $db.nouns,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$GenderTableOrderingComposer
@@ -4307,6 +3906,27 @@ class $$GenderTableAnnotationComposer
 
   GeneratedColumn<String> get value =>
       $composableBuilder(column: $table.value, builder: (column) => column);
+
+  Expression<T> nounsRefs<T extends Object>(
+      Expression<T> Function($$NounsTableAnnotationComposer a) f) {
+    final $$NounsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.nouns,
+        getReferencedColumn: (t) => t.gender,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$NounsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.nouns,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$GenderTableTableManager extends RootTableManager<
@@ -4318,9 +3938,9 @@ class $$GenderTableTableManager extends RootTableManager<
     $$GenderTableAnnotationComposer,
     $$GenderTableCreateCompanionBuilder,
     $$GenderTableUpdateCompanionBuilder,
-    (GenderData, BaseReferences<_$AppDatabase, $GenderTable, GenderData>),
+    (GenderData, $$GenderTableReferences),
     GenderData,
-    PrefetchHooks Function()> {
+    PrefetchHooks Function({bool nounsRefs})> {
   $$GenderTableTableManager(_$AppDatabase db, $GenderTable table)
       : super(TableManagerState(
           db: db,
@@ -4348,9 +3968,31 @@ class $$GenderTableTableManager extends RootTableManager<
             value: value,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) =>
+                  (e.readTable(table), $$GenderTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({nounsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (nounsRefs) db.nouns],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (nounsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$GenderTableReferences._nounsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$GenderTableReferences(db, table, p0).nounsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.gender == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
         ));
 }
 
@@ -4363,19 +4005,19 @@ typedef $$GenderTableProcessedTableManager = ProcessedTableManager<
     $$GenderTableAnnotationComposer,
     $$GenderTableCreateCompanionBuilder,
     $$GenderTableUpdateCompanionBuilder,
-    (GenderData, BaseReferences<_$AppDatabase, $GenderTable, GenderData>),
+    (GenderData, $$GenderTableReferences),
     GenderData,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function({bool nounsRefs})>;
 typedef $$NounsTableCreateCompanionBuilder = NounsCompanion Function({
   Value<int> id,
-  required int translation,
+  required int word,
   required String value,
   required int gender,
   Value<String?> plural,
 });
 typedef $$NounsTableUpdateCompanionBuilder = NounsCompanion Function({
   Value<int> id,
-  Value<int> translation,
+  Value<int> word,
   Value<String> value,
   Value<int> gender,
   Value<String?> plural,
@@ -4385,24 +4027,23 @@ final class $$NounsTableReferences
     extends BaseReferences<_$AppDatabase, $NounsTable, Noun> {
   $$NounsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $TranslationsTable _translationTable(_$AppDatabase db) =>
-      db.translations.createAlias(
-          $_aliasNameGenerator(db.nouns.translation, db.translations.id));
+  static $WordsTable _wordTable(_$AppDatabase db) =>
+      db.words.createAlias($_aliasNameGenerator(db.nouns.word, db.words.id));
 
-  $$TranslationsTableProcessedTableManager get translation {
-    final manager = $$TranslationsTableTableManager($_db, $_db.translations)
-        .filter((f) => f.id($_item.translation!));
-    final item = $_typedResult.readTableOrNull(_translationTable($_db));
+  $$WordsTableProcessedTableManager get word {
+    final manager = $$WordsTableTableManager($_db, $_db.words)
+        .filter((f) => f.id($_item.word!));
+    final item = $_typedResult.readTableOrNull(_wordTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
   }
 
-  static $TranslationsTable _genderTable(_$AppDatabase db) => db.translations
-      .createAlias($_aliasNameGenerator(db.nouns.gender, db.translations.id));
+  static $GenderTable _genderTable(_$AppDatabase db) => db.gender
+      .createAlias($_aliasNameGenerator(db.nouns.gender, db.gender.id));
 
-  $$TranslationsTableProcessedTableManager get gender {
-    final manager = $$TranslationsTableTableManager($_db, $_db.translations)
+  $$GenderTableProcessedTableManager get gender {
+    final manager = $$GenderTableTableManager($_db, $_db.gender)
         .filter((f) => f.id($_item.gender!));
     final item = $_typedResult.readTableOrNull(_genderTable($_db));
     if (item == null) return manager;
@@ -4428,18 +4069,18 @@ class $$NounsTableFilterComposer extends Composer<_$AppDatabase, $NounsTable> {
   ColumnFilters<String> get plural => $composableBuilder(
       column: $table.plural, builder: (column) => ColumnFilters(column));
 
-  $$TranslationsTableFilterComposer get translation {
-    final $$TranslationsTableFilterComposer composer = $composerBuilder(
+  $$WordsTableFilterComposer get word {
+    final $$WordsTableFilterComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
+        getCurrentColumn: (t) => t.word,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableFilterComposer(
+            $$WordsTableFilterComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4448,18 +4089,18 @@ class $$NounsTableFilterComposer extends Composer<_$AppDatabase, $NounsTable> {
     return composer;
   }
 
-  $$TranslationsTableFilterComposer get gender {
-    final $$TranslationsTableFilterComposer composer = $composerBuilder(
+  $$GenderTableFilterComposer get gender {
+    final $$GenderTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.gender,
-        referencedTable: $db.translations,
+        referencedTable: $db.gender,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableFilterComposer(
+            $$GenderTableFilterComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.gender,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4487,18 +4128,18 @@ class $$NounsTableOrderingComposer
   ColumnOrderings<String> get plural => $composableBuilder(
       column: $table.plural, builder: (column) => ColumnOrderings(column));
 
-  $$TranslationsTableOrderingComposer get translation {
-    final $$TranslationsTableOrderingComposer composer = $composerBuilder(
+  $$WordsTableOrderingComposer get word {
+    final $$WordsTableOrderingComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
+        getCurrentColumn: (t) => t.word,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableOrderingComposer(
+            $$WordsTableOrderingComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4507,18 +4148,18 @@ class $$NounsTableOrderingComposer
     return composer;
   }
 
-  $$TranslationsTableOrderingComposer get gender {
-    final $$TranslationsTableOrderingComposer composer = $composerBuilder(
+  $$GenderTableOrderingComposer get gender {
+    final $$GenderTableOrderingComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.gender,
-        referencedTable: $db.translations,
+        referencedTable: $db.gender,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableOrderingComposer(
+            $$GenderTableOrderingComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.gender,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4546,18 +4187,18 @@ class $$NounsTableAnnotationComposer
   GeneratedColumn<String> get plural =>
       $composableBuilder(column: $table.plural, builder: (column) => column);
 
-  $$TranslationsTableAnnotationComposer get translation {
-    final $$TranslationsTableAnnotationComposer composer = $composerBuilder(
+  $$WordsTableAnnotationComposer get word {
+    final $$WordsTableAnnotationComposer composer = $composerBuilder(
         composer: this,
-        getCurrentColumn: (t) => t.translation,
-        referencedTable: $db.translations,
+        getCurrentColumn: (t) => t.word,
+        referencedTable: $db.words,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableAnnotationComposer(
+            $$WordsTableAnnotationComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.words,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4566,18 +4207,18 @@ class $$NounsTableAnnotationComposer
     return composer;
   }
 
-  $$TranslationsTableAnnotationComposer get gender {
-    final $$TranslationsTableAnnotationComposer composer = $composerBuilder(
+  $$GenderTableAnnotationComposer get gender {
+    final $$GenderTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.gender,
-        referencedTable: $db.translations,
+        referencedTable: $db.gender,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$TranslationsTableAnnotationComposer(
+            $$GenderTableAnnotationComposer(
               $db: $db,
-              $table: $db.translations,
+              $table: $db.gender,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4598,7 +4239,7 @@ class $$NounsTableTableManager extends RootTableManager<
     $$NounsTableUpdateCompanionBuilder,
     (Noun, $$NounsTableReferences),
     Noun,
-    PrefetchHooks Function({bool translation, bool gender})> {
+    PrefetchHooks Function({bool word, bool gender})> {
   $$NounsTableTableManager(_$AppDatabase db, $NounsTable table)
       : super(TableManagerState(
           db: db,
@@ -4611,28 +4252,28 @@ class $$NounsTableTableManager extends RootTableManager<
               $$NounsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            Value<int> translation = const Value.absent(),
+            Value<int> word = const Value.absent(),
             Value<String> value = const Value.absent(),
             Value<int> gender = const Value.absent(),
             Value<String?> plural = const Value.absent(),
           }) =>
               NounsCompanion(
             id: id,
-            translation: translation,
+            word: word,
             value: value,
             gender: gender,
             plural: plural,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            required int translation,
+            required int word,
             required String value,
             required int gender,
             Value<String?> plural = const Value.absent(),
           }) =>
               NounsCompanion.insert(
             id: id,
-            translation: translation,
+            word: word,
             value: value,
             gender: gender,
             plural: plural,
@@ -4641,7 +4282,7 @@ class $$NounsTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$NounsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({translation = false, gender = false}) {
+          prefetchHooksCallback: ({word = false, gender = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -4658,14 +4299,12 @@ class $$NounsTableTableManager extends RootTableManager<
                       dynamic,
                       dynamic,
                       dynamic>>(state) {
-                if (translation) {
+                if (word) {
                   state = state.withJoin(
                     currentTable: table,
-                    currentColumn: table.translation,
-                    referencedTable:
-                        $$NounsTableReferences._translationTable(db),
-                    referencedColumn:
-                        $$NounsTableReferences._translationTable(db).id,
+                    currentColumn: table.word,
+                    referencedTable: $$NounsTableReferences._wordTable(db),
+                    referencedColumn: $$NounsTableReferences._wordTable(db).id,
                   ) as T;
                 }
                 if (gender) {
@@ -4699,7 +4338,7 @@ typedef $$NounsTableProcessedTableManager = ProcessedTableManager<
     $$NounsTableUpdateCompanionBuilder,
     (Noun, $$NounsTableReferences),
     Noun,
-    PrefetchHooks Function({bool translation, bool gender})>;
+    PrefetchHooks Function({bool word, bool gender})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4710,8 +4349,6 @@ class $AppDatabaseManager {
       $$SectionsTableTableManager(_db, _db.sections);
   $$WordTypesTableTableManager get wordTypes =>
       $$WordTypesTableTableManager(_db, _db.wordTypes);
-  $$TranslationsTableTableManager get translations =>
-      $$TranslationsTableTableManager(_db, _db.translations);
   $$WordsTableTableManager get words =>
       $$WordsTableTableManager(_db, _db.words);
   $$PronounsTableTableManager get pronouns =>
