@@ -12,6 +12,7 @@ class Courses extends Table {
 
 class Sections extends Table {
   IntColumn get id => integer().autoIncrement()();
+  IntColumn get course => integer().references(Courses, #id)();
   TextColumn get name => text()();
   IntColumn get number => integer()();
 }
@@ -86,12 +87,18 @@ class AppDatabase extends _$AppDatabase {
         .getSingleOrNull();
   }
 
+  Future<Section?> getSectionByName(int courseId, String name) async {
+    return (select(sections)
+          ..where((t) => t.course.equals(courseId) & t.name.equals(name)))
+        .getSingleOrNull();
+  }
+
   Future<Course> createOrUpdateCourse({
     required String name,
     required String level,
     required String language,
   }) async {
-    var course = await this.getCourseByName(name);
+    final course = await this.getCourseByName(name);
     if (course == null) {
       final id = await into(courses).insert(CoursesCompanion(
         name: Value(name),
@@ -109,6 +116,33 @@ class AppDatabase extends _$AppDatabase {
     return await (select(courses)
           ..where(
             (tbl) => tbl.id.equals(course.id),
+          ))
+        .getSingle();
+  }
+
+  Future<Section> createOrUpdateSection({
+    required int courseId,
+    required String name,
+    required int number,
+  }) async {
+    final section = await this.getSectionByName(courseId, name);
+    if (section == null) {
+      final id = await into(sections).insert(SectionsCompanion(
+        name: Value(name),
+        number: Value(number),
+        course: Value(courseId),
+      ));
+      return await (select(sections)
+            ..where(
+              (t) => t.id.equals(id),
+            ))
+          .getSingle();
+    }
+    await update(sections)
+      ..where((t) => t.id.equals(section.id));
+    return await (select(sections)
+          ..where(
+            (t) => t.id.equals(section.id),
           ))
         .getSingle();
   }

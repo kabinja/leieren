@@ -271,6 +271,14 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _courseMeta = const VerificationMeta('course');
+  @override
+  late final GeneratedColumn<int> course = GeneratedColumn<int>(
+      'course', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES courses (id)'));
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -282,7 +290,7 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
       'number', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, name, number];
+  List<GeneratedColumn> get $columns => [id, course, name, number];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -295,6 +303,12 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('course')) {
+      context.handle(_courseMeta,
+          course.isAcceptableOrUnknown(data['course']!, _courseMeta));
+    } else if (isInserting) {
+      context.missing(_courseMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -319,6 +333,8 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
     return Section(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      course: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}course'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       number: attachedDatabase.typeMapping
@@ -334,13 +350,19 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
 
 class Section extends DataClass implements Insertable<Section> {
   final int id;
+  final int course;
   final String name;
   final int number;
-  const Section({required this.id, required this.name, required this.number});
+  const Section(
+      {required this.id,
+      required this.course,
+      required this.name,
+      required this.number});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['course'] = Variable<int>(course);
     map['name'] = Variable<String>(name);
     map['number'] = Variable<int>(number);
     return map;
@@ -349,6 +371,7 @@ class Section extends DataClass implements Insertable<Section> {
   SectionsCompanion toCompanion(bool nullToAbsent) {
     return SectionsCompanion(
       id: Value(id),
+      course: Value(course),
       name: Value(name),
       number: Value(number),
     );
@@ -359,6 +382,7 @@ class Section extends DataClass implements Insertable<Section> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Section(
       id: serializer.fromJson<int>(json['id']),
+      course: serializer.fromJson<int>(json['course']),
       name: serializer.fromJson<String>(json['name']),
       number: serializer.fromJson<int>(json['number']),
     );
@@ -368,19 +392,23 @@ class Section extends DataClass implements Insertable<Section> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'course': serializer.toJson<int>(course),
       'name': serializer.toJson<String>(name),
       'number': serializer.toJson<int>(number),
     };
   }
 
-  Section copyWith({int? id, String? name, int? number}) => Section(
+  Section copyWith({int? id, int? course, String? name, int? number}) =>
+      Section(
         id: id ?? this.id,
+        course: course ?? this.course,
         name: name ?? this.name,
         number: number ?? this.number,
       );
   Section copyWithCompanion(SectionsCompanion data) {
     return Section(
       id: data.id.present ? data.id.value : this.id,
+      course: data.course.present ? data.course.value : this.course,
       name: data.name.present ? data.name.value : this.name,
       number: data.number.present ? data.number.value : this.number,
     );
@@ -390,6 +418,7 @@ class Section extends DataClass implements Insertable<Section> {
   String toString() {
     return (StringBuffer('Section(')
           ..write('id: $id, ')
+          ..write('course: $course, ')
           ..write('name: $name, ')
           ..write('number: $number')
           ..write(')'))
@@ -397,47 +426,58 @@ class Section extends DataClass implements Insertable<Section> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, number);
+  int get hashCode => Object.hash(id, course, name, number);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Section &&
           other.id == this.id &&
+          other.course == this.course &&
           other.name == this.name &&
           other.number == this.number);
 }
 
 class SectionsCompanion extends UpdateCompanion<Section> {
   final Value<int> id;
+  final Value<int> course;
   final Value<String> name;
   final Value<int> number;
   const SectionsCompanion({
     this.id = const Value.absent(),
+    this.course = const Value.absent(),
     this.name = const Value.absent(),
     this.number = const Value.absent(),
   });
   SectionsCompanion.insert({
     this.id = const Value.absent(),
+    required int course,
     required String name,
     required int number,
-  })  : name = Value(name),
+  })  : course = Value(course),
+        name = Value(name),
         number = Value(number);
   static Insertable<Section> custom({
     Expression<int>? id,
+    Expression<int>? course,
     Expression<String>? name,
     Expression<int>? number,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (course != null) 'course': course,
       if (name != null) 'name': name,
       if (number != null) 'number': number,
     });
   }
 
   SectionsCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<int>? number}) {
+      {Value<int>? id,
+      Value<int>? course,
+      Value<String>? name,
+      Value<int>? number}) {
     return SectionsCompanion(
       id: id ?? this.id,
+      course: course ?? this.course,
       name: name ?? this.name,
       number: number ?? this.number,
     );
@@ -448,6 +488,9 @@ class SectionsCompanion extends UpdateCompanion<Section> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (course.present) {
+      map['course'] = Variable<int>(course.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -462,6 +505,7 @@ class SectionsCompanion extends UpdateCompanion<Section> {
   String toString() {
     return (StringBuffer('SectionsCompanion(')
           ..write('id: $id, ')
+          ..write('course: $course, ')
           ..write('name: $name, ')
           ..write('number: $number')
           ..write(')'))
@@ -2175,6 +2219,25 @@ typedef $$CoursesTableUpdateCompanionBuilder = CoursesCompanion Function({
   Value<String> language,
 });
 
+final class $$CoursesTableReferences
+    extends BaseReferences<_$AppDatabase, $CoursesTable, Course> {
+  $$CoursesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$SectionsTable, List<Section>> _sectionsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.sections,
+          aliasName: $_aliasNameGenerator(db.courses.id, db.sections.course));
+
+  $$SectionsTableProcessedTableManager get sectionsRefs {
+    final manager = $$SectionsTableTableManager($_db, $_db.sections)
+        .filter((f) => f.course.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_sectionsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
 class $$CoursesTableFilterComposer
     extends Composer<_$AppDatabase, $CoursesTable> {
   $$CoursesTableFilterComposer({
@@ -2195,6 +2258,27 @@ class $$CoursesTableFilterComposer
 
   ColumnFilters<String> get language => $composableBuilder(
       column: $table.language, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> sectionsRefs(
+      Expression<bool> Function($$SectionsTableFilterComposer f) f) {
+    final $$SectionsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.sections,
+        getReferencedColumn: (t) => t.course,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SectionsTableFilterComposer(
+              $db: $db,
+              $table: $db.sections,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$CoursesTableOrderingComposer
@@ -2239,6 +2323,27 @@ class $$CoursesTableAnnotationComposer
 
   GeneratedColumn<String> get language =>
       $composableBuilder(column: $table.language, builder: (column) => column);
+
+  Expression<T> sectionsRefs<T extends Object>(
+      Expression<T> Function($$SectionsTableAnnotationComposer a) f) {
+    final $$SectionsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.sections,
+        getReferencedColumn: (t) => t.course,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$SectionsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.sections,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$CoursesTableTableManager extends RootTableManager<
@@ -2250,9 +2355,9 @@ class $$CoursesTableTableManager extends RootTableManager<
     $$CoursesTableAnnotationComposer,
     $$CoursesTableCreateCompanionBuilder,
     $$CoursesTableUpdateCompanionBuilder,
-    (Course, BaseReferences<_$AppDatabase, $CoursesTable, Course>),
+    (Course, $$CoursesTableReferences),
     Course,
-    PrefetchHooks Function()> {
+    PrefetchHooks Function({bool sectionsRefs})> {
   $$CoursesTableTableManager(_$AppDatabase db, $CoursesTable table)
       : super(TableManagerState(
           db: db,
@@ -2288,9 +2393,32 @@ class $$CoursesTableTableManager extends RootTableManager<
             language: language,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) =>
+                  (e.readTable(table), $$CoursesTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({sectionsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (sectionsRefs) db.sections],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (sectionsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$CoursesTableReferences._sectionsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$CoursesTableReferences(db, table, p0)
+                                .sectionsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.course == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
         ));
 }
 
@@ -2303,16 +2431,18 @@ typedef $$CoursesTableProcessedTableManager = ProcessedTableManager<
     $$CoursesTableAnnotationComposer,
     $$CoursesTableCreateCompanionBuilder,
     $$CoursesTableUpdateCompanionBuilder,
-    (Course, BaseReferences<_$AppDatabase, $CoursesTable, Course>),
+    (Course, $$CoursesTableReferences),
     Course,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function({bool sectionsRefs})>;
 typedef $$SectionsTableCreateCompanionBuilder = SectionsCompanion Function({
   Value<int> id,
+  required int course,
   required String name,
   required int number,
 });
 typedef $$SectionsTableUpdateCompanionBuilder = SectionsCompanion Function({
   Value<int> id,
+  Value<int> course,
   Value<String> name,
   Value<int> number,
 });
@@ -2320,6 +2450,18 @@ typedef $$SectionsTableUpdateCompanionBuilder = SectionsCompanion Function({
 final class $$SectionsTableReferences
     extends BaseReferences<_$AppDatabase, $SectionsTable, Section> {
   $$SectionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $CoursesTable _courseTable(_$AppDatabase db) => db.courses
+      .createAlias($_aliasNameGenerator(db.sections.course, db.courses.id));
+
+  $$CoursesTableProcessedTableManager get course {
+    final manager = $$CoursesTableTableManager($_db, $_db.courses)
+        .filter((f) => f.id($_item.course!));
+    final item = $_typedResult.readTableOrNull(_courseTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
 
   static MultiTypedResultKey<$WordsTable, List<Word>> _wordsRefsTable(
           _$AppDatabase db) =>
@@ -2353,6 +2495,26 @@ class $$SectionsTableFilterComposer
 
   ColumnFilters<int> get number => $composableBuilder(
       column: $table.number, builder: (column) => ColumnFilters(column));
+
+  $$CoursesTableFilterComposer get course {
+    final $$CoursesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.course,
+        referencedTable: $db.courses,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CoursesTableFilterComposer(
+              $db: $db,
+              $table: $db.courses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   Expression<bool> wordsRefs(
       Expression<bool> Function($$WordsTableFilterComposer f) f) {
@@ -2393,6 +2555,26 @@ class $$SectionsTableOrderingComposer
 
   ColumnOrderings<int> get number => $composableBuilder(
       column: $table.number, builder: (column) => ColumnOrderings(column));
+
+  $$CoursesTableOrderingComposer get course {
+    final $$CoursesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.course,
+        referencedTable: $db.courses,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CoursesTableOrderingComposer(
+              $db: $db,
+              $table: $db.courses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$SectionsTableAnnotationComposer
@@ -2412,6 +2594,26 @@ class $$SectionsTableAnnotationComposer
 
   GeneratedColumn<int> get number =>
       $composableBuilder(column: $table.number, builder: (column) => column);
+
+  $$CoursesTableAnnotationComposer get course {
+    final $$CoursesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.course,
+        referencedTable: $db.courses,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CoursesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.courses,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 
   Expression<T> wordsRefs<T extends Object>(
       Expression<T> Function($$WordsTableAnnotationComposer a) f) {
@@ -2446,7 +2648,7 @@ class $$SectionsTableTableManager extends RootTableManager<
     $$SectionsTableUpdateCompanionBuilder,
     (Section, $$SectionsTableReferences),
     Section,
-    PrefetchHooks Function({bool wordsRefs})> {
+    PrefetchHooks Function({bool course, bool wordsRefs})> {
   $$SectionsTableTableManager(_$AppDatabase db, $SectionsTable table)
       : super(TableManagerState(
           db: db,
@@ -2459,21 +2661,25 @@ class $$SectionsTableTableManager extends RootTableManager<
               $$SectionsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            Value<int> course = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<int> number = const Value.absent(),
           }) =>
               SectionsCompanion(
             id: id,
+            course: course,
             name: name,
             number: number,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            required int course,
             required String name,
             required int number,
           }) =>
               SectionsCompanion.insert(
             id: id,
+            course: course,
             name: name,
             number: number,
           ),
@@ -2481,11 +2687,35 @@ class $$SectionsTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$SectionsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({wordsRefs = false}) {
+          prefetchHooksCallback: ({course = false, wordsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [if (wordsRefs) db.words],
-              addJoins: null,
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (course) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.course,
+                    referencedTable: $$SectionsTableReferences._courseTable(db),
+                    referencedColumn:
+                        $$SectionsTableReferences._courseTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (wordsRefs)
@@ -2517,7 +2747,7 @@ typedef $$SectionsTableProcessedTableManager = ProcessedTableManager<
     $$SectionsTableUpdateCompanionBuilder,
     (Section, $$SectionsTableReferences),
     Section,
-    PrefetchHooks Function({bool wordsRefs})>;
+    PrefetchHooks Function({bool course, bool wordsRefs})>;
 typedef $$WordTypesTableCreateCompanionBuilder = WordTypesCompanion Function({
   Value<int> id,
   required String name,
