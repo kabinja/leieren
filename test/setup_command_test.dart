@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leieren/repository/course_respository.dart';
+import 'package:leieren/repository/noun_repository.dart';
 import 'package:leieren/repository/word_repository.dart';
 import 'dart:io';
 import 'package:mockito/annotations.dart';
@@ -60,11 +61,14 @@ void main() {
             language: "Lëtzebuergesch",
           ));
 
-      final word = await WordRepository(db).getByValue(1, "wou");
+      final word = await WordRepository(db).findByValue(1, "wou");
       expect("where", word!.translation);
       expect(1, word.id);
       expect(0, word.correctCount);
       expect(0, word.wrongCount);
+
+      final noun = await NounRepository(db).findByValue(1, "Fro");
+      print(noun);
     });
   });
 }

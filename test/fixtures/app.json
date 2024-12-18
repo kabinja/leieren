@@ -12,14 +12,6 @@
                 "dir/Dir",
                 "si"
             ]
-        },
-        "nouns": {
-            "genders": [
-                "M",
-                "F",
-                "N"
-            ],
-            "plural": "PL"
         }
     },
     "sections": [

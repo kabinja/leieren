@@ -8,7 +8,7 @@ class WordTypeRepository {
 
   WordTypeRepository(this.db);
 
-  Future<WordType> getType(TypeEnum type) async {
+  Future<WordType> get(TypeEnum type) async {
     return await (db.select(db.wordTypes)
           ..where(
             (t) => t.name.equals(type.name),

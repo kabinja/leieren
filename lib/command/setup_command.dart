@@ -1,8 +1,10 @@
 import 'package:leieren/model/db/database.dart' as sql;
 import 'package:leieren/model/json/content_model.dart' as json;
 import 'package:leieren/repository/course_respository.dart';
+import 'package:leieren/repository/noun_repository.dart';
 import 'package:leieren/repository/section_repository.dart';
 import 'package:leieren/repository/word_repository.dart';
+import 'package:leieren/repository/word_type_repository.dart';
 import 'package:leieren/service/json_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,17 +36,37 @@ class SetupCommand {
           name: e.value.section,
           number: e.key,
         );
-        await this._setupWords(section.id, e.value.words);
+        await this._setupWords(
+          section.id,
+          e.value.words,
+        );
+        await this._setupNouns(
+          section.id,
+          e.value.nouns,
+        );
       });
     });
   }
 
   Future<void> _setupWords(int sectionId, List<json.Word> words) async {
     await Future.forEach(words, (w) async {
-      final word = await WordRepository(db).createOrUpdate(
+      await WordRepository(db).createOrUpdate(
         sectionId: sectionId,
         value: w.value,
         translation: w.translation,
+        wordType: TypeEnum.word,
+      );
+    });
+  }
+
+  Future<void> _setupNouns(int sectionId, List<json.Noun> nouns) async {
+    await Future.forEach(nouns, (n) async {
+      await NounRepository(db).createOrUpdate(
+        sectionId: sectionId,
+        value: n.value,
+        translation: n.translation,
+        gender: n.gender,
+        plural: n.plural,
       );
     });
   }

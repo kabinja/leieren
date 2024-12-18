@@ -65,7 +65,7 @@ class WordService {
     answer.add("${noun.value} (${noun.gender})");
 
     if (noun.plural != Null) {
-      answer.add("${noun.plural} (${configuration.nouns.plural})");
+      answer.add("${noun.plural}");
     }
 
     return answer;

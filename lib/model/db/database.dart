@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:leieren/repository/gender_repository.dart';
 import 'package:leieren/repository/word_type_repository.dart';
 
 part 'database.g.dart';
@@ -42,7 +43,7 @@ class Pronouns extends Table {
   TextColumn get value => text()();
 }
 
-class Verbs extends Table {
+class VerbExtras extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get word => integer().references(Words, #id)();
   TextColumn get value => text()();
@@ -50,16 +51,16 @@ class Verbs extends Table {
   IntColumn get pronoun => integer().references(Pronouns, #id)();
 }
 
-class Gender extends Table {
+class Genders extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get value => text()();
+  TextColumn get name => text()();
+  TextColumn get short => text()();
 }
 
-class Nouns extends Table {
+class NounExtras extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get word => integer().references(Words, #id)();
-  TextColumn get value => text()();
-  IntColumn get gender => integer().references(Gender, #id)();
+  IntColumn get gender => integer().references(Genders, #id)();
   TextColumn get plural => text().nullable()();
 }
 
@@ -69,9 +70,9 @@ class Nouns extends Table {
   WordTypes,
   Words,
   Pronouns,
-  Verbs,
-  Gender,
-  Nouns
+  VerbExtras,
+  Genders,
+  NounExtras
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
@@ -82,6 +83,7 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> initialize() async {
     await WordTypeRepository(this).initialize();
+    await GenderRepository(this).initialize();
   }
 
   @override

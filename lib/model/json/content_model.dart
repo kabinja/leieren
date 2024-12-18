@@ -32,24 +32,10 @@ class VerbConfiguration {
 }
 
 @JsonSerializable()
-class NounConfiguration {
-  final List<String> genders;
-  final String plural;
-
-  NounConfiguration(this.genders, this.plural);
-
-  factory NounConfiguration.fromJson(Map<String, dynamic> json) =>
-      _$NounConfigurationFromJson(json);
-
-  Map<String, dynamic> toJson() => _$NounConfigurationToJson(this);
-}
-
-@JsonSerializable()
 class Configuration {
   final VerbConfiguration verbs;
-  final NounConfiguration nouns;
 
-  Configuration(this.verbs, this.nouns);
+  Configuration(this.verbs);
 
   factory Configuration.fromJson(Map<String, dynamic> json) =>
       _$ConfigurationFromJson(json);
