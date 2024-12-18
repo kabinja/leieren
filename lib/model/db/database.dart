@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:leieren/repository/word_type_repository.dart';
 
 part 'database.g.dart';
 
@@ -28,7 +29,7 @@ class Words extends Table {
   IntColumn get type => integer().references(WordTypes, #id)();
   TextColumn get translation => text()();
   TextColumn get value => text()();
-  TextColumn get specifier => text()();
+  TextColumn get specifier => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get lastCorrect => dateTime().nullable()();
   DateTimeColumn get lastWrong => dateTime().nullable()();
@@ -79,71 +80,10 @@ class AppDatabase extends _$AppDatabase {
     return AppDatabase(driftDatabase(name: 'transaltions'));
   }
 
+  Future<void> initialize() async {
+    await WordTypeRepository(this).initialize();
+  }
+
   @override
   int get schemaVersion => 1;
-
-  Future<Course?> getCourseByName(String name) async {
-    return (select(courses)..where((t) => t.name.equals(name)))
-        .getSingleOrNull();
-  }
-
-  Future<Section?> getSectionByName(int courseId, String name) async {
-    return (select(sections)
-          ..where((t) => t.course.equals(courseId) & t.name.equals(name)))
-        .getSingleOrNull();
-  }
-
-  Future<Course> createOrUpdateCourse({
-    required String name,
-    required String level,
-    required String language,
-  }) async {
-    final course = await this.getCourseByName(name);
-    if (course == null) {
-      final id = await into(courses).insert(CoursesCompanion(
-        name: Value(name),
-        level: Value(level),
-        language: Value(language),
-      ));
-      return await (select(courses)
-            ..where(
-              (tbl) => tbl.id.equals(id),
-            ))
-          .getSingle();
-    }
-    await update(courses)
-      ..where((t) => t.id.equals(course.id));
-    return await (select(courses)
-          ..where(
-            (tbl) => tbl.id.equals(course.id),
-          ))
-        .getSingle();
-  }
-
-  Future<Section> createOrUpdateSection({
-    required int courseId,
-    required String name,
-    required int number,
-  }) async {
-    final section = await this.getSectionByName(courseId, name);
-    if (section == null) {
-      final id = await into(sections).insert(SectionsCompanion(
-        name: Value(name),
-        number: Value(number),
-        course: Value(courseId),
-      ));
-      return await (select(sections)
-            ..where(
-              (t) => t.id.equals(id),
-            ))
-          .getSingle();
-    }
-    await update(sections)
-      ..where((t) => t.id.equals(section.id));
-    return await (select(sections)
-          ..where(
-            (t) => t.id.equals(section.id),
-          ))
-        .getSingle();
-  }
 }

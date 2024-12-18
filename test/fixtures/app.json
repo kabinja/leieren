@@ -25,6 +25,12 @@
     "sections": [
         {
             "section": "Kaptel 1",
+            "words": [
+                {
+                    "value": "wou",
+                    "translation": "where"
+                }
+            ],
             "verbs": [
                 {
                     "translation": "to come",

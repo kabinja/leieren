@@ -25,12 +25,25 @@
     "sections": [
         {
             "section": "Kaptel 1",
+            "words": [
+                {
+                    "value": "wou",
+                    "translation": "where"
+                }
+            ],
             "verbs": [
                 {
                     "translation": "to come",
                     "value": "kommen",
                     "grammar": {
-                        "present": ["kommen", "kënns", "kënnt", "kommen", "kommt", "kommen"]
+                        "present": [
+                            "kommen",
+                            "kënns",
+                            "kënnt",
+                            "kommen",
+                            "kommt",
+                            "kommen"
+                        ]
                     }
                 }
             ],

@@ -736,8 +736,8 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
       const VerificationMeta('specifier');
   @override
   late final GeneratedColumn<String> specifier = GeneratedColumn<String>(
-      'specifier', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'specifier', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -828,8 +828,6 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
     if (data.containsKey('specifier')) {
       context.handle(_specifierMeta,
           specifier.isAcceptableOrUnknown(data['specifier']!, _specifierMeta));
-    } else if (isInserting) {
-      context.missing(_specifierMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -879,7 +877,7 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
       value: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
       specifier: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}specifier'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}specifier']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       lastCorrect: attachedDatabase.typeMapping
@@ -905,7 +903,7 @@ class Word extends DataClass implements Insertable<Word> {
   final int type;
   final String translation;
   final String value;
-  final String specifier;
+  final String? specifier;
   final DateTime createdAt;
   final DateTime? lastCorrect;
   final DateTime? lastWrong;
@@ -917,7 +915,7 @@ class Word extends DataClass implements Insertable<Word> {
       required this.type,
       required this.translation,
       required this.value,
-      required this.specifier,
+      this.specifier,
       required this.createdAt,
       this.lastCorrect,
       this.lastWrong,
@@ -931,7 +929,9 @@ class Word extends DataClass implements Insertable<Word> {
     map['type'] = Variable<int>(type);
     map['translation'] = Variable<String>(translation);
     map['value'] = Variable<String>(value);
-    map['specifier'] = Variable<String>(specifier);
+    if (!nullToAbsent || specifier != null) {
+      map['specifier'] = Variable<String>(specifier);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || lastCorrect != null) {
       map['last_correct'] = Variable<DateTime>(lastCorrect);
@@ -951,7 +951,9 @@ class Word extends DataClass implements Insertable<Word> {
       type: Value(type),
       translation: Value(translation),
       value: Value(value),
-      specifier: Value(specifier),
+      specifier: specifier == null && nullToAbsent
+          ? const Value.absent()
+          : Value(specifier),
       createdAt: Value(createdAt),
       lastCorrect: lastCorrect == null && nullToAbsent
           ? const Value.absent()
@@ -973,7 +975,7 @@ class Word extends DataClass implements Insertable<Word> {
       type: serializer.fromJson<int>(json['type']),
       translation: serializer.fromJson<String>(json['translation']),
       value: serializer.fromJson<String>(json['value']),
-      specifier: serializer.fromJson<String>(json['specifier']),
+      specifier: serializer.fromJson<String?>(json['specifier']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       lastCorrect: serializer.fromJson<DateTime?>(json['lastCorrect']),
       lastWrong: serializer.fromJson<DateTime?>(json['lastWrong']),
@@ -990,7 +992,7 @@ class Word extends DataClass implements Insertable<Word> {
       'type': serializer.toJson<int>(type),
       'translation': serializer.toJson<String>(translation),
       'value': serializer.toJson<String>(value),
-      'specifier': serializer.toJson<String>(specifier),
+      'specifier': serializer.toJson<String?>(specifier),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'lastCorrect': serializer.toJson<DateTime?>(lastCorrect),
       'lastWrong': serializer.toJson<DateTime?>(lastWrong),
@@ -1005,7 +1007,7 @@ class Word extends DataClass implements Insertable<Word> {
           int? type,
           String? translation,
           String? value,
-          String? specifier,
+          Value<String?> specifier = const Value.absent(),
           DateTime? createdAt,
           Value<DateTime?> lastCorrect = const Value.absent(),
           Value<DateTime?> lastWrong = const Value.absent(),
@@ -1017,7 +1019,7 @@ class Word extends DataClass implements Insertable<Word> {
         type: type ?? this.type,
         translation: translation ?? this.translation,
         value: value ?? this.value,
-        specifier: specifier ?? this.specifier,
+        specifier: specifier.present ? specifier.value : this.specifier,
         createdAt: createdAt ?? this.createdAt,
         lastCorrect: lastCorrect.present ? lastCorrect.value : this.lastCorrect,
         lastWrong: lastWrong.present ? lastWrong.value : this.lastWrong,
@@ -1089,7 +1091,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
   final Value<int> type;
   final Value<String> translation;
   final Value<String> value;
-  final Value<String> specifier;
+  final Value<String?> specifier;
   final Value<DateTime> createdAt;
   final Value<DateTime?> lastCorrect;
   final Value<DateTime?> lastWrong;
@@ -1114,7 +1116,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
     required int type,
     required String translation,
     required String value,
-    required String specifier,
+    this.specifier = const Value.absent(),
     required DateTime createdAt,
     this.lastCorrect = const Value.absent(),
     this.lastWrong = const Value.absent(),
@@ -1124,7 +1126,6 @@ class WordsCompanion extends UpdateCompanion<Word> {
         type = Value(type),
         translation = Value(translation),
         value = Value(value),
-        specifier = Value(specifier),
         createdAt = Value(createdAt);
   static Insertable<Word> custom({
     Expression<int>? id,
@@ -1160,7 +1161,7 @@ class WordsCompanion extends UpdateCompanion<Word> {
       Value<int>? type,
       Value<String>? translation,
       Value<String>? value,
-      Value<String>? specifier,
+      Value<String?>? specifier,
       Value<DateTime>? createdAt,
       Value<DateTime?>? lastCorrect,
       Value<DateTime?>? lastWrong,
@@ -2953,7 +2954,7 @@ typedef $$WordsTableCreateCompanionBuilder = WordsCompanion Function({
   required int type,
   required String translation,
   required String value,
-  required String specifier,
+  Value<String?> specifier,
   required DateTime createdAt,
   Value<DateTime?> lastCorrect,
   Value<DateTime?> lastWrong,
@@ -2966,7 +2967,7 @@ typedef $$WordsTableUpdateCompanionBuilder = WordsCompanion Function({
   Value<int> type,
   Value<String> translation,
   Value<String> value,
-  Value<String> specifier,
+  Value<String?> specifier,
   Value<DateTime> createdAt,
   Value<DateTime?> lastCorrect,
   Value<DateTime?> lastWrong,
@@ -3375,7 +3376,7 @@ class $$WordsTableTableManager extends RootTableManager<
             Value<int> type = const Value.absent(),
             Value<String> translation = const Value.absent(),
             Value<String> value = const Value.absent(),
-            Value<String> specifier = const Value.absent(),
+            Value<String?> specifier = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> lastCorrect = const Value.absent(),
             Value<DateTime?> lastWrong = const Value.absent(),
@@ -3401,7 +3402,7 @@ class $$WordsTableTableManager extends RootTableManager<
             required int type,
             required String translation,
             required String value,
-            required String specifier,
+            Value<String?> specifier = const Value.absent(),
             required DateTime createdAt,
             Value<DateTime?> lastCorrect = const Value.absent(),
             Value<DateTime?> lastWrong = const Value.absent(),

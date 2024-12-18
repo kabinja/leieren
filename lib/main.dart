@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:leieren/command/setup_command.dart';
-import 'package:leieren/model/drift/database.dart';
+import 'package:leieren/model/db/database.dart';
 import 'package:leieren/view/page/home_page.dart';
 import 'package:http/http.dart' as http;
 
