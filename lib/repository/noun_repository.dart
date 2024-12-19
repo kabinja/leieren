@@ -5,10 +5,19 @@ import 'package:leieren/repository/word_repository.dart';
 import 'package:leieren/repository/word_type_repository.dart';
 
 class Noun {
-  final Word word;
-  final NounExtra nounExtra;
+  final Word _word;
+  final NounExtra _nounExtra;
+  final Gender _gender;
 
-  Noun(this.word, this.nounExtra);
+  int get id => _word.id;
+  int get section => _word.section;
+  String get value => _word.value;
+  String get transaction => _word.translation;
+  DateTime get createdAt => _word.createdAt;
+  String? get plural => _nounExtra.plural;
+  String get gender => _gender.short;
+
+  Noun(this._word, this._nounExtra, this._gender);
 }
 
 class NounRepository {
@@ -17,26 +26,38 @@ class NounRepository {
 
   NounRepository(this.db) : wordRepository = WordRepository(db);
 
-  Future<Noun> getById(int id) async {
+  Future<Noun?> findById(int id) async {
     final result = await (db.select(db.words)
           ..where(
             (t) => t.id.equals(id),
           ))
         .join([
       innerJoin(db.nounExtras, db.nounExtras.word.equalsExp(db.words.id)),
-    ]).getSingle();
+      innerJoin(db.genders, db.nounExtras.gender.equalsExp(db.genders.id))
+    ]).getSingleOrNull();
 
-    return Noun(result.readTable(db.words), result.readTable(db.nounExtras));
+    return Noun(
+      result!.readTable(db.words),
+      result.readTable(db.nounExtras),
+      result.readTable(db.genders),
+    );
   }
 
-  Future<Noun?> findByValue(int sectionId, String value) async {
-    final word = await wordRepository.findByValue(sectionId, value);
+  Future<Noun?> find(int sectionId, String value, String translation) async {
+    final type = await WordTypeRepository(db).get(TypeEnum.noun);
+    final word = await wordRepository.find(
+      sectionId: sectionId,
+      value: value,
+      specifier: null,
+      translation: translation,
+      typeId: type.id,
+    );
 
     if (word == null) {
       return Future.value(null);
     }
 
-    return getById(word.id);
+    return findById(word.id);
   }
 
   Future<Noun> createOrUpdate({
@@ -49,6 +70,7 @@ class NounRepository {
     final word = await wordRepository.createOrUpdate(
       sectionId: sectionId,
       value: value,
+      specifier: null,
       translation: translation,
       wordType: TypeEnum.noun,
     );
@@ -66,10 +88,10 @@ class NounRepository {
             gender: Value(genderData.id),
             plural: Value(plural),
           ));
-      return await getById(word.id);
+      return await findById(word.id) as Noun;
     }
     await db.update(db.words)
       ..where((t) => t.id.equals(word.id));
-    return getById(word.id);
+    return findById(word.id) as Noun;
   }
 }

@@ -53,6 +53,7 @@ class SetupCommand {
       await WordRepository(db).createOrUpdate(
         sectionId: sectionId,
         value: w.value,
+        specifier: null,
         translation: w.translation,
         wordType: TypeEnum.word,
       );

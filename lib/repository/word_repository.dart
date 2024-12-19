@@ -7,9 +7,25 @@ class WordRepository {
 
   WordRepository(this.db);
 
-  Future<Word?> findByValue(int sectionId, String value) async {
+  Future<Word?> findById(int id) async {
+    return await (db.select(db.words)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+  }
+
+  Future<Word?> find({
+    required int sectionId,
+    required String value,
+    required String? specifier,
+    required String translation,
+    required int typeId,
+  }) async {
     return await (db.select(db.words)
-          ..where((t) => t.section.equals(sectionId) & t.value.equals(value)))
+          ..where((t) =>
+              t.section.equals(sectionId) &
+              t.specifier.equalsNullable(specifier) &
+              t.value.equals(value) &
+              t.translation.equals(translation) &
+              t.type.equals(typeId)))
         .getSingleOrNull();
   }
 
@@ -17,14 +33,22 @@ class WordRepository {
     required int sectionId,
     required String value,
     required String translation,
+    required String? specifier,
     required TypeEnum wordType,
   }) async {
-    final word = await this.findByValue(sectionId, value);
+    final type = await WordTypeRepository(db).get(wordType);
+    final word = await this.find(
+      sectionId: sectionId,
+      value: value,
+      specifier: specifier,
+      translation: translation,
+      typeId: type.id,
+    );
     if (word == null) {
-      final type = await WordTypeRepository(db).get(wordType);
       final id = await db.into(db.words).insert(WordsCompanion(
             section: Value(sectionId),
             value: Value(value),
+            specifier: Value(specifier),
             translation: Value(translation),
             type: Value(type.id),
             createdAt: Value(DateTime.now()),

@@ -61,14 +61,21 @@ void main() {
             language: "Lëtzebuergesch",
           ));
 
-      final word = await WordRepository(db).findByValue(1, "wou");
+      final word = await WordRepository(db).findById(1);
       expect("where", word!.translation);
       expect(1, word.id);
       expect(0, word.correctCount);
       expect(0, word.wrongCount);
 
-      final noun = await NounRepository(db).findByValue(1, "Fro");
-      print(noun);
+      final fro = await NounRepository(db).findById(2);
+      expect("Fro", fro!.value);
+      expect("Froen", fro.plural);
+      expect("F", fro.gender);
+
+      final land = await NounRepository(db).findById(3);
+      expect("Land", land!.value);
+      expect("Länner", land.plural);
+      expect("N", land.gender);
     });
   });
 }
