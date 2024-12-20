@@ -43,7 +43,11 @@ class NounRepository {
     );
   }
 
-  Future<Noun?> find(int sectionId, String value, String translation) async {
+  Future<Noun?> find({
+    required int sectionId,
+    required String value,
+    required String translation,
+  }) async {
     final type = await WordTypeRepository(db).get(TypeEnum.noun);
     final word = await wordRepository.find(
       sectionId: sectionId,
