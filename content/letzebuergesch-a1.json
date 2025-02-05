@@ -37,6 +37,16 @@
                             "kommen"
                         ]
                     }
+                },
+                {
+                    "translation": "to rain",
+                    "value": "renner",
+                    "conjugaison": {
+                        "present": ["reent"]
+                    },
+                    "pronouns": {
+                        "*": ["et"]
+                    }
                 }
             ],
             "nouns": [

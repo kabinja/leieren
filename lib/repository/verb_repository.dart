@@ -24,9 +24,9 @@ class VerbRepository {
   final AppDatabase db;
   final WordRepository wordRepository;
 
-  VerbRepository(this.db, this.wordRepository);
+  VerbRepository(this.db) : wordRepository = WordRepository(db);
 
-  Future<Verb> createOrUpdate({
+  Future<void> createOrUpdate({
     required int sectionId,
     required String value,
     required String tense,
@@ -50,7 +50,7 @@ class VerbRepository {
       );
     });
 
-    return getById(word.id);
+    // return getById(word.id);
   }
 
   void _createOrUpdateConjudated({
@@ -63,6 +63,7 @@ class VerbRepository {
           ..where((t) => t.id.equals(word) & t.position.equals(position)))
         .getSingleOrNull();
     final pronounData = await PronounRepository(db).createIfNotExist(pronoun);
+    print(pronounData);
     if (verbExtra == null) {}
   }
 }

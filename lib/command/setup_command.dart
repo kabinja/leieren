@@ -3,6 +3,7 @@ import 'package:leieren/model/json/content_model.dart' as json;
 import 'package:leieren/repository/course_respository.dart';
 import 'package:leieren/repository/noun_repository.dart';
 import 'package:leieren/repository/section_repository.dart';
+import 'package:leieren/repository/verb_repository.dart';
 import 'package:leieren/repository/word_repository.dart';
 import 'package:leieren/repository/word_type_repository.dart';
 import 'package:leieren/service/json_service.dart';
@@ -44,6 +45,11 @@ class SetupCommand {
           section.id,
           e.value.nouns,
         );
+        await this._setupVerbs(
+          section.id,
+          e.value.verbs,
+          content.configuration.verbs.pronouns,
+        );
       });
     });
   }
@@ -70,5 +76,58 @@ class SetupCommand {
         plural: n.plural,
       );
     });
+  }
+
+  Future<void> _setupVerbs(
+    int sectionId,
+    List<json.Verb> verbs,
+    List<String> pronouns,
+  ) async {
+    await Future.forEach(verbs, (v) async {
+      await Future.forEach(v.conjugaison.entries, (t) async {
+        await VerbRepository(db).createOrUpdate(
+          sectionId: sectionId,
+          value: v.value,
+          tense: t.key,
+          translation: v.translation,
+          conjugated: _setupConjugated(t.key, pronouns, v.pronouns, t.value),
+        );
+      });
+    });
+  }
+
+  List<Conjugated> _setupConjugated(
+    String tense,
+    List<String> defaultPronouns,
+    Map<String, List<String>>? specializedPronouns,
+    List<String> verbs,
+  ) {
+    if (specializedPronouns == null) {
+      return _buildConjugated(defaultPronouns, verbs);
+    }
+
+    if (specializedPronouns.containsKey(tense)) {
+      return _buildConjugated(specializedPronouns[tense]!, verbs);
+    }
+
+    if (specializedPronouns.containsKey("*")) {
+      return _buildConjugated(specializedPronouns["*"]!, verbs);
+    }
+
+    return _buildConjugated(defaultPronouns, verbs);
+  }
+
+  List<Conjugated> _buildConjugated(
+    List<String> pronouns,
+    List<String> verbs,
+  ) {
+    if (pronouns.length != verbs.length) {
+      throw Exception("Invalid verb and pronouns combinaison");
+    }
+
+    return [
+      for (int i = 0; i < pronouns.length; i += 1)
+        Conjugated(pronoun: pronouns[i], verb: verbs[i])
+    ];
   }
 }

@@ -66,10 +66,24 @@ class Expression extends Word {
 }
 
 @JsonSerializable()
+class Conjugaison {
+  final String tense;
+  final List<String>? pronouns;
+  final bool displayPronouns;
+
+  Conjugaison({
+    required this.tense,
+    this.displayPronouns = true,
+    this.pronouns,
+  });
+}
+
+@JsonSerializable()
 class Verb extends Word {
   final Map<String, List<String>> conjugaison;
+  final Map<String, List<String>>? pronouns;
 
-  Verb(String value, String translation, this.conjugaison)
+  Verb(String value, String translation, this.conjugaison, this.pronouns)
       : super(value, translation);
 
   factory Verb.fromJson(Map<String, dynamic> json) => _$VerbFromJson(json);

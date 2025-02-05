@@ -65,10 +65,29 @@ Map<String, dynamic> _$ExpressionToJson(Expression instance) =>
       'translation': instance.translation,
     };
 
+Conjugaison _$ConjugaisonFromJson(Map<String, dynamic> json) => Conjugaison(
+      tense: json['tense'] as String,
+      displayPronouns: json['displayPronouns'] as bool? ?? true,
+      pronouns: (json['pronouns'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+    );
+
+Map<String, dynamic> _$ConjugaisonToJson(Conjugaison instance) =>
+    <String, dynamic>{
+      'tense': instance.tense,
+      'pronouns': instance.pronouns,
+      'displayPronouns': instance.displayPronouns,
+    };
+
 Verb _$VerbFromJson(Map<String, dynamic> json) => Verb(
       json['value'] as String,
       json['translation'] as String,
       (json['conjugaison'] as Map<String, dynamic>).map(
+        (k, e) =>
+            MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
+      ),
+      (json['pronouns'] as Map<String, dynamic>?)?.map(
         (k, e) =>
             MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
       ),
@@ -78,6 +97,7 @@ Map<String, dynamic> _$VerbToJson(Verb instance) => <String, dynamic>{
       'value': instance.value,
       'translation': instance.translation,
       'conjugaison': instance.conjugaison,
+      'pronouns': instance.pronouns,
     };
 
 Noun _$NounFromJson(Map<String, dynamic> json) => Noun(

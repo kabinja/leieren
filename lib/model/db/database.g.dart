@@ -2241,7 +2241,7 @@ final class $$CoursesTableReferences
 
   $$SectionsTableProcessedTableManager get sectionsRefs {
     final manager = $$SectionsTableTableManager($_db, $_db.sections)
-        .filter((f) => f.course.id($_item.id));
+        .filter((f) => f.course.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_sectionsRefsTable($_db));
     return ProcessedTableManager(
@@ -2466,8 +2466,10 @@ final class $$SectionsTableReferences
       .createAlias($_aliasNameGenerator(db.sections.course, db.courses.id));
 
   $$CoursesTableProcessedTableManager get course {
+    final $_column = $_itemColumn<int>('course')!;
+
     final manager = $$CoursesTableTableManager($_db, $_db.courses)
-        .filter((f) => f.id($_item.course!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_courseTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -2481,7 +2483,7 @@ final class $$SectionsTableReferences
 
   $$WordsTableProcessedTableManager get wordsRefs {
     final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.section.id($_item.id));
+        .filter((f) => f.section.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
     return ProcessedTableManager(
@@ -2779,7 +2781,7 @@ final class $$WordTypesTableReferences
 
   $$WordsTableProcessedTableManager get wordsRefs {
     final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.type.id($_item.id));
+        .filter((f) => f.type.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
     return ProcessedTableManager(
@@ -2993,8 +2995,10 @@ final class $$WordsTableReferences
       .createAlias($_aliasNameGenerator(db.words.section, db.sections.id));
 
   $$SectionsTableProcessedTableManager get section {
+    final $_column = $_itemColumn<int>('section')!;
+
     final manager = $$SectionsTableTableManager($_db, $_db.sections)
-        .filter((f) => f.id($_item.section!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_sectionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -3005,8 +3009,10 @@ final class $$WordsTableReferences
       .createAlias($_aliasNameGenerator(db.words.type, db.wordTypes.id));
 
   $$WordTypesTableProcessedTableManager get type {
+    final $_column = $_itemColumn<int>('type')!;
+
     final manager = $$WordTypesTableTableManager($_db, $_db.wordTypes)
-        .filter((f) => f.id($_item.type!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_typeTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -3020,7 +3026,7 @@ final class $$WordsTableReferences
 
   $$VerbExtrasTableProcessedTableManager get verbExtrasRefs {
     final manager = $$VerbExtrasTableTableManager($_db, $_db.verbExtras)
-        .filter((f) => f.word.id($_item.id));
+        .filter((f) => f.word.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_verbExtrasRefsTable($_db));
     return ProcessedTableManager(
@@ -3034,7 +3040,7 @@ final class $$WordsTableReferences
 
   $$NounExtrasTableProcessedTableManager get nounExtrasRefs {
     final manager = $$NounExtrasTableTableManager($_db, $_db.nounExtras)
-        .filter((f) => f.word.id($_item.id));
+        .filter((f) => f.word.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_nounExtrasRefsTable($_db));
     return ProcessedTableManager(
@@ -3547,7 +3553,7 @@ final class $$PronounsTableReferences
 
   $$VerbExtrasTableProcessedTableManager get verbExtrasRefs {
     final manager = $$VerbExtrasTableTableManager($_db, $_db.verbExtras)
-        .filter((f) => f.pronoun.id($_item.id));
+        .filter((f) => f.pronoun.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_verbExtrasRefsTable($_db));
     return ProcessedTableManager(
@@ -3748,8 +3754,10 @@ final class $$VerbExtrasTableReferences
       .createAlias($_aliasNameGenerator(db.verbExtras.word, db.words.id));
 
   $$WordsTableProcessedTableManager get word {
+    final $_column = $_itemColumn<int>('word')!;
+
     final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.id($_item.word!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_wordTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -3760,8 +3768,10 @@ final class $$VerbExtrasTableReferences
       .createAlias($_aliasNameGenerator(db.verbExtras.pronoun, db.pronouns.id));
 
   $$PronounsTableProcessedTableManager get pronoun {
+    final $_column = $_itemColumn<int>('pronoun')!;
+
     final manager = $$PronounsTableTableManager($_db, $_db.pronouns)
-        .filter((f) => f.id($_item.pronoun!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_pronounTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -4083,7 +4093,7 @@ final class $$GendersTableReferences
 
   $$NounExtrasTableProcessedTableManager get nounExtrasRefs {
     final manager = $$NounExtrasTableTableManager($_db, $_db.nounExtras)
-        .filter((f) => f.gender.id($_item.id));
+        .filter((f) => f.gender.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_nounExtrasRefsTable($_db));
     return ProcessedTableManager(
@@ -4295,8 +4305,10 @@ final class $$NounExtrasTableReferences
       .createAlias($_aliasNameGenerator(db.nounExtras.word, db.words.id));
 
   $$WordsTableProcessedTableManager get word {
+    final $_column = $_itemColumn<int>('word')!;
+
     final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.id($_item.word!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_wordTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -4307,8 +4319,10 @@ final class $$NounExtrasTableReferences
       .createAlias($_aliasNameGenerator(db.nounExtras.gender, db.genders.id));
 
   $$GendersTableProcessedTableManager get gender {
+    final $_column = $_itemColumn<int>('gender')!;
+
     final manager = $$GendersTableTableManager($_db, $_db.genders)
-        .filter((f) => f.id($_item.gender!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_genderTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
