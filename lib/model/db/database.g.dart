@@ -11,28 +11,45 @@ class $CoursesTable extends Courses with TableInfo<$CoursesTable, Course> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _levelMeta = const VerificationMeta('level');
   @override
   late final GeneratedColumn<String> level = GeneratedColumn<String>(
-      'level', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _languageMeta =
-      const VerificationMeta('language');
+    'level',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _languageMeta = const VerificationMeta(
+    'language',
+  );
   @override
   late final GeneratedColumn<String> language = GeneratedColumn<String>(
-      'language', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'language',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, name, level, language];
   @override
@@ -41,8 +58,10 @@ class $CoursesTable extends Courses with TableInfo<$CoursesTable, Course> {
   String get actualTableName => $name;
   static const String $name = 'courses';
   @override
-  VerificationContext validateIntegrity(Insertable<Course> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Course> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -50,19 +69,25 @@ class $CoursesTable extends Courses with TableInfo<$CoursesTable, Course> {
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('level')) {
       context.handle(
-          _levelMeta, level.isAcceptableOrUnknown(data['level']!, _levelMeta));
+        _levelMeta,
+        level.isAcceptableOrUnknown(data['level']!, _levelMeta),
+      );
     } else if (isInserting) {
       context.missing(_levelMeta);
     }
     if (data.containsKey('language')) {
-      context.handle(_languageMeta,
-          language.isAcceptableOrUnknown(data['language']!, _languageMeta));
+      context.handle(
+        _languageMeta,
+        language.isAcceptableOrUnknown(data['language']!, _languageMeta),
+      );
     } else if (isInserting) {
       context.missing(_languageMeta);
     }
@@ -75,14 +100,26 @@ class $CoursesTable extends Courses with TableInfo<$CoursesTable, Course> {
   Course map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Course(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      level: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}level'])!,
-      language: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}language'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
+      level:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}level'],
+          )!,
+      language:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}language'],
+          )!,
     );
   }
 
@@ -97,11 +134,12 @@ class Course extends DataClass implements Insertable<Course> {
   final String name;
   final String level;
   final String language;
-  const Course(
-      {required this.id,
-      required this.name,
-      required this.level,
-      required this.language});
+  const Course({
+    required this.id,
+    required this.name,
+    required this.level,
+    required this.language,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -121,8 +159,10 @@ class Course extends DataClass implements Insertable<Course> {
     );
   }
 
-  factory Course.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Course.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Course(
       id: serializer.fromJson<int>(json['id']),
@@ -197,9 +237,9 @@ class CoursesCompanion extends UpdateCompanion<Course> {
     required String name,
     required String level,
     required String language,
-  })  : name = Value(name),
-        level = Value(level),
-        language = Value(language);
+  }) : name = Value(name),
+       level = Value(level),
+       language = Value(language);
   static Insertable<Course> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -214,11 +254,12 @@ class CoursesCompanion extends UpdateCompanion<Course> {
     });
   }
 
-  CoursesCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
-      Value<String>? level,
-      Value<String>? language}) {
+  CoursesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? level,
+    Value<String>? language,
+  }) {
     return CoursesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -265,30 +306,46 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _courseMeta = const VerificationMeta('course');
   @override
   late final GeneratedColumn<int> course = GeneratedColumn<int>(
-      'course', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES courses (id)'));
+    'course',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES courses (id)',
+    ),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _numberMeta = const VerificationMeta('number');
   @override
   late final GeneratedColumn<int> number = GeneratedColumn<int>(
-      'number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, course, name, number];
   @override
@@ -297,28 +354,36 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
   String get actualTableName => $name;
   static const String $name = 'sections';
   @override
-  VerificationContext validateIntegrity(Insertable<Section> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Section> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('course')) {
-      context.handle(_courseMeta,
-          course.isAcceptableOrUnknown(data['course']!, _courseMeta));
+      context.handle(
+        _courseMeta,
+        course.isAcceptableOrUnknown(data['course']!, _courseMeta),
+      );
     } else if (isInserting) {
       context.missing(_courseMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('number')) {
-      context.handle(_numberMeta,
-          number.isAcceptableOrUnknown(data['number']!, _numberMeta));
+      context.handle(
+        _numberMeta,
+        number.isAcceptableOrUnknown(data['number']!, _numberMeta),
+      );
     } else if (isInserting) {
       context.missing(_numberMeta);
     }
@@ -331,14 +396,26 @@ class $SectionsTable extends Sections with TableInfo<$SectionsTable, Section> {
   Section map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Section(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      course: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}course'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      number: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}number'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      course:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}course'],
+          )!,
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
+      number:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}number'],
+          )!,
     );
   }
 
@@ -353,11 +430,12 @@ class Section extends DataClass implements Insertable<Section> {
   final int course;
   final String name;
   final int number;
-  const Section(
-      {required this.id,
-      required this.course,
-      required this.name,
-      required this.number});
+  const Section({
+    required this.id,
+    required this.course,
+    required this.name,
+    required this.number,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -377,8 +455,10 @@ class Section extends DataClass implements Insertable<Section> {
     );
   }
 
-  factory Section.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Section.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Section(
       id: serializer.fromJson<int>(json['id']),
@@ -453,9 +533,9 @@ class SectionsCompanion extends UpdateCompanion<Section> {
     required int course,
     required String name,
     required int number,
-  })  : course = Value(course),
-        name = Value(name),
-        number = Value(number);
+  }) : course = Value(course),
+       name = Value(name),
+       number = Value(number);
   static Insertable<Section> custom({
     Expression<int>? id,
     Expression<int>? course,
@@ -470,11 +550,12 @@ class SectionsCompanion extends UpdateCompanion<Section> {
     });
   }
 
-  SectionsCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? course,
-      Value<String>? name,
-      Value<int>? number}) {
+  SectionsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? course,
+    Value<String>? name,
+    Value<int>? number,
+  }) {
     return SectionsCompanion(
       id: id ?? this.id,
       course: course ?? this.course,
@@ -522,17 +603,25 @@ class $WordTypesTable extends WordTypes
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, name];
   @override
@@ -541,8 +630,10 @@ class $WordTypesTable extends WordTypes
   String get actualTableName => $name;
   static const String $name = 'word_types';
   @override
-  VerificationContext validateIntegrity(Insertable<WordType> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<WordType> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -550,7 +641,9 @@ class $WordTypesTable extends WordTypes
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
@@ -563,10 +656,16 @@ class $WordTypesTable extends WordTypes
   WordType map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return WordType(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
     );
   }
 
@@ -589,14 +688,13 @@ class WordType extends DataClass implements Insertable<WordType> {
   }
 
   WordTypesCompanion toCompanion(bool nullToAbsent) {
-    return WordTypesCompanion(
-      id: Value(id),
-      name: Value(name),
-    );
+    return WordTypesCompanion(id: Value(id), name: Value(name));
   }
 
-  factory WordType.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory WordType.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return WordType(
       id: serializer.fromJson<int>(json['id']),
@@ -612,10 +710,8 @@ class WordType extends DataClass implements Insertable<WordType> {
     };
   }
 
-  WordType copyWith({int? id, String? name}) => WordType(
-        id: id ?? this.id,
-        name: name ?? this.name,
-      );
+  WordType copyWith({int? id, String? name}) =>
+      WordType(id: id ?? this.id, name: name ?? this.name);
   WordType copyWithCompanion(WordTypesCompanion data) {
     return WordType(
       id: data.id.present ? data.id.value : this.id,
@@ -662,10 +758,7 @@ class WordTypesCompanion extends UpdateCompanion<WordType> {
   }
 
   WordTypesCompanion copyWith({Value<int>? id, Value<String>? name}) {
-    return WordTypesCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-    );
+    return WordTypesCompanion(id: id ?? this.id, name: name ?? this.name);
   }
 
   @override
@@ -698,164 +791,237 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _sectionMeta =
-      const VerificationMeta('section');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sectionMeta = const VerificationMeta(
+    'section',
+  );
   @override
   late final GeneratedColumn<int> section = GeneratedColumn<int>(
-      'section', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES sections (id)'));
+    'section',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES sections (id)',
+    ),
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<int> type = GeneratedColumn<int>(
-      'type', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES word_types (id)'));
-  static const VerificationMeta _translationMeta =
-      const VerificationMeta('translation');
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES word_types (id)',
+    ),
+  );
+  static const VerificationMeta _translationMeta = const VerificationMeta(
+    'translation',
+  );
   @override
   late final GeneratedColumn<String> translation = GeneratedColumn<String>(
-      'translation', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'translation',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<String> value = GeneratedColumn<String>(
-      'value', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _specifierMeta =
-      const VerificationMeta('specifier');
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _specifierMeta = const VerificationMeta(
+    'specifier',
+  );
   @override
   late final GeneratedColumn<String> specifier = GeneratedColumn<String>(
-      'specifier', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'specifier',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _lastCorrectMeta =
-      const VerificationMeta('lastCorrect');
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastCorrectMeta = const VerificationMeta(
+    'lastCorrect',
+  );
   @override
   late final GeneratedColumn<DateTime> lastCorrect = GeneratedColumn<DateTime>(
-      'last_correct', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _lastWrongMeta =
-      const VerificationMeta('lastWrong');
+    'last_correct',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastWrongMeta = const VerificationMeta(
+    'lastWrong',
+  );
   @override
   late final GeneratedColumn<DateTime> lastWrong = GeneratedColumn<DateTime>(
-      'last_wrong', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _correctCountMeta =
-      const VerificationMeta('correctCount');
+    'last_wrong',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _correctCountMeta = const VerificationMeta(
+    'correctCount',
+  );
   @override
   late final GeneratedColumn<int> correctCount = GeneratedColumn<int>(
-      'correct_count', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _wrongCountMeta =
-      const VerificationMeta('wrongCount');
+    'correct_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _wrongCountMeta = const VerificationMeta(
+    'wrongCount',
+  );
   @override
   late final GeneratedColumn<int> wrongCount = GeneratedColumn<int>(
-      'wrong_count', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+    'wrong_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        section,
-        type,
-        translation,
-        value,
-        specifier,
-        createdAt,
-        lastCorrect,
-        lastWrong,
-        correctCount,
-        wrongCount
-      ];
+    id,
+    section,
+    type,
+    translation,
+    value,
+    specifier,
+    createdAt,
+    lastCorrect,
+    lastWrong,
+    correctCount,
+    wrongCount,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'words';
   @override
-  VerificationContext validateIntegrity(Insertable<Word> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Word> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('section')) {
-      context.handle(_sectionMeta,
-          section.isAcceptableOrUnknown(data['section']!, _sectionMeta));
+      context.handle(
+        _sectionMeta,
+        section.isAcceptableOrUnknown(data['section']!, _sectionMeta),
+      );
     } else if (isInserting) {
       context.missing(_sectionMeta);
     }
     if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
     if (data.containsKey('translation')) {
       context.handle(
+        _translationMeta,
+        translation.isAcceptableOrUnknown(
+          data['translation']!,
           _translationMeta,
-          translation.isAcceptableOrUnknown(
-              data['translation']!, _translationMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_translationMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
-          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
     } else if (isInserting) {
       context.missing(_valueMeta);
     }
     if (data.containsKey('specifier')) {
-      context.handle(_specifierMeta,
-          specifier.isAcceptableOrUnknown(data['specifier']!, _specifierMeta));
+      context.handle(
+        _specifierMeta,
+        specifier.isAcceptableOrUnknown(data['specifier']!, _specifierMeta),
+      );
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('last_correct')) {
       context.handle(
+        _lastCorrectMeta,
+        lastCorrect.isAcceptableOrUnknown(
+          data['last_correct']!,
           _lastCorrectMeta,
-          lastCorrect.isAcceptableOrUnknown(
-              data['last_correct']!, _lastCorrectMeta));
+        ),
+      );
     }
     if (data.containsKey('last_wrong')) {
-      context.handle(_lastWrongMeta,
-          lastWrong.isAcceptableOrUnknown(data['last_wrong']!, _lastWrongMeta));
+      context.handle(
+        _lastWrongMeta,
+        lastWrong.isAcceptableOrUnknown(data['last_wrong']!, _lastWrongMeta),
+      );
     }
     if (data.containsKey('correct_count')) {
       context.handle(
+        _correctCountMeta,
+        correctCount.isAcceptableOrUnknown(
+          data['correct_count']!,
           _correctCountMeta,
-          correctCount.isAcceptableOrUnknown(
-              data['correct_count']!, _correctCountMeta));
+        ),
+      );
     }
     if (data.containsKey('wrong_count')) {
       context.handle(
-          _wrongCountMeta,
-          wrongCount.isAcceptableOrUnknown(
-              data['wrong_count']!, _wrongCountMeta));
+        _wrongCountMeta,
+        wrongCount.isAcceptableOrUnknown(data['wrong_count']!, _wrongCountMeta),
+      );
     }
     return context;
   }
@@ -866,28 +1032,58 @@ class $WordsTable extends Words with TableInfo<$WordsTable, Word> {
   Word map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Word(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      section: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}section'])!,
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}type'])!,
-      translation: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}translation'])!,
-      value: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
-      specifier: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}specifier']),
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      lastCorrect: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_correct']),
-      lastWrong: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_wrong']),
-      correctCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}correct_count'])!,
-      wrongCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}wrong_count'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      section:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}section'],
+          )!,
+      type:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}type'],
+          )!,
+      translation:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}translation'],
+          )!,
+      value:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}value'],
+          )!,
+      specifier: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specifier'],
+      ),
+      createdAt:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.dateTime,
+            data['${effectivePrefix}created_at'],
+          )!,
+      lastCorrect: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_correct'],
+      ),
+      lastWrong: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_wrong'],
+      ),
+      correctCount:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}correct_count'],
+          )!,
+      wrongCount:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}wrong_count'],
+          )!,
     );
   }
 
@@ -909,18 +1105,19 @@ class Word extends DataClass implements Insertable<Word> {
   final DateTime? lastWrong;
   final int correctCount;
   final int wrongCount;
-  const Word(
-      {required this.id,
-      required this.section,
-      required this.type,
-      required this.translation,
-      required this.value,
-      this.specifier,
-      required this.createdAt,
-      this.lastCorrect,
-      this.lastWrong,
-      required this.correctCount,
-      required this.wrongCount});
+  const Word({
+    required this.id,
+    required this.section,
+    required this.type,
+    required this.translation,
+    required this.value,
+    this.specifier,
+    required this.createdAt,
+    this.lastCorrect,
+    this.lastWrong,
+    required this.correctCount,
+    required this.wrongCount,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -951,23 +1148,28 @@ class Word extends DataClass implements Insertable<Word> {
       type: Value(type),
       translation: Value(translation),
       value: Value(value),
-      specifier: specifier == null && nullToAbsent
-          ? const Value.absent()
-          : Value(specifier),
+      specifier:
+          specifier == null && nullToAbsent
+              ? const Value.absent()
+              : Value(specifier),
       createdAt: Value(createdAt),
-      lastCorrect: lastCorrect == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastCorrect),
-      lastWrong: lastWrong == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastWrong),
+      lastCorrect:
+          lastCorrect == null && nullToAbsent
+              ? const Value.absent()
+              : Value(lastCorrect),
+      lastWrong:
+          lastWrong == null && nullToAbsent
+              ? const Value.absent()
+              : Value(lastWrong),
       correctCount: Value(correctCount),
       wrongCount: Value(wrongCount),
     );
   }
 
-  factory Word.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Word.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Word(
       id: serializer.fromJson<int>(json['id']),
@@ -1001,31 +1203,31 @@ class Word extends DataClass implements Insertable<Word> {
     };
   }
 
-  Word copyWith(
-          {int? id,
-          int? section,
-          int? type,
-          String? translation,
-          String? value,
-          Value<String?> specifier = const Value.absent(),
-          DateTime? createdAt,
-          Value<DateTime?> lastCorrect = const Value.absent(),
-          Value<DateTime?> lastWrong = const Value.absent(),
-          int? correctCount,
-          int? wrongCount}) =>
-      Word(
-        id: id ?? this.id,
-        section: section ?? this.section,
-        type: type ?? this.type,
-        translation: translation ?? this.translation,
-        value: value ?? this.value,
-        specifier: specifier.present ? specifier.value : this.specifier,
-        createdAt: createdAt ?? this.createdAt,
-        lastCorrect: lastCorrect.present ? lastCorrect.value : this.lastCorrect,
-        lastWrong: lastWrong.present ? lastWrong.value : this.lastWrong,
-        correctCount: correctCount ?? this.correctCount,
-        wrongCount: wrongCount ?? this.wrongCount,
-      );
+  Word copyWith({
+    int? id,
+    int? section,
+    int? type,
+    String? translation,
+    String? value,
+    Value<String?> specifier = const Value.absent(),
+    DateTime? createdAt,
+    Value<DateTime?> lastCorrect = const Value.absent(),
+    Value<DateTime?> lastWrong = const Value.absent(),
+    int? correctCount,
+    int? wrongCount,
+  }) => Word(
+    id: id ?? this.id,
+    section: section ?? this.section,
+    type: type ?? this.type,
+    translation: translation ?? this.translation,
+    value: value ?? this.value,
+    specifier: specifier.present ? specifier.value : this.specifier,
+    createdAt: createdAt ?? this.createdAt,
+    lastCorrect: lastCorrect.present ? lastCorrect.value : this.lastCorrect,
+    lastWrong: lastWrong.present ? lastWrong.value : this.lastWrong,
+    correctCount: correctCount ?? this.correctCount,
+    wrongCount: wrongCount ?? this.wrongCount,
+  );
   Word copyWithCompanion(WordsCompanion data) {
     return Word(
       id: data.id.present ? data.id.value : this.id,
@@ -1039,9 +1241,10 @@ class Word extends DataClass implements Insertable<Word> {
       lastCorrect:
           data.lastCorrect.present ? data.lastCorrect.value : this.lastCorrect,
       lastWrong: data.lastWrong.present ? data.lastWrong.value : this.lastWrong,
-      correctCount: data.correctCount.present
-          ? data.correctCount.value
-          : this.correctCount,
+      correctCount:
+          data.correctCount.present
+              ? data.correctCount.value
+              : this.correctCount,
       wrongCount:
           data.wrongCount.present ? data.wrongCount.value : this.wrongCount,
     );
@@ -1066,8 +1269,19 @@ class Word extends DataClass implements Insertable<Word> {
   }
 
   @override
-  int get hashCode => Object.hash(id, section, type, translation, value,
-      specifier, createdAt, lastCorrect, lastWrong, correctCount, wrongCount);
+  int get hashCode => Object.hash(
+    id,
+    section,
+    type,
+    translation,
+    value,
+    specifier,
+    createdAt,
+    lastCorrect,
+    lastWrong,
+    correctCount,
+    wrongCount,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1122,11 +1336,11 @@ class WordsCompanion extends UpdateCompanion<Word> {
     this.lastWrong = const Value.absent(),
     this.correctCount = const Value.absent(),
     this.wrongCount = const Value.absent(),
-  })  : section = Value(section),
-        type = Value(type),
-        translation = Value(translation),
-        value = Value(value),
-        createdAt = Value(createdAt);
+  }) : section = Value(section),
+       type = Value(type),
+       translation = Value(translation),
+       value = Value(value),
+       createdAt = Value(createdAt);
   static Insertable<Word> custom({
     Expression<int>? id,
     Expression<int>? section,
@@ -1155,18 +1369,19 @@ class WordsCompanion extends UpdateCompanion<Word> {
     });
   }
 
-  WordsCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? section,
-      Value<int>? type,
-      Value<String>? translation,
-      Value<String>? value,
-      Value<String?>? specifier,
-      Value<DateTime>? createdAt,
-      Value<DateTime?>? lastCorrect,
-      Value<DateTime?>? lastWrong,
-      Value<int>? correctCount,
-      Value<int>? wrongCount}) {
+  WordsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? section,
+    Value<int>? type,
+    Value<String>? translation,
+    Value<String>? value,
+    Value<String?>? specifier,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? lastCorrect,
+    Value<DateTime?>? lastWrong,
+    Value<int>? correctCount,
+    Value<int>? wrongCount,
+  }) {
     return WordsCompanion(
       id: id ?? this.id,
       section: section ?? this.section,
@@ -1248,17 +1463,25 @@ class $PronounsTable extends Pronouns with TableInfo<$PronounsTable, Pronoun> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<String> value = GeneratedColumn<String>(
-      'value', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, value];
   @override
@@ -1267,8 +1490,10 @@ class $PronounsTable extends Pronouns with TableInfo<$PronounsTable, Pronoun> {
   String get actualTableName => $name;
   static const String $name = 'pronouns';
   @override
-  VerificationContext validateIntegrity(Insertable<Pronoun> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Pronoun> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1276,7 +1501,9 @@ class $PronounsTable extends Pronouns with TableInfo<$PronounsTable, Pronoun> {
     }
     if (data.containsKey('value')) {
       context.handle(
-          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
     } else if (isInserting) {
       context.missing(_valueMeta);
     }
@@ -1289,10 +1516,16 @@ class $PronounsTable extends Pronouns with TableInfo<$PronounsTable, Pronoun> {
   Pronoun map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Pronoun(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      value: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      value:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}value'],
+          )!,
     );
   }
 
@@ -1315,14 +1548,13 @@ class Pronoun extends DataClass implements Insertable<Pronoun> {
   }
 
   PronounsCompanion toCompanion(bool nullToAbsent) {
-    return PronounsCompanion(
-      id: Value(id),
-      value: Value(value),
-    );
+    return PronounsCompanion(id: Value(id), value: Value(value));
   }
 
-  factory Pronoun.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Pronoun.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Pronoun(
       id: serializer.fromJson<int>(json['id']),
@@ -1338,10 +1570,8 @@ class Pronoun extends DataClass implements Insertable<Pronoun> {
     };
   }
 
-  Pronoun copyWith({int? id, String? value}) => Pronoun(
-        id: id ?? this.id,
-        value: value ?? this.value,
-      );
+  Pronoun copyWith({int? id, String? value}) =>
+      Pronoun(id: id ?? this.id, value: value ?? this.value);
   Pronoun copyWithCompanion(PronounsCompanion data) {
     return Pronoun(
       id: data.id.present ? data.id.value : this.id,
@@ -1388,10 +1618,7 @@ class PronounsCompanion extends UpdateCompanion<Pronoun> {
   }
 
   PronounsCompanion copyWith({Value<int>? id, Value<String>? value}) {
-    return PronounsCompanion(
-      id: id ?? this.id,
-      value: value ?? this.value,
-    );
+    return PronounsCompanion(id: id ?? this.id, value: value ?? this.value);
   }
 
   @override
@@ -1425,40 +1652,62 @@ class $VerbExtrasTable extends VerbExtras
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _wordMeta = const VerificationMeta('word');
   @override
   late final GeneratedColumn<int> word = GeneratedColumn<int>(
-      'word', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES words (id)'));
+    'word',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES words (id)',
+    ),
+  );
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
   late final GeneratedColumn<String> value = GeneratedColumn<String>(
-      'value', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _positionMeta =
-      const VerificationMeta('position');
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
   @override
   late final GeneratedColumn<int> position = GeneratedColumn<int>(
-      'position', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _pronounMeta =
-      const VerificationMeta('pronoun');
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pronounMeta = const VerificationMeta(
+    'pronoun',
+  );
   @override
   late final GeneratedColumn<int> pronoun = GeneratedColumn<int>(
-      'pronoun', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES pronouns (id)'));
+    'pronoun',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pronouns (id)',
+    ),
+  );
   @override
   List<GeneratedColumn> get $columns => [id, word, value, position, pronoun];
   @override
@@ -1467,8 +1716,10 @@ class $VerbExtrasTable extends VerbExtras
   String get actualTableName => $name;
   static const String $name = 'verb_extras';
   @override
-  VerificationContext validateIntegrity(Insertable<VerbExtra> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<VerbExtra> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1476,25 +1727,33 @@ class $VerbExtrasTable extends VerbExtras
     }
     if (data.containsKey('word')) {
       context.handle(
-          _wordMeta, word.isAcceptableOrUnknown(data['word']!, _wordMeta));
+        _wordMeta,
+        word.isAcceptableOrUnknown(data['word']!, _wordMeta),
+      );
     } else if (isInserting) {
       context.missing(_wordMeta);
     }
     if (data.containsKey('value')) {
       context.handle(
-          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
     } else if (isInserting) {
       context.missing(_valueMeta);
     }
     if (data.containsKey('position')) {
-      context.handle(_positionMeta,
-          position.isAcceptableOrUnknown(data['position']!, _positionMeta));
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
     } else if (isInserting) {
       context.missing(_positionMeta);
     }
     if (data.containsKey('pronoun')) {
-      context.handle(_pronounMeta,
-          pronoun.isAcceptableOrUnknown(data['pronoun']!, _pronounMeta));
+      context.handle(
+        _pronounMeta,
+        pronoun.isAcceptableOrUnknown(data['pronoun']!, _pronounMeta),
+      );
     } else if (isInserting) {
       context.missing(_pronounMeta);
     }
@@ -1507,16 +1766,31 @@ class $VerbExtrasTable extends VerbExtras
   VerbExtra map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return VerbExtra(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      word: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}word'])!,
-      value: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
-      position: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}position'])!,
-      pronoun: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}pronoun'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      word:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}word'],
+          )!,
+      value:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}value'],
+          )!,
+      position:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}position'],
+          )!,
+      pronoun:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}pronoun'],
+          )!,
     );
   }
 
@@ -1532,12 +1806,13 @@ class VerbExtra extends DataClass implements Insertable<VerbExtra> {
   final String value;
   final int position;
   final int pronoun;
-  const VerbExtra(
-      {required this.id,
-      required this.word,
-      required this.value,
-      required this.position,
-      required this.pronoun});
+  const VerbExtra({
+    required this.id,
+    required this.word,
+    required this.value,
+    required this.position,
+    required this.pronoun,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1559,8 +1834,10 @@ class VerbExtra extends DataClass implements Insertable<VerbExtra> {
     );
   }
 
-  factory VerbExtra.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory VerbExtra.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return VerbExtra(
       id: serializer.fromJson<int>(json['id']),
@@ -1582,15 +1859,19 @@ class VerbExtra extends DataClass implements Insertable<VerbExtra> {
     };
   }
 
-  VerbExtra copyWith(
-          {int? id, int? word, String? value, int? position, int? pronoun}) =>
-      VerbExtra(
-        id: id ?? this.id,
-        word: word ?? this.word,
-        value: value ?? this.value,
-        position: position ?? this.position,
-        pronoun: pronoun ?? this.pronoun,
-      );
+  VerbExtra copyWith({
+    int? id,
+    int? word,
+    String? value,
+    int? position,
+    int? pronoun,
+  }) => VerbExtra(
+    id: id ?? this.id,
+    word: word ?? this.word,
+    value: value ?? this.value,
+    position: position ?? this.position,
+    pronoun: pronoun ?? this.pronoun,
+  );
   VerbExtra copyWithCompanion(VerbExtrasCompanion data) {
     return VerbExtra(
       id: data.id.present ? data.id.value : this.id,
@@ -1645,10 +1926,10 @@ class VerbExtrasCompanion extends UpdateCompanion<VerbExtra> {
     required String value,
     required int position,
     required int pronoun,
-  })  : word = Value(word),
-        value = Value(value),
-        position = Value(position),
-        pronoun = Value(pronoun);
+  }) : word = Value(word),
+       value = Value(value),
+       position = Value(position),
+       pronoun = Value(pronoun);
   static Insertable<VerbExtra> custom({
     Expression<int>? id,
     Expression<int>? word,
@@ -1665,12 +1946,13 @@ class VerbExtrasCompanion extends UpdateCompanion<VerbExtra> {
     });
   }
 
-  VerbExtrasCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? word,
-      Value<String>? value,
-      Value<int>? position,
-      Value<int>? pronoun}) {
+  VerbExtrasCompanion copyWith({
+    Value<int>? id,
+    Value<int>? word,
+    Value<String>? value,
+    Value<int>? position,
+    Value<int>? pronoun,
+  }) {
     return VerbExtrasCompanion(
       id: id ?? this.id,
       word: word ?? this.word,
@@ -1722,22 +2004,34 @@ class $GendersTable extends Genders with TableInfo<$GendersTable, Gender> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _shortMeta = const VerificationMeta('short');
   @override
   late final GeneratedColumn<String> short = GeneratedColumn<String>(
-      'short', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'short',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, name, short];
   @override
@@ -1746,8 +2040,10 @@ class $GendersTable extends Genders with TableInfo<$GendersTable, Gender> {
   String get actualTableName => $name;
   static const String $name = 'genders';
   @override
-  VerificationContext validateIntegrity(Insertable<Gender> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Gender> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1755,13 +2051,17 @@ class $GendersTable extends Genders with TableInfo<$GendersTable, Gender> {
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('short')) {
       context.handle(
-          _shortMeta, short.isAcceptableOrUnknown(data['short']!, _shortMeta));
+        _shortMeta,
+        short.isAcceptableOrUnknown(data['short']!, _shortMeta),
+      );
     } else if (isInserting) {
       context.missing(_shortMeta);
     }
@@ -1774,12 +2074,21 @@ class $GendersTable extends Genders with TableInfo<$GendersTable, Gender> {
   Gender map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Gender(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      short: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}short'])!,
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      name:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}name'],
+          )!,
+      short:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}short'],
+          )!,
     );
   }
 
@@ -1811,8 +2120,10 @@ class Gender extends DataClass implements Insertable<Gender> {
     );
   }
 
-  factory Gender.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Gender.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Gender(
       id: serializer.fromJson<int>(json['id']),
@@ -1831,10 +2142,10 @@ class Gender extends DataClass implements Insertable<Gender> {
   }
 
   Gender copyWith({int? id, String? name, String? short}) => Gender(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        short: short ?? this.short,
-      );
+    id: id ?? this.id,
+    name: name ?? this.name,
+    short: short ?? this.short,
+  );
   Gender copyWithCompanion(GendersCompanion data) {
     return Gender(
       id: data.id.present ? data.id.value : this.id,
@@ -1877,8 +2188,8 @@ class GendersCompanion extends UpdateCompanion<Gender> {
     this.id = const Value.absent(),
     required String name,
     required String short,
-  })  : name = Value(name),
-        short = Value(short);
+  }) : name = Value(name),
+       short = Value(short);
   static Insertable<Gender> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -1891,8 +2202,11 @@ class GendersCompanion extends UpdateCompanion<Gender> {
     });
   }
 
-  GendersCompanion copyWith(
-      {Value<int>? id, Value<String>? name, Value<String>? short}) {
+  GendersCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<String>? short,
+  }) {
     return GendersCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -1935,33 +2249,49 @@ class $NounExtrasTable extends NounExtras
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
   static const VerificationMeta _wordMeta = const VerificationMeta('word');
   @override
   late final GeneratedColumn<int> word = GeneratedColumn<int>(
-      'word', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES words (id)'));
+    'word',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES words (id)',
+    ),
+  );
   static const VerificationMeta _genderMeta = const VerificationMeta('gender');
   @override
   late final GeneratedColumn<int> gender = GeneratedColumn<int>(
-      'gender', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES genders (id)'));
+    'gender',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES genders (id)',
+    ),
+  );
   static const VerificationMeta _pluralMeta = const VerificationMeta('plural');
   @override
   late final GeneratedColumn<String> plural = GeneratedColumn<String>(
-      'plural', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'plural',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, word, gender, plural];
   @override
@@ -1970,8 +2300,10 @@ class $NounExtrasTable extends NounExtras
   String get actualTableName => $name;
   static const String $name = 'noun_extras';
   @override
-  VerificationContext validateIntegrity(Insertable<NounExtra> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<NounExtra> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1979,19 +2311,25 @@ class $NounExtrasTable extends NounExtras
     }
     if (data.containsKey('word')) {
       context.handle(
-          _wordMeta, word.isAcceptableOrUnknown(data['word']!, _wordMeta));
+        _wordMeta,
+        word.isAcceptableOrUnknown(data['word']!, _wordMeta),
+      );
     } else if (isInserting) {
       context.missing(_wordMeta);
     }
     if (data.containsKey('gender')) {
-      context.handle(_genderMeta,
-          gender.isAcceptableOrUnknown(data['gender']!, _genderMeta));
+      context.handle(
+        _genderMeta,
+        gender.isAcceptableOrUnknown(data['gender']!, _genderMeta),
+      );
     } else if (isInserting) {
       context.missing(_genderMeta);
     }
     if (data.containsKey('plural')) {
-      context.handle(_pluralMeta,
-          plural.isAcceptableOrUnknown(data['plural']!, _pluralMeta));
+      context.handle(
+        _pluralMeta,
+        plural.isAcceptableOrUnknown(data['plural']!, _pluralMeta),
+      );
     }
     return context;
   }
@@ -2002,14 +2340,25 @@ class $NounExtrasTable extends NounExtras
   NounExtra map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return NounExtra(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      word: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}word'])!,
-      gender: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}gender'])!,
-      plural: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}plural']),
+      id:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}id'],
+          )!,
+      word:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}word'],
+          )!,
+      gender:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.int,
+            data['${effectivePrefix}gender'],
+          )!,
+      plural: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plural'],
+      ),
     );
   }
 
@@ -2024,11 +2373,12 @@ class NounExtra extends DataClass implements Insertable<NounExtra> {
   final int word;
   final int gender;
   final String? plural;
-  const NounExtra(
-      {required this.id,
-      required this.word,
-      required this.gender,
-      this.plural});
+  const NounExtra({
+    required this.id,
+    required this.word,
+    required this.gender,
+    this.plural,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2051,8 +2401,10 @@ class NounExtra extends DataClass implements Insertable<NounExtra> {
     );
   }
 
-  factory NounExtra.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory NounExtra.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return NounExtra(
       id: serializer.fromJson<int>(json['id']),
@@ -2072,17 +2424,17 @@ class NounExtra extends DataClass implements Insertable<NounExtra> {
     };
   }
 
-  NounExtra copyWith(
-          {int? id,
-          int? word,
-          int? gender,
-          Value<String?> plural = const Value.absent()}) =>
-      NounExtra(
-        id: id ?? this.id,
-        word: word ?? this.word,
-        gender: gender ?? this.gender,
-        plural: plural.present ? plural.value : this.plural,
-      );
+  NounExtra copyWith({
+    int? id,
+    int? word,
+    int? gender,
+    Value<String?> plural = const Value.absent(),
+  }) => NounExtra(
+    id: id ?? this.id,
+    word: word ?? this.word,
+    gender: gender ?? this.gender,
+    plural: plural.present ? plural.value : this.plural,
+  );
   NounExtra copyWithCompanion(NounExtrasCompanion data) {
     return NounExtra(
       id: data.id.present ? data.id.value : this.id,
@@ -2131,8 +2483,8 @@ class NounExtrasCompanion extends UpdateCompanion<NounExtra> {
     required int word,
     required int gender,
     this.plural = const Value.absent(),
-  })  : word = Value(word),
-        gender = Value(gender);
+  }) : word = Value(word),
+       gender = Value(gender);
   static Insertable<NounExtra> custom({
     Expression<int>? id,
     Expression<int>? word,
@@ -2147,11 +2499,12 @@ class NounExtrasCompanion extends UpdateCompanion<NounExtra> {
     });
   }
 
-  NounExtrasCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? word,
-      Value<int>? gender,
-      Value<String?>? plural}) {
+  NounExtrasCompanion copyWith({
+    Value<int>? id,
+    Value<int>? word,
+    Value<int>? gender,
+    Value<String?>? plural,
+  }) {
     return NounExtrasCompanion(
       id: id ?? this.id,
       word: word ?? this.word,
@@ -2206,46 +2559,53 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        courses,
-        sections,
-        wordTypes,
-        words,
-        pronouns,
-        verbExtras,
-        genders,
-        nounExtras
-      ];
+    courses,
+    sections,
+    wordTypes,
+    words,
+    pronouns,
+    verbExtras,
+    genders,
+    nounExtras,
+  ];
 }
 
-typedef $$CoursesTableCreateCompanionBuilder = CoursesCompanion Function({
-  Value<int> id,
-  required String name,
-  required String level,
-  required String language,
-});
-typedef $$CoursesTableUpdateCompanionBuilder = CoursesCompanion Function({
-  Value<int> id,
-  Value<String> name,
-  Value<String> level,
-  Value<String> language,
-});
+typedef $$CoursesTableCreateCompanionBuilder =
+    CoursesCompanion Function({
+      Value<int> id,
+      required String name,
+      required String level,
+      required String language,
+    });
+typedef $$CoursesTableUpdateCompanionBuilder =
+    CoursesCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> level,
+      Value<String> language,
+    });
 
 final class $$CoursesTableReferences
     extends BaseReferences<_$AppDatabase, $CoursesTable, Course> {
   $$CoursesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$SectionsTable, List<Section>> _sectionsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.sections,
-          aliasName: $_aliasNameGenerator(db.courses.id, db.sections.course));
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.sections,
+    aliasName: $_aliasNameGenerator(db.courses.id, db.sections.course),
+  );
 
   $$SectionsTableProcessedTableManager get sectionsRefs {
-    final manager = $$SectionsTableTableManager($_db, $_db.sections)
-        .filter((f) => f.course.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$SectionsTableTableManager(
+      $_db,
+      $_db.sections,
+    ).filter((f) => f.course.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_sectionsRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 }
 
@@ -2259,35 +2619,47 @@ class $$CoursesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get level => $composableBuilder(
-      column: $table.level, builder: (column) => ColumnFilters(column));
+    column: $table.level,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get language => $composableBuilder(
-      column: $table.language, builder: (column) => ColumnFilters(column));
+    column: $table.language,
+    builder: (column) => ColumnFilters(column),
+  );
 
   Expression<bool> sectionsRefs(
-      Expression<bool> Function($$SectionsTableFilterComposer f) f) {
+    Expression<bool> Function($$SectionsTableFilterComposer f) f,
+  ) {
     final $$SectionsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.sections,
-        getReferencedColumn: (t) => t.course,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SectionsTableFilterComposer(
-              $db: $db,
-              $table: $db.sections,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sections,
+      getReferencedColumn: (t) => t.course,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SectionsTableFilterComposer(
+            $db: $db,
+            $table: $db.sections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -2302,16 +2674,24 @@ class $$CoursesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get level => $composableBuilder(
-      column: $table.level, builder: (column) => ColumnOrderings(column));
+    column: $table.level,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get language => $composableBuilder(
-      column: $table.language, builder: (column) => ColumnOrderings(column));
+    column: $table.language,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CoursesTableAnnotationComposer
@@ -2336,77 +2716,91 @@ class $$CoursesTableAnnotationComposer
       $composableBuilder(column: $table.language, builder: (column) => column);
 
   Expression<T> sectionsRefs<T extends Object>(
-      Expression<T> Function($$SectionsTableAnnotationComposer a) f) {
+    Expression<T> Function($$SectionsTableAnnotationComposer a) f,
+  ) {
     final $$SectionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.sections,
-        getReferencedColumn: (t) => t.course,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SectionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.sections,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sections,
+      getReferencedColumn: (t) => t.course,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SectionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.sections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
 
-class $$CoursesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $CoursesTable,
-    Course,
-    $$CoursesTableFilterComposer,
-    $$CoursesTableOrderingComposer,
-    $$CoursesTableAnnotationComposer,
-    $$CoursesTableCreateCompanionBuilder,
-    $$CoursesTableUpdateCompanionBuilder,
-    (Course, $$CoursesTableReferences),
-    Course,
-    PrefetchHooks Function({bool sectionsRefs})> {
+class $$CoursesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CoursesTable,
+          Course,
+          $$CoursesTableFilterComposer,
+          $$CoursesTableOrderingComposer,
+          $$CoursesTableAnnotationComposer,
+          $$CoursesTableCreateCompanionBuilder,
+          $$CoursesTableUpdateCompanionBuilder,
+          (Course, $$CoursesTableReferences),
+          Course,
+          PrefetchHooks Function({bool sectionsRefs})
+        > {
   $$CoursesTableTableManager(_$AppDatabase db, $CoursesTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$CoursesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$CoursesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$CoursesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String> level = const Value.absent(),
-            Value<String> language = const Value.absent(),
-          }) =>
-              CoursesCompanion(
-            id: id,
-            name: name,
-            level: level,
-            language: language,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required String level,
-            required String language,
-          }) =>
-              CoursesCompanion.insert(
-            id: id,
-            name: name,
-            level: level,
-            language: language,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$CoursesTableReferences(db, table, e)))
-              .toList(),
+          createFilteringComposer:
+              () => $$CoursesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$CoursesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$CoursesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> level = const Value.absent(),
+                Value<String> language = const Value.absent(),
+              }) => CoursesCompanion(
+                id: id,
+                name: name,
+                level: level,
+                language: language,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required String level,
+                required String language,
+              }) => CoursesCompanion.insert(
+                id: id,
+                name: name,
+                level: level,
+                language: language,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$CoursesTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({sectionsRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -2416,78 +2810,97 @@ class $$CoursesTableTableManager extends RootTableManager<
                 return [
                   if (sectionsRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$CoursesTableReferences._sectionsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$CoursesTableReferences(db, table, p0)
-                                .sectionsRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.course == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$CoursesTableReferences
+                          ._sectionsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$CoursesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).sectionsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) =>
+                              referencedItems.where((e) => e.course == item.id),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$CoursesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $CoursesTable,
-    Course,
-    $$CoursesTableFilterComposer,
-    $$CoursesTableOrderingComposer,
-    $$CoursesTableAnnotationComposer,
-    $$CoursesTableCreateCompanionBuilder,
-    $$CoursesTableUpdateCompanionBuilder,
-    (Course, $$CoursesTableReferences),
-    Course,
-    PrefetchHooks Function({bool sectionsRefs})>;
-typedef $$SectionsTableCreateCompanionBuilder = SectionsCompanion Function({
-  Value<int> id,
-  required int course,
-  required String name,
-  required int number,
-});
-typedef $$SectionsTableUpdateCompanionBuilder = SectionsCompanion Function({
-  Value<int> id,
-  Value<int> course,
-  Value<String> name,
-  Value<int> number,
-});
+typedef $$CoursesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CoursesTable,
+      Course,
+      $$CoursesTableFilterComposer,
+      $$CoursesTableOrderingComposer,
+      $$CoursesTableAnnotationComposer,
+      $$CoursesTableCreateCompanionBuilder,
+      $$CoursesTableUpdateCompanionBuilder,
+      (Course, $$CoursesTableReferences),
+      Course,
+      PrefetchHooks Function({bool sectionsRefs})
+    >;
+typedef $$SectionsTableCreateCompanionBuilder =
+    SectionsCompanion Function({
+      Value<int> id,
+      required int course,
+      required String name,
+      required int number,
+    });
+typedef $$SectionsTableUpdateCompanionBuilder =
+    SectionsCompanion Function({
+      Value<int> id,
+      Value<int> course,
+      Value<String> name,
+      Value<int> number,
+    });
 
 final class $$SectionsTableReferences
     extends BaseReferences<_$AppDatabase, $SectionsTable, Section> {
   $$SectionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $CoursesTable _courseTable(_$AppDatabase db) => db.courses
-      .createAlias($_aliasNameGenerator(db.sections.course, db.courses.id));
+  static $CoursesTable _courseTable(_$AppDatabase db) => db.courses.createAlias(
+    $_aliasNameGenerator(db.sections.course, db.courses.id),
+  );
 
   $$CoursesTableProcessedTableManager get course {
     final $_column = $_itemColumn<int>('course')!;
 
-    final manager = $$CoursesTableTableManager($_db, $_db.courses)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$CoursesTableTableManager(
+      $_db,
+      $_db.courses,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_courseTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 
   static MultiTypedResultKey<$WordsTable, List<Word>> _wordsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.words,
-          aliasName: $_aliasNameGenerator(db.sections.id, db.words.section));
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.words,
+    aliasName: $_aliasNameGenerator(db.sections.id, db.words.section),
+  );
 
   $$WordsTableProcessedTableManager get wordsRefs {
-    final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.section.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$WordsTableTableManager(
+      $_db,
+      $_db.words,
+    ).filter((f) => f.section.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 }
 
@@ -2501,52 +2914,65 @@ class $$SectionsTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get number => $composableBuilder(
-      column: $table.number, builder: (column) => ColumnFilters(column));
+    column: $table.number,
+    builder: (column) => ColumnFilters(column),
+  );
 
   $$CoursesTableFilterComposer get course {
     final $$CoursesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.course,
-        referencedTable: $db.courses,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CoursesTableFilterComposer(
-              $db: $db,
-              $table: $db.courses,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.course,
+      referencedTable: $db.courses,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CoursesTableFilterComposer(
+            $db: $db,
+            $table: $db.courses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   Expression<bool> wordsRefs(
-      Expression<bool> Function($$WordsTableFilterComposer f) f) {
+    Expression<bool> Function($$WordsTableFilterComposer f) f,
+  ) {
     final $$WordsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.section,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableFilterComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.section,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableFilterComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -2561,31 +2987,40 @@ class $$SectionsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get number => $composableBuilder(
-      column: $table.number, builder: (column) => ColumnOrderings(column));
+    column: $table.number,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   $$CoursesTableOrderingComposer get course {
     final $$CoursesTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.course,
-        referencedTable: $db.courses,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CoursesTableOrderingComposer(
-              $db: $db,
-              $table: $db.courses,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.course,
+      referencedTable: $db.courses,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CoursesTableOrderingComposer(
+            $db: $db,
+            $table: $db.courses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
@@ -2610,121 +3045,143 @@ class $$SectionsTableAnnotationComposer
 
   $$CoursesTableAnnotationComposer get course {
     final $$CoursesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.course,
-        referencedTable: $db.courses,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$CoursesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.courses,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.course,
+      referencedTable: $db.courses,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CoursesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.courses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   Expression<T> wordsRefs<T extends Object>(
-      Expression<T> Function($$WordsTableAnnotationComposer a) f) {
+    Expression<T> Function($$WordsTableAnnotationComposer a) f,
+  ) {
     final $$WordsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.section,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.section,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
 
-class $$SectionsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SectionsTable,
-    Section,
-    $$SectionsTableFilterComposer,
-    $$SectionsTableOrderingComposer,
-    $$SectionsTableAnnotationComposer,
-    $$SectionsTableCreateCompanionBuilder,
-    $$SectionsTableUpdateCompanionBuilder,
-    (Section, $$SectionsTableReferences),
-    Section,
-    PrefetchHooks Function({bool course, bool wordsRefs})> {
+class $$SectionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SectionsTable,
+          Section,
+          $$SectionsTableFilterComposer,
+          $$SectionsTableOrderingComposer,
+          $$SectionsTableAnnotationComposer,
+          $$SectionsTableCreateCompanionBuilder,
+          $$SectionsTableUpdateCompanionBuilder,
+          (Section, $$SectionsTableReferences),
+          Section,
+          PrefetchHooks Function({bool course, bool wordsRefs})
+        > {
   $$SectionsTableTableManager(_$AppDatabase db, $SectionsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$SectionsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$SectionsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$SectionsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> course = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<int> number = const Value.absent(),
-          }) =>
-              SectionsCompanion(
-            id: id,
-            course: course,
-            name: name,
-            number: number,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int course,
-            required String name,
-            required int number,
-          }) =>
-              SectionsCompanion.insert(
-            id: id,
-            course: course,
-            name: name,
-            number: number,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$SectionsTableReferences(db, table, e)))
-              .toList(),
+          createFilteringComposer:
+              () => $$SectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$SectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$SectionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> course = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> number = const Value.absent(),
+              }) => SectionsCompanion(
+                id: id,
+                course: course,
+                name: name,
+                number: number,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int course,
+                required String name,
+                required int number,
+              }) => SectionsCompanion.insert(
+                id: id,
+                course: course,
+                name: name,
+                number: number,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$SectionsTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({course = false, wordsRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [if (wordsRefs) db.words],
               addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
                 if (course) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.course,
-                    referencedTable: $$SectionsTableReferences._courseTable(db),
-                    referencedColumn:
-                        $$SectionsTableReferences._courseTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.course,
+                            referencedTable: $$SectionsTableReferences
+                                ._courseTable(db),
+                            referencedColumn:
+                                $$SectionsTableReferences._courseTable(db).id,
+                          )
+                          as T;
                 }
 
                 return state;
@@ -2733,59 +3190,70 @@ class $$SectionsTableTableManager extends RootTableManager<
                 return [
                   if (wordsRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$SectionsTableReferences._wordsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$SectionsTableReferences(db, table, p0).wordsRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.section == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$SectionsTableReferences
+                          ._wordsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$SectionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).wordsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.section == item.id,
+                          ),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$SectionsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SectionsTable,
-    Section,
-    $$SectionsTableFilterComposer,
-    $$SectionsTableOrderingComposer,
-    $$SectionsTableAnnotationComposer,
-    $$SectionsTableCreateCompanionBuilder,
-    $$SectionsTableUpdateCompanionBuilder,
-    (Section, $$SectionsTableReferences),
-    Section,
-    PrefetchHooks Function({bool course, bool wordsRefs})>;
-typedef $$WordTypesTableCreateCompanionBuilder = WordTypesCompanion Function({
-  Value<int> id,
-  required String name,
-});
-typedef $$WordTypesTableUpdateCompanionBuilder = WordTypesCompanion Function({
-  Value<int> id,
-  Value<String> name,
-});
+typedef $$SectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SectionsTable,
+      Section,
+      $$SectionsTableFilterComposer,
+      $$SectionsTableOrderingComposer,
+      $$SectionsTableAnnotationComposer,
+      $$SectionsTableCreateCompanionBuilder,
+      $$SectionsTableUpdateCompanionBuilder,
+      (Section, $$SectionsTableReferences),
+      Section,
+      PrefetchHooks Function({bool course, bool wordsRefs})
+    >;
+typedef $$WordTypesTableCreateCompanionBuilder =
+    WordTypesCompanion Function({Value<int> id, required String name});
+typedef $$WordTypesTableUpdateCompanionBuilder =
+    WordTypesCompanion Function({Value<int> id, Value<String> name});
 
 final class $$WordTypesTableReferences
     extends BaseReferences<_$AppDatabase, $WordTypesTable, WordType> {
   $$WordTypesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$WordsTable, List<Word>> _wordsRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.words,
-          aliasName: $_aliasNameGenerator(db.wordTypes.id, db.words.type));
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.words,
+    aliasName: $_aliasNameGenerator(db.wordTypes.id, db.words.type),
+  );
 
   $$WordsTableProcessedTableManager get wordsRefs {
-    final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.type.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$WordsTableTableManager(
+      $_db,
+      $_db.words,
+    ).filter((f) => f.type.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_wordsRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 }
 
@@ -2799,29 +3267,37 @@ class $$WordTypesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   Expression<bool> wordsRefs(
-      Expression<bool> Function($$WordsTableFilterComposer f) f) {
+    Expression<bool> Function($$WordsTableFilterComposer f) f,
+  ) {
     final $$WordsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.type,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableFilterComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.type,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableFilterComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -2836,10 +3312,14 @@ class $$WordTypesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WordTypesTableAnnotationComposer
@@ -2858,71 +3338,75 @@ class $$WordTypesTableAnnotationComposer
       $composableBuilder(column: $table.name, builder: (column) => column);
 
   Expression<T> wordsRefs<T extends Object>(
-      Expression<T> Function($$WordsTableAnnotationComposer a) f) {
+    Expression<T> Function($$WordsTableAnnotationComposer a) f,
+  ) {
     final $$WordsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.type,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.type,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
 
-class $$WordTypesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $WordTypesTable,
-    WordType,
-    $$WordTypesTableFilterComposer,
-    $$WordTypesTableOrderingComposer,
-    $$WordTypesTableAnnotationComposer,
-    $$WordTypesTableCreateCompanionBuilder,
-    $$WordTypesTableUpdateCompanionBuilder,
-    (WordType, $$WordTypesTableReferences),
-    WordType,
-    PrefetchHooks Function({bool wordsRefs})> {
+class $$WordTypesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WordTypesTable,
+          WordType,
+          $$WordTypesTableFilterComposer,
+          $$WordTypesTableOrderingComposer,
+          $$WordTypesTableAnnotationComposer,
+          $$WordTypesTableCreateCompanionBuilder,
+          $$WordTypesTableUpdateCompanionBuilder,
+          (WordType, $$WordTypesTableReferences),
+          WordType,
+          PrefetchHooks Function({bool wordsRefs})
+        > {
   $$WordTypesTableTableManager(_$AppDatabase db, $WordTypesTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$WordTypesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$WordTypesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$WordTypesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-          }) =>
-              WordTypesCompanion(
-            id: id,
-            name: name,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-          }) =>
-              WordTypesCompanion.insert(
-            id: id,
-            name: name,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$WordTypesTableReferences(db, table, e)
-                  ))
-              .toList(),
+          createFilteringComposer:
+              () => $$WordTypesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$WordTypesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$WordTypesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+              }) => WordTypesCompanion(id: id, name: name),
+          createCompanionCallback:
+              ({Value<int> id = const Value.absent(), required String name}) =>
+                  WordTypesCompanion.insert(id: id, name: name),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$WordTypesTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({wordsRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -2932,60 +3416,71 @@ class $$WordTypesTableTableManager extends RootTableManager<
                 return [
                   if (wordsRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$WordTypesTableReferences._wordsRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$WordTypesTableReferences(db, table, p0).wordsRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.type == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$WordTypesTableReferences
+                          ._wordsRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$WordTypesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).wordsRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) =>
+                              referencedItems.where((e) => e.type == item.id),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$WordTypesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $WordTypesTable,
-    WordType,
-    $$WordTypesTableFilterComposer,
-    $$WordTypesTableOrderingComposer,
-    $$WordTypesTableAnnotationComposer,
-    $$WordTypesTableCreateCompanionBuilder,
-    $$WordTypesTableUpdateCompanionBuilder,
-    (WordType, $$WordTypesTableReferences),
-    WordType,
-    PrefetchHooks Function({bool wordsRefs})>;
-typedef $$WordsTableCreateCompanionBuilder = WordsCompanion Function({
-  Value<int> id,
-  required int section,
-  required int type,
-  required String translation,
-  required String value,
-  Value<String?> specifier,
-  required DateTime createdAt,
-  Value<DateTime?> lastCorrect,
-  Value<DateTime?> lastWrong,
-  Value<int> correctCount,
-  Value<int> wrongCount,
-});
-typedef $$WordsTableUpdateCompanionBuilder = WordsCompanion Function({
-  Value<int> id,
-  Value<int> section,
-  Value<int> type,
-  Value<String> translation,
-  Value<String> value,
-  Value<String?> specifier,
-  Value<DateTime> createdAt,
-  Value<DateTime?> lastCorrect,
-  Value<DateTime?> lastWrong,
-  Value<int> correctCount,
-  Value<int> wrongCount,
-});
+typedef $$WordTypesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WordTypesTable,
+      WordType,
+      $$WordTypesTableFilterComposer,
+      $$WordTypesTableOrderingComposer,
+      $$WordTypesTableAnnotationComposer,
+      $$WordTypesTableCreateCompanionBuilder,
+      $$WordTypesTableUpdateCompanionBuilder,
+      (WordType, $$WordTypesTableReferences),
+      WordType,
+      PrefetchHooks Function({bool wordsRefs})
+    >;
+typedef $$WordsTableCreateCompanionBuilder =
+    WordsCompanion Function({
+      Value<int> id,
+      required int section,
+      required int type,
+      required String translation,
+      required String value,
+      Value<String?> specifier,
+      required DateTime createdAt,
+      Value<DateTime?> lastCorrect,
+      Value<DateTime?> lastWrong,
+      Value<int> correctCount,
+      Value<int> wrongCount,
+    });
+typedef $$WordsTableUpdateCompanionBuilder =
+    WordsCompanion Function({
+      Value<int> id,
+      Value<int> section,
+      Value<int> type,
+      Value<String> translation,
+      Value<String> value,
+      Value<String?> specifier,
+      Value<DateTime> createdAt,
+      Value<DateTime?> lastCorrect,
+      Value<DateTime?> lastWrong,
+      Value<int> correctCount,
+      Value<int> wrongCount,
+    });
 
 final class $$WordsTableReferences
     extends BaseReferences<_$AppDatabase, $WordsTable, Word> {
@@ -2997,12 +3492,15 @@ final class $$WordsTableReferences
   $$SectionsTableProcessedTableManager get section {
     final $_column = $_itemColumn<int>('section')!;
 
-    final manager = $$SectionsTableTableManager($_db, $_db.sections)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$SectionsTableTableManager(
+      $_db,
+      $_db.sections,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_sectionTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 
   static $WordTypesTable _typeTable(_$AppDatabase db) => db.wordTypes
@@ -3011,40 +3509,51 @@ final class $$WordsTableReferences
   $$WordTypesTableProcessedTableManager get type {
     final $_column = $_itemColumn<int>('type')!;
 
-    final manager = $$WordTypesTableTableManager($_db, $_db.wordTypes)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$WordTypesTableTableManager(
+      $_db,
+      $_db.wordTypes,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_typeTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 
   static MultiTypedResultKey<$VerbExtrasTable, List<VerbExtra>>
-      _verbExtrasRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.verbExtras,
-              aliasName: $_aliasNameGenerator(db.words.id, db.verbExtras.word));
+  _verbExtrasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.verbExtras,
+    aliasName: $_aliasNameGenerator(db.words.id, db.verbExtras.word),
+  );
 
   $$VerbExtrasTableProcessedTableManager get verbExtrasRefs {
-    final manager = $$VerbExtrasTableTableManager($_db, $_db.verbExtras)
-        .filter((f) => f.word.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$VerbExtrasTableTableManager(
+      $_db,
+      $_db.verbExtras,
+    ).filter((f) => f.word.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_verbExtrasRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 
   static MultiTypedResultKey<$NounExtrasTable, List<NounExtra>>
-      _nounExtrasRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.nounExtras,
-              aliasName: $_aliasNameGenerator(db.words.id, db.nounExtras.word));
+  _nounExtrasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.nounExtras,
+    aliasName: $_aliasNameGenerator(db.words.id, db.nounExtras.word),
+  );
 
   $$NounExtrasTableProcessedTableManager get nounExtrasRefs {
-    final manager = $$NounExtrasTableTableManager($_db, $_db.nounExtras)
-        .filter((f) => f.word.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$NounExtrasTableTableManager(
+      $_db,
+      $_db.nounExtras,
+    ).filter((f) => f.word.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_nounExtrasRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 }
 
@@ -3057,111 +3566,143 @@ class $$WordsTableFilterComposer extends Composer<_$AppDatabase, $WordsTable> {
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get translation => $composableBuilder(
-      column: $table.translation, builder: (column) => ColumnFilters(column));
+    column: $table.translation,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnFilters(column));
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get specifier => $composableBuilder(
-      column: $table.specifier, builder: (column) => ColumnFilters(column));
+    column: $table.specifier,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get lastCorrect => $composableBuilder(
-      column: $table.lastCorrect, builder: (column) => ColumnFilters(column));
+    column: $table.lastCorrect,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get lastWrong => $composableBuilder(
-      column: $table.lastWrong, builder: (column) => ColumnFilters(column));
+    column: $table.lastWrong,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get correctCount => $composableBuilder(
-      column: $table.correctCount, builder: (column) => ColumnFilters(column));
+    column: $table.correctCount,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get wrongCount => $composableBuilder(
-      column: $table.wrongCount, builder: (column) => ColumnFilters(column));
+    column: $table.wrongCount,
+    builder: (column) => ColumnFilters(column),
+  );
 
   $$SectionsTableFilterComposer get section {
     final $$SectionsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.section,
-        referencedTable: $db.sections,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SectionsTableFilterComposer(
-              $db: $db,
-              $table: $db.sections,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.section,
+      referencedTable: $db.sections,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SectionsTableFilterComposer(
+            $db: $db,
+            $table: $db.sections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$WordTypesTableFilterComposer get type {
     final $$WordTypesTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.type,
-        referencedTable: $db.wordTypes,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordTypesTableFilterComposer(
-              $db: $db,
-              $table: $db.wordTypes,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.type,
+      referencedTable: $db.wordTypes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordTypesTableFilterComposer(
+            $db: $db,
+            $table: $db.wordTypes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   Expression<bool> verbExtrasRefs(
-      Expression<bool> Function($$VerbExtrasTableFilterComposer f) f) {
+    Expression<bool> Function($$VerbExtrasTableFilterComposer f) f,
+  ) {
     final $$VerbExtrasTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.verbExtras,
-        getReferencedColumn: (t) => t.word,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$VerbExtrasTableFilterComposer(
-              $db: $db,
-              $table: $db.verbExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.verbExtras,
+      getReferencedColumn: (t) => t.word,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VerbExtrasTableFilterComposer(
+            $db: $db,
+            $table: $db.verbExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 
   Expression<bool> nounExtrasRefs(
-      Expression<bool> Function($$NounExtrasTableFilterComposer f) f) {
+    Expression<bool> Function($$NounExtrasTableFilterComposer f) f,
+  ) {
     final $$NounExtrasTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.nounExtras,
-        getReferencedColumn: (t) => t.word,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$NounExtrasTableFilterComposer(
-              $db: $db,
-              $table: $db.nounExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.nounExtras,
+      getReferencedColumn: (t) => t.word,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NounExtrasTableFilterComposer(
+            $db: $db,
+            $table: $db.nounExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -3176,70 +3717,93 @@ class $$WordsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get translation => $composableBuilder(
-      column: $table.translation, builder: (column) => ColumnOrderings(column));
+    column: $table.translation,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnOrderings(column));
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get specifier => $composableBuilder(
-      column: $table.specifier, builder: (column) => ColumnOrderings(column));
+    column: $table.specifier,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get lastCorrect => $composableBuilder(
-      column: $table.lastCorrect, builder: (column) => ColumnOrderings(column));
+    column: $table.lastCorrect,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get lastWrong => $composableBuilder(
-      column: $table.lastWrong, builder: (column) => ColumnOrderings(column));
+    column: $table.lastWrong,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get correctCount => $composableBuilder(
-      column: $table.correctCount,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.correctCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get wrongCount => $composableBuilder(
-      column: $table.wrongCount, builder: (column) => ColumnOrderings(column));
+    column: $table.wrongCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   $$SectionsTableOrderingComposer get section {
     final $$SectionsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.section,
-        referencedTable: $db.sections,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SectionsTableOrderingComposer(
-              $db: $db,
-              $table: $db.sections,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.section,
+      referencedTable: $db.sections,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SectionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.sections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$WordTypesTableOrderingComposer get type {
     final $$WordTypesTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.type,
-        referencedTable: $db.wordTypes,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordTypesTableOrderingComposer(
-              $db: $db,
-              $table: $db.wordTypes,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.type,
+      referencedTable: $db.wordTypes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordTypesTableOrderingComposer(
+            $db: $db,
+            $table: $db.wordTypes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
@@ -3257,7 +3821,9 @@ class $$WordsTableAnnotationComposer
       $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get translation => $composableBuilder(
-      column: $table.translation, builder: (column) => column);
+    column: $table.translation,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get value =>
       $composableBuilder(column: $table.value, builder: (column) => column);
@@ -3269,219 +3835,264 @@ class $$WordsTableAnnotationComposer
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastCorrect => $composableBuilder(
-      column: $table.lastCorrect, builder: (column) => column);
+    column: $table.lastCorrect,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get lastWrong =>
       $composableBuilder(column: $table.lastWrong, builder: (column) => column);
 
   GeneratedColumn<int> get correctCount => $composableBuilder(
-      column: $table.correctCount, builder: (column) => column);
+    column: $table.correctCount,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get wrongCount => $composableBuilder(
-      column: $table.wrongCount, builder: (column) => column);
+    column: $table.wrongCount,
+    builder: (column) => column,
+  );
 
   $$SectionsTableAnnotationComposer get section {
     final $$SectionsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.section,
-        referencedTable: $db.sections,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$SectionsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.sections,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.section,
+      referencedTable: $db.sections,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SectionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.sections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$WordTypesTableAnnotationComposer get type {
     final $$WordTypesTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.type,
-        referencedTable: $db.wordTypes,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordTypesTableAnnotationComposer(
-              $db: $db,
-              $table: $db.wordTypes,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.type,
+      referencedTable: $db.wordTypes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordTypesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.wordTypes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   Expression<T> verbExtrasRefs<T extends Object>(
-      Expression<T> Function($$VerbExtrasTableAnnotationComposer a) f) {
+    Expression<T> Function($$VerbExtrasTableAnnotationComposer a) f,
+  ) {
     final $$VerbExtrasTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.verbExtras,
-        getReferencedColumn: (t) => t.word,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$VerbExtrasTableAnnotationComposer(
-              $db: $db,
-              $table: $db.verbExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.verbExtras,
+      getReferencedColumn: (t) => t.word,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VerbExtrasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.verbExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 
   Expression<T> nounExtrasRefs<T extends Object>(
-      Expression<T> Function($$NounExtrasTableAnnotationComposer a) f) {
+    Expression<T> Function($$NounExtrasTableAnnotationComposer a) f,
+  ) {
     final $$NounExtrasTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.nounExtras,
-        getReferencedColumn: (t) => t.word,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$NounExtrasTableAnnotationComposer(
-              $db: $db,
-              $table: $db.nounExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.nounExtras,
+      getReferencedColumn: (t) => t.word,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NounExtrasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.nounExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
 
-class $$WordsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $WordsTable,
-    Word,
-    $$WordsTableFilterComposer,
-    $$WordsTableOrderingComposer,
-    $$WordsTableAnnotationComposer,
-    $$WordsTableCreateCompanionBuilder,
-    $$WordsTableUpdateCompanionBuilder,
-    (Word, $$WordsTableReferences),
-    Word,
-    PrefetchHooks Function(
-        {bool section, bool type, bool verbExtrasRefs, bool nounExtrasRefs})> {
+class $$WordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WordsTable,
+          Word,
+          $$WordsTableFilterComposer,
+          $$WordsTableOrderingComposer,
+          $$WordsTableAnnotationComposer,
+          $$WordsTableCreateCompanionBuilder,
+          $$WordsTableUpdateCompanionBuilder,
+          (Word, $$WordsTableReferences),
+          Word,
+          PrefetchHooks Function({
+            bool section,
+            bool type,
+            bool verbExtrasRefs,
+            bool nounExtrasRefs,
+          })
+        > {
   $$WordsTableTableManager(_$AppDatabase db, $WordsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$WordsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$WordsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$WordsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> section = const Value.absent(),
-            Value<int> type = const Value.absent(),
-            Value<String> translation = const Value.absent(),
-            Value<String> value = const Value.absent(),
-            Value<String?> specifier = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<DateTime?> lastCorrect = const Value.absent(),
-            Value<DateTime?> lastWrong = const Value.absent(),
-            Value<int> correctCount = const Value.absent(),
-            Value<int> wrongCount = const Value.absent(),
-          }) =>
-              WordsCompanion(
-            id: id,
-            section: section,
-            type: type,
-            translation: translation,
-            value: value,
-            specifier: specifier,
-            createdAt: createdAt,
-            lastCorrect: lastCorrect,
-            lastWrong: lastWrong,
-            correctCount: correctCount,
-            wrongCount: wrongCount,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int section,
-            required int type,
-            required String translation,
-            required String value,
-            Value<String?> specifier = const Value.absent(),
-            required DateTime createdAt,
-            Value<DateTime?> lastCorrect = const Value.absent(),
-            Value<DateTime?> lastWrong = const Value.absent(),
-            Value<int> correctCount = const Value.absent(),
-            Value<int> wrongCount = const Value.absent(),
-          }) =>
-              WordsCompanion.insert(
-            id: id,
-            section: section,
-            type: type,
-            translation: translation,
-            value: value,
-            specifier: specifier,
-            createdAt: createdAt,
-            lastCorrect: lastCorrect,
-            lastWrong: lastWrong,
-            correctCount: correctCount,
-            wrongCount: wrongCount,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$WordsTableReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: (
-              {section = false,
-              type = false,
-              verbExtrasRefs = false,
-              nounExtrasRefs = false}) {
+          createFilteringComposer:
+              () => $$WordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$WordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$WordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> section = const Value.absent(),
+                Value<int> type = const Value.absent(),
+                Value<String> translation = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<String?> specifier = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> lastCorrect = const Value.absent(),
+                Value<DateTime?> lastWrong = const Value.absent(),
+                Value<int> correctCount = const Value.absent(),
+                Value<int> wrongCount = const Value.absent(),
+              }) => WordsCompanion(
+                id: id,
+                section: section,
+                type: type,
+                translation: translation,
+                value: value,
+                specifier: specifier,
+                createdAt: createdAt,
+                lastCorrect: lastCorrect,
+                lastWrong: lastWrong,
+                correctCount: correctCount,
+                wrongCount: wrongCount,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int section,
+                required int type,
+                required String translation,
+                required String value,
+                Value<String?> specifier = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> lastCorrect = const Value.absent(),
+                Value<DateTime?> lastWrong = const Value.absent(),
+                Value<int> correctCount = const Value.absent(),
+                Value<int> wrongCount = const Value.absent(),
+              }) => WordsCompanion.insert(
+                id: id,
+                section: section,
+                type: type,
+                translation: translation,
+                value: value,
+                specifier: specifier,
+                createdAt: createdAt,
+                lastCorrect: lastCorrect,
+                lastWrong: lastWrong,
+                correctCount: correctCount,
+                wrongCount: wrongCount,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$WordsTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
+          prefetchHooksCallback: ({
+            section = false,
+            type = false,
+            verbExtrasRefs = false,
+            nounExtrasRefs = false,
+          }) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (verbExtrasRefs) db.verbExtras,
-                if (nounExtrasRefs) db.nounExtras
+                if (nounExtrasRefs) db.nounExtras,
               ],
               addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
                 if (section) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.section,
-                    referencedTable: $$WordsTableReferences._sectionTable(db),
-                    referencedColumn:
-                        $$WordsTableReferences._sectionTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.section,
+                            referencedTable: $$WordsTableReferences
+                                ._sectionTable(db),
+                            referencedColumn:
+                                $$WordsTableReferences._sectionTable(db).id,
+                          )
+                          as T;
                 }
                 if (type) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.type,
-                    referencedTable: $$WordsTableReferences._typeTable(db),
-                    referencedColumn: $$WordsTableReferences._typeTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.type,
+                            referencedTable: $$WordsTableReferences._typeTable(
+                              db,
+                            ),
+                            referencedColumn:
+                                $$WordsTableReferences._typeTable(db).id,
+                          )
+                          as T;
                 }
 
                 return state;
@@ -3490,74 +4101,90 @@ class $$WordsTableTableManager extends RootTableManager<
                 return [
                   if (verbExtrasRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$WordsTableReferences._verbExtrasRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$WordsTableReferences(db, table, p0)
-                                .verbExtrasRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.word == item.id),
-                        typedResults: items),
+                      currentTable: table,
+                      referencedTable: $$WordsTableReferences
+                          ._verbExtrasRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$WordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).verbExtrasRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) =>
+                              referencedItems.where((e) => e.word == item.id),
+                      typedResults: items,
+                    ),
                   if (nounExtrasRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$WordsTableReferences._nounExtrasRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$WordsTableReferences(db, table, p0)
-                                .nounExtrasRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) =>
-                                referencedItems.where((e) => e.word == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$WordsTableReferences
+                          ._nounExtrasRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$WordsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).nounExtrasRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) =>
+                              referencedItems.where((e) => e.word == item.id),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$WordsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $WordsTable,
-    Word,
-    $$WordsTableFilterComposer,
-    $$WordsTableOrderingComposer,
-    $$WordsTableAnnotationComposer,
-    $$WordsTableCreateCompanionBuilder,
-    $$WordsTableUpdateCompanionBuilder,
-    (Word, $$WordsTableReferences),
-    Word,
-    PrefetchHooks Function(
-        {bool section, bool type, bool verbExtrasRefs, bool nounExtrasRefs})>;
-typedef $$PronounsTableCreateCompanionBuilder = PronounsCompanion Function({
-  Value<int> id,
-  required String value,
-});
-typedef $$PronounsTableUpdateCompanionBuilder = PronounsCompanion Function({
-  Value<int> id,
-  Value<String> value,
-});
+typedef $$WordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WordsTable,
+      Word,
+      $$WordsTableFilterComposer,
+      $$WordsTableOrderingComposer,
+      $$WordsTableAnnotationComposer,
+      $$WordsTableCreateCompanionBuilder,
+      $$WordsTableUpdateCompanionBuilder,
+      (Word, $$WordsTableReferences),
+      Word,
+      PrefetchHooks Function({
+        bool section,
+        bool type,
+        bool verbExtrasRefs,
+        bool nounExtrasRefs,
+      })
+    >;
+typedef $$PronounsTableCreateCompanionBuilder =
+    PronounsCompanion Function({Value<int> id, required String value});
+typedef $$PronounsTableUpdateCompanionBuilder =
+    PronounsCompanion Function({Value<int> id, Value<String> value});
 
 final class $$PronounsTableReferences
     extends BaseReferences<_$AppDatabase, $PronounsTable, Pronoun> {
   $$PronounsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$VerbExtrasTable, List<VerbExtra>>
-      _verbExtrasRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.verbExtras,
-              aliasName:
-                  $_aliasNameGenerator(db.pronouns.id, db.verbExtras.pronoun));
+  _verbExtrasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.verbExtras,
+    aliasName: $_aliasNameGenerator(db.pronouns.id, db.verbExtras.pronoun),
+  );
 
   $$VerbExtrasTableProcessedTableManager get verbExtrasRefs {
-    final manager = $$VerbExtrasTableTableManager($_db, $_db.verbExtras)
-        .filter((f) => f.pronoun.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$VerbExtrasTableTableManager(
+      $_db,
+      $_db.verbExtras,
+    ).filter((f) => f.pronoun.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_verbExtrasRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 }
 
@@ -3571,29 +4198,37 @@ class $$PronounsTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnFilters(column));
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
 
   Expression<bool> verbExtrasRefs(
-      Expression<bool> Function($$VerbExtrasTableFilterComposer f) f) {
+    Expression<bool> Function($$VerbExtrasTableFilterComposer f) f,
+  ) {
     final $$VerbExtrasTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.verbExtras,
-        getReferencedColumn: (t) => t.pronoun,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$VerbExtrasTableFilterComposer(
-              $db: $db,
-              $table: $db.verbExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.verbExtras,
+      getReferencedColumn: (t) => t.pronoun,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VerbExtrasTableFilterComposer(
+            $db: $db,
+            $table: $db.verbExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -3608,10 +4243,14 @@ class $$PronounsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnOrderings(column));
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PronounsTableAnnotationComposer
@@ -3630,69 +4269,75 @@ class $$PronounsTableAnnotationComposer
       $composableBuilder(column: $table.value, builder: (column) => column);
 
   Expression<T> verbExtrasRefs<T extends Object>(
-      Expression<T> Function($$VerbExtrasTableAnnotationComposer a) f) {
+    Expression<T> Function($$VerbExtrasTableAnnotationComposer a) f,
+  ) {
     final $$VerbExtrasTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.verbExtras,
-        getReferencedColumn: (t) => t.pronoun,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$VerbExtrasTableAnnotationComposer(
-              $db: $db,
-              $table: $db.verbExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.verbExtras,
+      getReferencedColumn: (t) => t.pronoun,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$VerbExtrasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.verbExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
 
-class $$PronounsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PronounsTable,
-    Pronoun,
-    $$PronounsTableFilterComposer,
-    $$PronounsTableOrderingComposer,
-    $$PronounsTableAnnotationComposer,
-    $$PronounsTableCreateCompanionBuilder,
-    $$PronounsTableUpdateCompanionBuilder,
-    (Pronoun, $$PronounsTableReferences),
-    Pronoun,
-    PrefetchHooks Function({bool verbExtrasRefs})> {
+class $$PronounsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PronounsTable,
+          Pronoun,
+          $$PronounsTableFilterComposer,
+          $$PronounsTableOrderingComposer,
+          $$PronounsTableAnnotationComposer,
+          $$PronounsTableCreateCompanionBuilder,
+          $$PronounsTableUpdateCompanionBuilder,
+          (Pronoun, $$PronounsTableReferences),
+          Pronoun,
+          PrefetchHooks Function({bool verbExtrasRefs})
+        > {
   $$PronounsTableTableManager(_$AppDatabase db, $PronounsTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$PronounsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$PronounsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$PronounsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> value = const Value.absent(),
-          }) =>
-              PronounsCompanion(
-            id: id,
-            value: value,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String value,
-          }) =>
-              PronounsCompanion.insert(
-            id: id,
-            value: value,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$PronounsTableReferences(db, table, e)))
-              .toList(),
+          createFilteringComposer:
+              () => $$PronounsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$PronounsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$PronounsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> value = const Value.absent(),
+              }) => PronounsCompanion(id: id, value: value),
+          createCompanionCallback:
+              ({Value<int> id = const Value.absent(), required String value}) =>
+                  PronounsCompanion.insert(id: id, value: value),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$PronounsTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({verbExtrasRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -3702,66 +4347,81 @@ class $$PronounsTableTableManager extends RootTableManager<
                 return [
                   if (verbExtrasRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$PronounsTableReferences._verbExtrasRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$PronounsTableReferences(db, table, p0)
-                                .verbExtrasRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.pronoun == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$PronounsTableReferences
+                          ._verbExtrasRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$PronounsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).verbExtrasRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) => referencedItems.where(
+                            (e) => e.pronoun == item.id,
+                          ),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$PronounsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PronounsTable,
-    Pronoun,
-    $$PronounsTableFilterComposer,
-    $$PronounsTableOrderingComposer,
-    $$PronounsTableAnnotationComposer,
-    $$PronounsTableCreateCompanionBuilder,
-    $$PronounsTableUpdateCompanionBuilder,
-    (Pronoun, $$PronounsTableReferences),
-    Pronoun,
-    PrefetchHooks Function({bool verbExtrasRefs})>;
-typedef $$VerbExtrasTableCreateCompanionBuilder = VerbExtrasCompanion Function({
-  Value<int> id,
-  required int word,
-  required String value,
-  required int position,
-  required int pronoun,
-});
-typedef $$VerbExtrasTableUpdateCompanionBuilder = VerbExtrasCompanion Function({
-  Value<int> id,
-  Value<int> word,
-  Value<String> value,
-  Value<int> position,
-  Value<int> pronoun,
-});
+typedef $$PronounsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PronounsTable,
+      Pronoun,
+      $$PronounsTableFilterComposer,
+      $$PronounsTableOrderingComposer,
+      $$PronounsTableAnnotationComposer,
+      $$PronounsTableCreateCompanionBuilder,
+      $$PronounsTableUpdateCompanionBuilder,
+      (Pronoun, $$PronounsTableReferences),
+      Pronoun,
+      PrefetchHooks Function({bool verbExtrasRefs})
+    >;
+typedef $$VerbExtrasTableCreateCompanionBuilder =
+    VerbExtrasCompanion Function({
+      Value<int> id,
+      required int word,
+      required String value,
+      required int position,
+      required int pronoun,
+    });
+typedef $$VerbExtrasTableUpdateCompanionBuilder =
+    VerbExtrasCompanion Function({
+      Value<int> id,
+      Value<int> word,
+      Value<String> value,
+      Value<int> position,
+      Value<int> pronoun,
+    });
 
 final class $$VerbExtrasTableReferences
     extends BaseReferences<_$AppDatabase, $VerbExtrasTable, VerbExtra> {
   $$VerbExtrasTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $WordsTable _wordTable(_$AppDatabase db) => db.words
-      .createAlias($_aliasNameGenerator(db.verbExtras.word, db.words.id));
+  static $WordsTable _wordTable(_$AppDatabase db) => db.words.createAlias(
+    $_aliasNameGenerator(db.verbExtras.word, db.words.id),
+  );
 
   $$WordsTableProcessedTableManager get word {
     final $_column = $_itemColumn<int>('word')!;
 
-    final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$WordsTableTableManager(
+      $_db,
+      $_db.words,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_wordTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 
   static $PronounsTable _pronounTable(_$AppDatabase db) => db.pronouns
@@ -3770,12 +4430,15 @@ final class $$VerbExtrasTableReferences
   $$PronounsTableProcessedTableManager get pronoun {
     final $_column = $_itemColumn<int>('pronoun')!;
 
-    final manager = $$PronounsTableTableManager($_db, $_db.pronouns)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$PronounsTableTableManager(
+      $_db,
+      $_db.pronouns,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_pronounTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 }
 
@@ -3789,51 +4452,63 @@ class $$VerbExtrasTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnFilters(column));
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get position => $composableBuilder(
-      column: $table.position, builder: (column) => ColumnFilters(column));
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
 
   $$WordsTableFilterComposer get word {
     final $$WordsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.word,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableFilterComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.word,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableFilterComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$PronounsTableFilterComposer get pronoun {
     final $$PronounsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.pronoun,
-        referencedTable: $db.pronouns,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$PronounsTableFilterComposer(
-              $db: $db,
-              $table: $db.pronouns,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.pronoun,
+      referencedTable: $db.pronouns,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PronounsTableFilterComposer(
+            $db: $db,
+            $table: $db.pronouns,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
@@ -3848,51 +4523,63 @@ class $$VerbExtrasTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get value => $composableBuilder(
-      column: $table.value, builder: (column) => ColumnOrderings(column));
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get position => $composableBuilder(
-      column: $table.position, builder: (column) => ColumnOrderings(column));
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   $$WordsTableOrderingComposer get word {
     final $$WordsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.word,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableOrderingComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.word,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$PronounsTableOrderingComposer get pronoun {
     final $$PronounsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.pronoun,
-        referencedTable: $db.pronouns,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$PronounsTableOrderingComposer(
-              $db: $db,
-              $table: $db.pronouns,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.pronoun,
+      referencedTable: $db.pronouns,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PronounsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pronouns,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
@@ -3917,136 +4604,159 @@ class $$VerbExtrasTableAnnotationComposer
 
   $$WordsTableAnnotationComposer get word {
     final $$WordsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.word,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.word,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$PronounsTableAnnotationComposer get pronoun {
     final $$PronounsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.pronoun,
-        referencedTable: $db.pronouns,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$PronounsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.pronouns,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.pronoun,
+      referencedTable: $db.pronouns,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PronounsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pronouns,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
 
-class $$VerbExtrasTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $VerbExtrasTable,
-    VerbExtra,
-    $$VerbExtrasTableFilterComposer,
-    $$VerbExtrasTableOrderingComposer,
-    $$VerbExtrasTableAnnotationComposer,
-    $$VerbExtrasTableCreateCompanionBuilder,
-    $$VerbExtrasTableUpdateCompanionBuilder,
-    (VerbExtra, $$VerbExtrasTableReferences),
-    VerbExtra,
-    PrefetchHooks Function({bool word, bool pronoun})> {
+class $$VerbExtrasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VerbExtrasTable,
+          VerbExtra,
+          $$VerbExtrasTableFilterComposer,
+          $$VerbExtrasTableOrderingComposer,
+          $$VerbExtrasTableAnnotationComposer,
+          $$VerbExtrasTableCreateCompanionBuilder,
+          $$VerbExtrasTableUpdateCompanionBuilder,
+          (VerbExtra, $$VerbExtrasTableReferences),
+          VerbExtra,
+          PrefetchHooks Function({bool word, bool pronoun})
+        > {
   $$VerbExtrasTableTableManager(_$AppDatabase db, $VerbExtrasTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$VerbExtrasTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$VerbExtrasTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$VerbExtrasTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> word = const Value.absent(),
-            Value<String> value = const Value.absent(),
-            Value<int> position = const Value.absent(),
-            Value<int> pronoun = const Value.absent(),
-          }) =>
-              VerbExtrasCompanion(
-            id: id,
-            word: word,
-            value: value,
-            position: position,
-            pronoun: pronoun,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int word,
-            required String value,
-            required int position,
-            required int pronoun,
-          }) =>
-              VerbExtrasCompanion.insert(
-            id: id,
-            word: word,
-            value: value,
-            position: position,
-            pronoun: pronoun,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$VerbExtrasTableReferences(db, table, e)
-                  ))
-              .toList(),
+          createFilteringComposer:
+              () => $$VerbExtrasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$VerbExtrasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$VerbExtrasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> word = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<int> pronoun = const Value.absent(),
+              }) => VerbExtrasCompanion(
+                id: id,
+                word: word,
+                value: value,
+                position: position,
+                pronoun: pronoun,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int word,
+                required String value,
+                required int position,
+                required int pronoun,
+              }) => VerbExtrasCompanion.insert(
+                id: id,
+                word: word,
+                value: value,
+                position: position,
+                pronoun: pronoun,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$VerbExtrasTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({word = false, pronoun = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
               addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
                 if (word) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.word,
-                    referencedTable: $$VerbExtrasTableReferences._wordTable(db),
-                    referencedColumn:
-                        $$VerbExtrasTableReferences._wordTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.word,
+                            referencedTable: $$VerbExtrasTableReferences
+                                ._wordTable(db),
+                            referencedColumn:
+                                $$VerbExtrasTableReferences._wordTable(db).id,
+                          )
+                          as T;
                 }
                 if (pronoun) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.pronoun,
-                    referencedTable:
-                        $$VerbExtrasTableReferences._pronounTable(db),
-                    referencedColumn:
-                        $$VerbExtrasTableReferences._pronounTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.pronoun,
+                            referencedTable: $$VerbExtrasTableReferences
+                                ._pronounTable(db),
+                            referencedColumn:
+                                $$VerbExtrasTableReferences
+                                    ._pronounTable(db)
+                                    .id,
+                          )
+                          as T;
                 }
 
                 return state;
@@ -4056,48 +4766,57 @@ class $$VerbExtrasTableTableManager extends RootTableManager<
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$VerbExtrasTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $VerbExtrasTable,
-    VerbExtra,
-    $$VerbExtrasTableFilterComposer,
-    $$VerbExtrasTableOrderingComposer,
-    $$VerbExtrasTableAnnotationComposer,
-    $$VerbExtrasTableCreateCompanionBuilder,
-    $$VerbExtrasTableUpdateCompanionBuilder,
-    (VerbExtra, $$VerbExtrasTableReferences),
-    VerbExtra,
-    PrefetchHooks Function({bool word, bool pronoun})>;
-typedef $$GendersTableCreateCompanionBuilder = GendersCompanion Function({
-  Value<int> id,
-  required String name,
-  required String short,
-});
-typedef $$GendersTableUpdateCompanionBuilder = GendersCompanion Function({
-  Value<int> id,
-  Value<String> name,
-  Value<String> short,
-});
+typedef $$VerbExtrasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VerbExtrasTable,
+      VerbExtra,
+      $$VerbExtrasTableFilterComposer,
+      $$VerbExtrasTableOrderingComposer,
+      $$VerbExtrasTableAnnotationComposer,
+      $$VerbExtrasTableCreateCompanionBuilder,
+      $$VerbExtrasTableUpdateCompanionBuilder,
+      (VerbExtra, $$VerbExtrasTableReferences),
+      VerbExtra,
+      PrefetchHooks Function({bool word, bool pronoun})
+    >;
+typedef $$GendersTableCreateCompanionBuilder =
+    GendersCompanion Function({
+      Value<int> id,
+      required String name,
+      required String short,
+    });
+typedef $$GendersTableUpdateCompanionBuilder =
+    GendersCompanion Function({
+      Value<int> id,
+      Value<String> name,
+      Value<String> short,
+    });
 
 final class $$GendersTableReferences
     extends BaseReferences<_$AppDatabase, $GendersTable, Gender> {
   $$GendersTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static MultiTypedResultKey<$NounExtrasTable, List<NounExtra>>
-      _nounExtrasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-          db.nounExtras,
-          aliasName: $_aliasNameGenerator(db.genders.id, db.nounExtras.gender));
+  _nounExtrasRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.nounExtras,
+    aliasName: $_aliasNameGenerator(db.genders.id, db.nounExtras.gender),
+  );
 
   $$NounExtrasTableProcessedTableManager get nounExtrasRefs {
-    final manager = $$NounExtrasTableTableManager($_db, $_db.nounExtras)
-        .filter((f) => f.gender.id.sqlEquals($_itemColumn<int>('id')!));
+    final manager = $$NounExtrasTableTableManager(
+      $_db,
+      $_db.nounExtras,
+    ).filter((f) => f.gender.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_nounExtrasRefsTable($_db));
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
+      manager.$state.copyWith(prefetchedData: cache),
+    );
   }
 }
 
@@ -4111,32 +4830,42 @@ class $$GendersTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get short => $composableBuilder(
-      column: $table.short, builder: (column) => ColumnFilters(column));
+    column: $table.short,
+    builder: (column) => ColumnFilters(column),
+  );
 
   Expression<bool> nounExtrasRefs(
-      Expression<bool> Function($$NounExtrasTableFilterComposer f) f) {
+    Expression<bool> Function($$NounExtrasTableFilterComposer f) f,
+  ) {
     final $$NounExtrasTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.nounExtras,
-        getReferencedColumn: (t) => t.gender,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$NounExtrasTableFilterComposer(
-              $db: $db,
-              $table: $db.nounExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.nounExtras,
+      getReferencedColumn: (t) => t.gender,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NounExtrasTableFilterComposer(
+            $db: $db,
+            $table: $db.nounExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -4151,13 +4880,19 @@ class $$GendersTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get short => $composableBuilder(
-      column: $table.short, builder: (column) => ColumnOrderings(column));
+    column: $table.short,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$GendersTableAnnotationComposer
@@ -4179,73 +4914,79 @@ class $$GendersTableAnnotationComposer
       $composableBuilder(column: $table.short, builder: (column) => column);
 
   Expression<T> nounExtrasRefs<T extends Object>(
-      Expression<T> Function($$NounExtrasTableAnnotationComposer a) f) {
+    Expression<T> Function($$NounExtrasTableAnnotationComposer a) f,
+  ) {
     final $$NounExtrasTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.id,
-        referencedTable: $db.nounExtras,
-        getReferencedColumn: (t) => t.gender,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$NounExtrasTableAnnotationComposer(
-              $db: $db,
-              $table: $db.nounExtras,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.nounExtras,
+      getReferencedColumn: (t) => t.gender,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NounExtrasTableAnnotationComposer(
+            $db: $db,
+            $table: $db.nounExtras,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
 
-class $$GendersTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $GendersTable,
-    Gender,
-    $$GendersTableFilterComposer,
-    $$GendersTableOrderingComposer,
-    $$GendersTableAnnotationComposer,
-    $$GendersTableCreateCompanionBuilder,
-    $$GendersTableUpdateCompanionBuilder,
-    (Gender, $$GendersTableReferences),
-    Gender,
-    PrefetchHooks Function({bool nounExtrasRefs})> {
+class $$GendersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GendersTable,
+          Gender,
+          $$GendersTableFilterComposer,
+          $$GendersTableOrderingComposer,
+          $$GendersTableAnnotationComposer,
+          $$GendersTableCreateCompanionBuilder,
+          $$GendersTableUpdateCompanionBuilder,
+          (Gender, $$GendersTableReferences),
+          Gender,
+          PrefetchHooks Function({bool nounExtrasRefs})
+        > {
   $$GendersTableTableManager(_$AppDatabase db, $GendersTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$GendersTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$GendersTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$GendersTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String> short = const Value.absent(),
-          }) =>
-              GendersCompanion(
-            id: id,
-            name: name,
-            short: short,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String name,
-            required String short,
-          }) =>
-              GendersCompanion.insert(
-            id: id,
-            name: name,
-            short: short,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) =>
-                  (e.readTable(table), $$GendersTableReferences(db, table, e)))
-              .toList(),
+          createFilteringComposer:
+              () => $$GendersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$GendersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$GendersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> short = const Value.absent(),
+              }) => GendersCompanion(id: id, name: name, short: short),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String name,
+                required String short,
+              }) => GendersCompanion.insert(id: id, name: name, short: short),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$GendersTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({nounExtrasRefs = false}) {
             return PrefetchHooks(
               db: db,
@@ -4255,78 +4996,96 @@ class $$GendersTableTableManager extends RootTableManager<
                 return [
                   if (nounExtrasRefs)
                     await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable:
-                            $$GendersTableReferences._nounExtrasRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$GendersTableReferences(db, table, p0)
-                                .nounExtrasRefs,
-                        referencedItemsForCurrentItem: (item,
-                                referencedItems) =>
-                            referencedItems.where((e) => e.gender == item.id),
-                        typedResults: items)
+                      currentTable: table,
+                      referencedTable: $$GendersTableReferences
+                          ._nounExtrasRefsTable(db),
+                      managerFromTypedResult:
+                          (p0) =>
+                              $$GendersTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).nounExtrasRefs,
+                      referencedItemsForCurrentItem:
+                          (item, referencedItems) =>
+                              referencedItems.where((e) => e.gender == item.id),
+                      typedResults: items,
+                    ),
                 ];
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$GendersTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $GendersTable,
-    Gender,
-    $$GendersTableFilterComposer,
-    $$GendersTableOrderingComposer,
-    $$GendersTableAnnotationComposer,
-    $$GendersTableCreateCompanionBuilder,
-    $$GendersTableUpdateCompanionBuilder,
-    (Gender, $$GendersTableReferences),
-    Gender,
-    PrefetchHooks Function({bool nounExtrasRefs})>;
-typedef $$NounExtrasTableCreateCompanionBuilder = NounExtrasCompanion Function({
-  Value<int> id,
-  required int word,
-  required int gender,
-  Value<String?> plural,
-});
-typedef $$NounExtrasTableUpdateCompanionBuilder = NounExtrasCompanion Function({
-  Value<int> id,
-  Value<int> word,
-  Value<int> gender,
-  Value<String?> plural,
-});
+typedef $$GendersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GendersTable,
+      Gender,
+      $$GendersTableFilterComposer,
+      $$GendersTableOrderingComposer,
+      $$GendersTableAnnotationComposer,
+      $$GendersTableCreateCompanionBuilder,
+      $$GendersTableUpdateCompanionBuilder,
+      (Gender, $$GendersTableReferences),
+      Gender,
+      PrefetchHooks Function({bool nounExtrasRefs})
+    >;
+typedef $$NounExtrasTableCreateCompanionBuilder =
+    NounExtrasCompanion Function({
+      Value<int> id,
+      required int word,
+      required int gender,
+      Value<String?> plural,
+    });
+typedef $$NounExtrasTableUpdateCompanionBuilder =
+    NounExtrasCompanion Function({
+      Value<int> id,
+      Value<int> word,
+      Value<int> gender,
+      Value<String?> plural,
+    });
 
 final class $$NounExtrasTableReferences
     extends BaseReferences<_$AppDatabase, $NounExtrasTable, NounExtra> {
   $$NounExtrasTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static $WordsTable _wordTable(_$AppDatabase db) => db.words
-      .createAlias($_aliasNameGenerator(db.nounExtras.word, db.words.id));
+  static $WordsTable _wordTable(_$AppDatabase db) => db.words.createAlias(
+    $_aliasNameGenerator(db.nounExtras.word, db.words.id),
+  );
 
   $$WordsTableProcessedTableManager get word {
     final $_column = $_itemColumn<int>('word')!;
 
-    final manager = $$WordsTableTableManager($_db, $_db.words)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$WordsTableTableManager(
+      $_db,
+      $_db.words,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_wordTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 
-  static $GendersTable _genderTable(_$AppDatabase db) => db.genders
-      .createAlias($_aliasNameGenerator(db.nounExtras.gender, db.genders.id));
+  static $GendersTable _genderTable(_$AppDatabase db) => db.genders.createAlias(
+    $_aliasNameGenerator(db.nounExtras.gender, db.genders.id),
+  );
 
   $$GendersTableProcessedTableManager get gender {
     final $_column = $_itemColumn<int>('gender')!;
 
-    final manager = $$GendersTableTableManager($_db, $_db.genders)
-        .filter((f) => f.id.sqlEquals($_column));
+    final manager = $$GendersTableTableManager(
+      $_db,
+      $_db.genders,
+    ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_genderTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
   }
 }
 
@@ -4340,48 +5099,58 @@ class $$NounExtrasTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get plural => $composableBuilder(
-      column: $table.plural, builder: (column) => ColumnFilters(column));
+    column: $table.plural,
+    builder: (column) => ColumnFilters(column),
+  );
 
   $$WordsTableFilterComposer get word {
     final $$WordsTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.word,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableFilterComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.word,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableFilterComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$GendersTableFilterComposer get gender {
     final $$GendersTableFilterComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.gender,
-        referencedTable: $db.genders,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$GendersTableFilterComposer(
-              $db: $db,
-              $table: $db.genders,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.gender,
+      referencedTable: $db.genders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GendersTableFilterComposer(
+            $db: $db,
+            $table: $db.genders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
@@ -4396,48 +5165,58 @@ class $$NounExtrasTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get plural => $composableBuilder(
-      column: $table.plural, builder: (column) => ColumnOrderings(column));
+    column: $table.plural,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   $$WordsTableOrderingComposer get word {
     final $$WordsTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.word,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableOrderingComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.word,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableOrderingComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$GendersTableOrderingComposer get gender {
     final $$GendersTableOrderingComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.gender,
-        referencedTable: $db.genders,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$GendersTableOrderingComposer(
-              $db: $db,
-              $table: $db.genders,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.gender,
+      referencedTable: $db.genders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GendersTableOrderingComposer(
+            $db: $db,
+            $table: $db.genders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
@@ -4459,132 +5238,153 @@ class $$NounExtrasTableAnnotationComposer
 
   $$WordsTableAnnotationComposer get word {
     final $$WordsTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.word,
-        referencedTable: $db.words,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$WordsTableAnnotationComposer(
-              $db: $db,
-              $table: $db.words,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.word,
+      referencedTable: $db.words,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WordsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.words,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 
   $$GendersTableAnnotationComposer get gender {
     final $$GendersTableAnnotationComposer composer = $composerBuilder(
-        composer: this,
-        getCurrentColumn: (t) => t.gender,
-        referencedTable: $db.genders,
-        getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder,
-                {$addJoinBuilderToRootComposer,
-                $removeJoinBuilderFromRootComposer}) =>
-            $$GendersTableAnnotationComposer(
-              $db: $db,
-              $table: $db.genders,
-              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-              joinBuilder: joinBuilder,
-              $removeJoinBuilderFromRootComposer:
-                  $removeJoinBuilderFromRootComposer,
-            ));
+      composer: this,
+      getCurrentColumn: (t) => t.gender,
+      referencedTable: $db.genders,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GendersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.genders,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return composer;
   }
 }
 
-class $$NounExtrasTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $NounExtrasTable,
-    NounExtra,
-    $$NounExtrasTableFilterComposer,
-    $$NounExtrasTableOrderingComposer,
-    $$NounExtrasTableAnnotationComposer,
-    $$NounExtrasTableCreateCompanionBuilder,
-    $$NounExtrasTableUpdateCompanionBuilder,
-    (NounExtra, $$NounExtrasTableReferences),
-    NounExtra,
-    PrefetchHooks Function({bool word, bool gender})> {
+class $$NounExtrasTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NounExtrasTable,
+          NounExtra,
+          $$NounExtrasTableFilterComposer,
+          $$NounExtrasTableOrderingComposer,
+          $$NounExtrasTableAnnotationComposer,
+          $$NounExtrasTableCreateCompanionBuilder,
+          $$NounExtrasTableUpdateCompanionBuilder,
+          (NounExtra, $$NounExtrasTableReferences),
+          NounExtra,
+          PrefetchHooks Function({bool word, bool gender})
+        > {
   $$NounExtrasTableTableManager(_$AppDatabase db, $NounExtrasTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () =>
-              $$NounExtrasTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$NounExtrasTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$NounExtrasTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> word = const Value.absent(),
-            Value<int> gender = const Value.absent(),
-            Value<String?> plural = const Value.absent(),
-          }) =>
-              NounExtrasCompanion(
-            id: id,
-            word: word,
-            gender: gender,
-            plural: plural,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int word,
-            required int gender,
-            Value<String?> plural = const Value.absent(),
-          }) =>
-              NounExtrasCompanion.insert(
-            id: id,
-            word: word,
-            gender: gender,
-            plural: plural,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$NounExtrasTableReferences(db, table, e)
-                  ))
-              .toList(),
+          createFilteringComposer:
+              () => $$NounExtrasTableFilterComposer($db: db, $table: table),
+          createOrderingComposer:
+              () => $$NounExtrasTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer:
+              () => $$NounExtrasTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> word = const Value.absent(),
+                Value<int> gender = const Value.absent(),
+                Value<String?> plural = const Value.absent(),
+              }) => NounExtrasCompanion(
+                id: id,
+                word: word,
+                gender: gender,
+                plural: plural,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int word,
+                required int gender,
+                Value<String?> plural = const Value.absent(),
+              }) => NounExtrasCompanion.insert(
+                id: id,
+                word: word,
+                gender: gender,
+                plural: plural,
+              ),
+          withReferenceMapper:
+              (p0) =>
+                  p0
+                      .map(
+                        (e) => (
+                          e.readTable(table),
+                          $$NounExtrasTableReferences(db, table, e),
+                        ),
+                      )
+                      .toList(),
           prefetchHooksCallback: ({word = false, gender = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
               addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
+                T extends TableManagerState<
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic,
+                  dynamic
+                >
+              >(state) {
                 if (word) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.word,
-                    referencedTable: $$NounExtrasTableReferences._wordTable(db),
-                    referencedColumn:
-                        $$NounExtrasTableReferences._wordTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.word,
+                            referencedTable: $$NounExtrasTableReferences
+                                ._wordTable(db),
+                            referencedColumn:
+                                $$NounExtrasTableReferences._wordTable(db).id,
+                          )
+                          as T;
                 }
                 if (gender) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.gender,
-                    referencedTable:
-                        $$NounExtrasTableReferences._genderTable(db),
-                    referencedColumn:
-                        $$NounExtrasTableReferences._genderTable(db).id,
-                  ) as T;
+                  state =
+                      state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.gender,
+                            referencedTable: $$NounExtrasTableReferences
+                                ._genderTable(db),
+                            referencedColumn:
+                                $$NounExtrasTableReferences._genderTable(db).id,
+                          )
+                          as T;
                 }
 
                 return state;
@@ -4594,21 +5394,24 @@ class $$NounExtrasTableTableManager extends RootTableManager<
               },
             );
           },
-        ));
+        ),
+      );
 }
 
-typedef $$NounExtrasTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $NounExtrasTable,
-    NounExtra,
-    $$NounExtrasTableFilterComposer,
-    $$NounExtrasTableOrderingComposer,
-    $$NounExtrasTableAnnotationComposer,
-    $$NounExtrasTableCreateCompanionBuilder,
-    $$NounExtrasTableUpdateCompanionBuilder,
-    (NounExtra, $$NounExtrasTableReferences),
-    NounExtra,
-    PrefetchHooks Function({bool word, bool gender})>;
+typedef $$NounExtrasTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NounExtrasTable,
+      NounExtra,
+      $$NounExtrasTableFilterComposer,
+      $$NounExtrasTableOrderingComposer,
+      $$NounExtrasTableAnnotationComposer,
+      $$NounExtrasTableCreateCompanionBuilder,
+      $$NounExtrasTableUpdateCompanionBuilder,
+      (NounExtra, $$NounExtrasTableReferences),
+      NounExtra,
+      PrefetchHooks Function({bool word, bool gender})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

@@ -2,6 +2,13 @@
 
 A new Flutter application.
 
+## Updating the SDKs
+
+```sh
+flutter channel master
+flutter upgrade
+```
+
 ## Updating the JSON Model
 
 ```sh
